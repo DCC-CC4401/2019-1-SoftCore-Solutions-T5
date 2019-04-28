@@ -6,5 +6,6 @@ from .import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('^courses/',include('courses.urls')),
+    url('^accounts/',include('accounts.urls'), name='accounts'),
     url(r'^$', views.homepage),
 ]
