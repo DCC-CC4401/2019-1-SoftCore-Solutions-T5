@@ -11,6 +11,7 @@ urlpatterns = [
     url('^courses/',include('courses.urls'), name="courses"),
     url('^accounts/',include('accounts.urls'), name='accounts'),
     url(r'^home$', include('home.urls'),name="home"),
+    url('^rubrics/',include('rubrics.urls'), name='rubrics'),
     url(r'^$',include('accounts.urls')),
 ]
 
