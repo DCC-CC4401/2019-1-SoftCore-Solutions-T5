@@ -75,11 +75,11 @@ body {font-size:16px;}
             <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
 
         <div class="w3-section">
-          <form class="site-form" action="index.html" method="post">
+          <form class="site-form" action="/accounts/signup/" method="post">
             {% csrf_token %}
             {{form}}
             <input type="submit" value="Signup" />
-      
+
         </div>
       </form>
       </div>
