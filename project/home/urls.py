@@ -1,7 +1,9 @@
 from django.conf.urls import url
 from django.contrib import admin
 from .import views
-app_name='courses'
+
+app_name='home'
+
 urlpatterns = [
-    url(r'^$', views.courses_list, name="list"),
+    url(r'^$', views.homepage, name="homepage"),
 ]

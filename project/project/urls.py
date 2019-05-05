@@ -8,9 +8,9 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url('^courses/',include('courses.urls')),
+    url('^courses/',include('courses.urls'), name="courses"),
     url('^accounts/',include('accounts.urls'), name='accounts'),
-    url(r'^home$', views.homepage),
+    url(r'^home$', include('home.urls'),name="home"),
     url(r'^$',include('accounts.urls')),
 ]
 
