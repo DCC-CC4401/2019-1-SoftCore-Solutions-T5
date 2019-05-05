@@ -1,0 +1,14 @@
+<html>
+<head>
+
+</head>
+<body>
+  <p>
+    <form class="site-form" action="index.html" method="post">
+      {% csrf_token %}
+      {{form}}
+      <input type="submit" value="Login" />
+    </form>
+  </p>
+</body>
+</html>

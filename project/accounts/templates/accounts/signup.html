@@ -85,8 +85,9 @@ body {font-size:16px;}
             <form class="w3-container" action="/action_page.php">
         <div class="w3-section">
           <form class="site-form" action="index.html" method="post">
+            {% csrf_token %}
             {{form}}
-            <input type="submit" value="Registrar"
+            <input type="submit" value="Signup" />
           </form>
         </div>
       </form>
