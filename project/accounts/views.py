@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
-
+from django.contrib.auth.models import User
 from django.shortcuts import render,redirect
 
 # Create your views here.
@@ -16,7 +16,8 @@ def signup_view(request):
             return render(request,'accounts/signup.html', {'form':form})
     else:
         form = UserCreationForm()
-    return render(request,'accounts/signup.html', {'form':form})
+    accounts = User.objects.filter(is_superuser=False)
+    return render(request,'accounts/signup.html', {'form':form}, {'accounts':accounts})
 
 def login_view(request):
     if request.method=='POST':
