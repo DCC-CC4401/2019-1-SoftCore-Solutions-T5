@@ -29,7 +29,14 @@ body {font-size:16px;}
     <a href="{% url 'accounts:signup'%}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Evaluadores</a>
       <a href="{% url 'rubrics:rubrics'%}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Rúbricas</a>
     <a href="#evaluaciones" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Evaluaciones</a>
-    <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Contact</a>
+    <a style="margin-bottom:70%" href="#contact" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Contact</a>
+    <a style="margin-left:60%">
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="Submit">Logout</button>
+      </form></a>
+
+
   </div>
 </nav>
 
