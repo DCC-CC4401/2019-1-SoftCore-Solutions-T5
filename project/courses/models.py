@@ -30,7 +30,7 @@ class Student(models.Model):
         ordering= ['family_name', 'first_name'];
 
     def __str__(self):
-        return f('{self.family_name}, {self.first_name}');
+        return f'{self.family_name}, {self.first_name}';
 
 class Team(models.Model):
     """Modelo que representa a los equipos"""
@@ -43,4 +43,7 @@ class Team(models.Model):
         ordering= ['course', 'name']
 
     def __str__(self):
-        return name;
+        return self.name;
+
+
+

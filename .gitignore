@@ -1,3 +1,6 @@
+# La carpeta de migraciones para no complicarse más de la cuenta
+migrations/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
