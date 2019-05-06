@@ -18,10 +18,13 @@
 
   <div class="w3-center">
     <div class="w3-section"><br>
+
+      <h1 class="w3-xxxlarge w3-text-red"><b>Bienvenido al sistema de evaluación</b></h1><br/>
+      <h3>Por favor, entra usuario y clave para ingresar a la plateforma</h3><br />
     <form class="site-form" action="." method="post">
       {% csrf_token %}
       {{form}}
-      <input type="submit" value="Login" />
+      <input type="submit" value="Ingresar" />
     </form>
 
   </div>
