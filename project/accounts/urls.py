@@ -3,6 +3,7 @@ from django.contrib import admin
 from .import views
 
 app_name='accounts'
+
 urlpatterns=[
 url(r'^signup/$', views.signup_view, name="signup"),
 url(r'^$',views.login_view,name="login"),
