@@ -23,18 +23,18 @@ class Student(models.Model):
 
     # Un estudiante puede pertencer a más de un equipo a la vez, y un equipo puede tener más de un estudiante a la vez
     # Esto está dado por la cantidad de cursos y de evaluaciones en las que puede estar
-    team= models.ManyToManyField('Team', help_text='Seleccione un equipo para el estudiante');
+    team= models.ManyToManyField('Team', help_text='Seleccione un equipo para el estudiante')
 
     class Meta:
-        unique_together= ('first_name', 'family_name');
-        ordering= ['family_name', 'first_name'];
+        unique_together= ('first_name', 'family_name')
+        ordering= ['family_name', 'first_name']
 
     def __str__(self):
-        return f'{self.family_name}, {self.first_name}';
+        return '{self.family_name}, {self.first_name}'.format(self.family_name,self.first_name);
 
 class Team(models.Model):
     """Modelo que representa a los equipos"""
-    name= models.CharField(max_length=200, help_text='Ingrese el nombre del equipo (Ej: ReAL Soluciones)');
+    name= models.CharField(max_length=200, help_text='Ingrese el nombre del equipo (Ej: ReAL Soluciones)')
 
     # Un equipo pertenece a lo más a un curso, pero un curso puede tener más de un equipo
     course= models.ForeignKey('Course', on_delete=models.CASCADE)
@@ -43,7 +43,4 @@ class Team(models.Model):
         ordering= ['course', 'name']
 
     def __str__(self):
-        return self.name;
-
-
-
+        return self.name

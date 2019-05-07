@@ -13,11 +13,11 @@ def signup_view(request):
             form.save()
             return redirect('/accounts/signup')
         else:
-            return render(request,'accounts/signup.html', {'form':form})
+            return render(request,'accounts/signup.html', {'form':form,'accounts':accounts})
     else:
         form = UserCreationForm()
     accounts = User.objects.filter(is_superuser=False)
-    return render(request,'accounts/signup.html', {'form':form}, {'accounts':accounts})
+    return render(request,'accounts/signup.html', {'form':form,'accounts':accounts})
 
 def login_view(request):
     if request.method=='POST':
