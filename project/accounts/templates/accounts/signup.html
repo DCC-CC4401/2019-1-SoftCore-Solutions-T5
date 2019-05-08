@@ -83,8 +83,20 @@ body {font-size:16px;}
         <div class="w3-section">
           <form class="site-form" action="/accounts/signup/" method="post">
             {% csrf_token %}
-            {{form}}
+            <label for="nombre">Nombre</label>
+              <input type="text" name="nombre" placeholder="Nombre">
+              <br><br>
+              <label for="apellido">Apellido</label>
+              <input type="text" name="apellido" placeholder="Apellido">
+              <br><br>
+              <label for="correo">Email</label>
+              <input type="email" name="correo" placeholder="mail@example.com">
+              <br><br>
+              <label for="clave">Password</label>
+              <input type="text" name="clave">
+              <br><br>
             <input type="submit" value="Registrar" />
+              <br><br>
 
         </div>
       </form>

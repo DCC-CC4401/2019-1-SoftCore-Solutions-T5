@@ -11,26 +11,21 @@ from .forms import AccountForm
 # Create your views here.
 def signup_view(request):
     if request.method=='POST':
-        form=AccountForm(request.POST)
-        if form.is_valid():
-            nombre = form.cleaned_data['nombre']
-            apellido= form.cleaned_data['appellido']
-            correo = form.cleaned_data['correo']
-            clave = form.cleaned_data['clave']
-            account = Account.objects.create(nombre = nombre, appellido = apellido,
-                                          correo = correo,
-                                          clave = clave, is_superuser = False)
-            account.save()
-            nickname = nombre + apellido
-            user = User.objects.create_user(username=nickname, email=correo, password=clave)
-            user.save()
-            return redirect('/accounts/signup')
-        else:
-            return render(request,'accounts/signup.html', {'form':form, 'accounts':accounts})
-    else:
-        form = AccountForm()
+        nombre = request.POST['nombre']
+        apellido= request.POST['apellido']
+        correo = request.POST['correo']
+        clave = request.POST['clave']
+        account = Account.objects.create(nombre = nombre, appellido = apellido,
+                                       correo = correo,
+                                       clave = clave, is_superuser = False)
+        account.save()
+        nickname = nombre + apellido
+        user = User.objects.create_user(username=nickname, email=correo, password=clave)
+        user.save()
+        accounts = Account.objects.all()
+        return redirect('/accounts/signup', {'accounts': accounts})
     accounts = Account.objects.all()
-    return render(request,'accounts/signup.html', {'form':form, 'accounts':accounts})
+    return render(request,'accounts/signup.html', {'accounts': accounts})
 
 def login_view(request):
     if request.method=='POST':
