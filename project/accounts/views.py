@@ -4,20 +4,25 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render,redirect
+from .models import Account
+from .forms import AccountForm
 
 # Create your views here.
 def signup_view(request):
     if request.method=='POST':
-        form=UserCreationForm(request.POST)
+        form=AccountForm(request.POST)
         if form.is_valid():
-            form.save()
+            account = Account.objects.create(nombre = form.cleaned_data['nombre'], appellido = form.cleaned_data['appellido'],
+                                          correo = form.cleaned_data['correo'],
+                                          clave = form.cleaned_data['clave'], is_superuser = False)
+            account.save()
             return redirect('/accounts/signup')
         else:
-            return render(request,'accounts/signup.html', {'form':form,'accounts':accounts})
+            return render(request,'accounts/signup.html', {'form':form, 'accounts':accounts})
     else:
-        form = UserCreationForm()
-    accounts = User.objects.filter(is_superuser=False)
-    return render(request,'accounts/signup.html', {'form':form,'accounts':accounts})
+        form = AccountForm()
+    accounts = Account.objects.all()
+    return render(request,'accounts/signup.html', {'form':form, 'accounts':accounts})
 
 def login_view(request):
     if request.method=='POST':
