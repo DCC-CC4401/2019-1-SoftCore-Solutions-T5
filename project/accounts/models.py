@@ -11,4 +11,4 @@ class Account(models.Model):
     is_superuser=models.BooleanField()
 
     def __str__(self):
-        return self.nombre
+        return self.nombre + ' ' + self.appellido
