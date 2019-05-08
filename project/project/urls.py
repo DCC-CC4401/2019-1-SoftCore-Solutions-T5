@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^home$', include('home.urls'),name="home"),
     url('^rubrics/',include('rubrics.urls'), name='rubrics'),
     url(r'^$',include('accounts.urls')),
+    url('^evaluation/',include('evaluation.urls')),
 ]
 
 urlpatterns+= staticfiles_urlpatterns()
