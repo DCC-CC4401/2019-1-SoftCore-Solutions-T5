@@ -20,12 +20,12 @@
     <div class="w3-section"><br>
 
       <h1 class="w3-xxxlarge w3-text-red"><b>Bienvenido al sistema de evaluación</b></h1><br/>
-      <h3>Por favor, entra usuario y clave para ingresar a la plataforma</h3><br />
+      <h3>Por favor, entra correo y clave para ingresar a la plataforma</h3><br />
     <form class="site-form" action="." method="post">
       {% csrf_token %}
-      <label for="email">Email</label>
+      <label for="email">Correo</label>
       <input type="email" name="email" placeholder="mail@example.com">
-      <label for="">Password</label>
+      <label for="">Contraseña</label>
       <input type="password" name="password">
       <input type="submit" value="Ingresar" />
     </form>
