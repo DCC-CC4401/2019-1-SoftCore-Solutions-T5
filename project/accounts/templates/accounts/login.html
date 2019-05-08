@@ -23,7 +23,10 @@
       <h3>Por favor, entra usuario y clave para ingresar a la plataforma</h3><br />
     <form class="site-form" action="." method="post">
       {% csrf_token %}
-      {{form}}
+      <label for="email">Email</label>
+      <input type="email" name="email" placeholder="mail@example.com">
+      <label for="">Password</label>
+      <input type="password" name="password">
       <input type="submit" value="Ingresar" />
     </form>
 
