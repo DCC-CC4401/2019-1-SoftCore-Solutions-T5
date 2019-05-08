@@ -2,6 +2,10 @@ from django.db import models
 
 from courses.models import *
 
+from rubrics.models import *
+
+from accounts.models import *
+
 # Create your models here.
 class Evaluation(models.Model):
     name= models.CharField(max_length=200, primary_key=True)
