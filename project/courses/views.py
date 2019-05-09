@@ -29,10 +29,12 @@ def course_details(request, course_key):
     """Para cuando se seleccione el botón de curso"""
     course_keys= course_key.split("-")
     course= Course.objects.get(code=course_keys[0], section=course_keys[1], year=course_keys[2], semester=course_keys[3])
-    teamsList= Team.objects.filter(course=course) # filter puede retornar más de un parámetro
+    teamsList= Team.objects.filter(course=course)
+    students=Student.objects.all()
+     # filter puede retornar más de un parámetro
     lenTeams= teamsList.count()
     print(lenTeams)
-    return render(request, 'courses/course_details.html', {'course': course, 'teams': teamsList, 'lenTeams': lenTeams})
+    return render(request, 'courses/course_details.html', {'course': course, 'teams': teamsList, 'lenTeams': lenTeams, 'students': students})
 
 def saveCourse(request):
     """Para cuando se envíe la información del nuevo curso por post"""
