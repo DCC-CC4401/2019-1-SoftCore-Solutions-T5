@@ -28,7 +28,7 @@ body {font-size:16px;}
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:340px;margin-right:40px"
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <!-- Portada -->
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
@@ -65,30 +65,39 @@ body {font-size:16px;}
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center"><br>
             <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-            <form class="w3-container" action="/action_page.php">
-        <div class="w3-section">
-          <label><b>Curso</b></label>
-          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Ingrese nombre del curso" name="usrname" required>
-          <label><b>Código</b></label>
-          <input class="w3-input w3-border" type="text" placeholder="Ingrese código del curso" name="psw" required>
-            <label><b>Sección</b></label>
-          <input class="w3-input w3-border" type="text" placeholder="Ingrese número de sección" name="secc" required>
-            <label><b>Año</b></label>
-          <input class="w3-input w3-border" type="text" placeholder="Ingrese año" name="year" required>
-            <label><b>Semestre</b></label>
-          <div class="semester"><select id="semester" name="semester">
-              <option value="priv">Primavera</option>
-              <option value="oto">Otoño</option>
-          </select>
-          </div>
-          <button class="w3-button w3-block w3-red w3-section w3-padding" type="submit">Agregar</button>
+
+            <form class="w3-container" method="post" action="saveCourse/"><!-- Escribir la url a la que irán las variables -->
+              <div class="w3-section">
+                  <label><b>Curso</b>
+                    <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Ingrese nombre del curso" name="title" required>
+                  </label>
+                  <label><b>Código</b>
+                    <input class="w3-input w3-border" type="text" placeholder="Ingrese código del curso" name="code" required>
+                  </label>
+                  <label><b>Sección</b>
+                    <input class="w3-input w3-border" type="text" placeholder="Ingrese número de sección" name="section" required>
+                  </label>
+                  <label><b>Año</b>
+                    <input class="w3-input w3-border" type="text" placeholder="Ingrese año" name="year" required>
+                  </label>
+                  <label><b>Semestre</b>
+                    <div class="semester">
+                      <select id="semester" name="semester">
+                          <option value="primavera">Primavera</option>
+                          <option value="otonyo">Otoño</option>
+                      </select>
+                    </div>
+                  </label>
+                  <button class="w3-button w3-block w3-red w3-section w3-padding" type="submit">Agregar</button>
+              </div>
+          </form>
         </div>
-      </form>
-      </div>
-    <!--cierre de cajas de cursos-->
-</div>
-<!--cierre de contenido-->
-</div>
+      <!--cierre de cajas de cursos-->
+  </div>
+  <!--cierre de contenido-->
+  </div>
+
+<!-- Javascript -->
 <script>
 // Script to open and close sidebar
 function w3_open() {
@@ -107,6 +116,7 @@ function onClick(element) {
   captionText.innerHTML = element.alt;
 }
 
+// Función para ver los detalles del curso
 function goToDetails(code, section, year, semester) {
     let str= code + "-" + section + "-" + year + "-" + semester;
     location.href= str;

@@ -19,3 +19,7 @@ def course_details(request, course_key):
     lenTeams= teamsList.count()
     print(lenTeams)
     return render(request, 'courses/course_details.html', {'course': course, 'teams': teamsList, 'lenTeams': lenTeams})
+
+def saveCourse(request):
+    """Para cuando se envíe la información del nuevo curso por post"""
+    # Forma de invocar varoables post: variable= request.POST['nombre_del_campo']
