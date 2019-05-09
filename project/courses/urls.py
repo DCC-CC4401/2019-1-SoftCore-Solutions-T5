@@ -6,5 +6,6 @@ app_name='courses'
 
 urlpatterns = [
     url(r'^$', views.courses_list, name="list"),
-
+    url('save_course/', views.saveCourse),
+    url(r'^(?P<course_key>[\w-]+)/$', views.course_details),
 ]
