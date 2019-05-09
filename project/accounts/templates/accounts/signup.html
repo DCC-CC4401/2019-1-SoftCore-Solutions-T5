@@ -81,10 +81,25 @@ body {font-size:16px;}
             <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
 
         <div class="w3-section">
-          <form class="site-form" action="/accounts/signup/" method="post">
+          <form name="accountsForm" class="site-form" action="/accounts/signup/" method="post">
+            <input type="hidden" name="length" value=8>
             {% csrf_token %}
-            {{form}}
+            <label for="nombre">Nombre</label>
+              <input type="text" name="nombre" placeholder="Nombre">
+              <br><br>
+              <label for="apellido">Apellido</label>
+              <input type="text" name="apellido" placeholder="Apellido">
+              <br><br>
+              <label for="correo">Email</label>
+              <input type="email" name="correo" placeholder="mail@example.com">
+              <br><br>
+              <p>Pulsa el botón para generar contraseña al azar</p>
+              <label for="clave">Password</label>
+              <input type="text" name="clave">
+              <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
+              <br><br>
             <input type="submit" value="Registrar" />
+              <br><br>
 
         </div>
       </form>
@@ -112,6 +127,20 @@ function onClick(element) {
   document.getElementById("modal01").style.display = "block";
   var captionText = document.getElementById("caption");
   captionText.innerHTML = element.alt;
+}
+
+function randomPassword(length) {
+    var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP1234567890";
+    var pass = "";
+    for (var x = 0; x < length; x++) {
+        var i = Math.floor(Math.random() * chars.length);
+        pass += chars.charAt(i);
+    }
+    return pass;
+}
+
+function generate() {
+    accountsForm.clave.value = randomPassword(accountsForm.length.value);
 }
 </script>
 

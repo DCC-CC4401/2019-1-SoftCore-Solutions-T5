@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'rubrics',
     'home',
+    'evaluation',
 ]
 
 MIDDLEWARE = [
