@@ -135,10 +135,10 @@ body {font-size:16px;}
   <table id="rubric">
     <tr>
       <th></th>
-      <th>0.0</th>
-      <th>0.3</th>
-      <th>0.7</th>
-      <th>1.0</th>
+      <th contenteditable="true">0.0</th>
+      <th contenteditable="true">0.3</th>
+      <th contenteditable="true">0.7</th>
+      <th contenteditable="true">1.0</th>
 
     </tr>
     <tr>
@@ -178,9 +178,9 @@ body {font-size:16px;}
     <body>
       <div class="btn-group">
         <button class="button" onclick="add_row();">Agregar fila  <i class="fas fa-plus"></i></button>
-        <!--button class="button">Agregar columna  <i class="fas fa-plus"></i></button-->
+        <button class="button" onclick="add_column()">Agregar columna  <i class="fas fa-plus"></i></button>
         <button class="button" onclick="delete_row()">Borrar fila  <i class="fas fa-trash"></i></button>
-        <!--button class="button">Borrar columna  <i class="fas fa-trash"></i></button-->
+        <button class="button" onclick="delete_column()">Borrar columna  <i class="fas fa-trash"></i></button>
       </div>
     </body>
   </div>
@@ -225,6 +225,20 @@ function add_row(){
   }
 }
 
+function add_column(){
+  var table = document.getElementById("rubric");
+  var rows = table.rows;
+  for(var i = 0; i<rows.length; i++){
+      if(i==0){
+        rows[i].insertCell(-1).outerHTML = "<th contentEditable='true'> </th>";
+      }
+      else{
+        rows[i].insertCell(-1).outerHTML = "<td contentEditable='true'> </td>";
+      }
+  }
+
+}
+
 function delete_row(){
   var table = document.getElementById("rubric");
   var rows = table.rows;
@@ -232,6 +246,17 @@ function delete_row(){
     table.deleteRow(-1);
   }
 }
+
+function delete_column(){
+  var table = document.getElementById("rubric");
+  var rows = table.rows;
+  if(rows[0].cells.length > 1){
+    for(var i = 0; i<rows.length; i++){
+      rows[i].deleteCell(-1);
+    }
+  }
+}
+
 function w3_open() {
   document.getElementById("mySidebar").style.display = "block";
   document.getElementById("myOverlay").style.display = "block";
