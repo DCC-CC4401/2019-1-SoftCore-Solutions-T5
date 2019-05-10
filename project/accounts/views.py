@@ -79,3 +79,16 @@ def account_details(request, account_key):
 
      # filter puede retornar más de un parámetro
     return render(request, 'accounts/accounts_details.html', {'account': account})
+
+def delete_account(request):
+    if request.method=='POST':
+        id=request.POST['id_account']
+        account=Account.objects.get(id=id)
+        mail = account.correo
+        account.delete()
+        usuario = User.objects.get(email=mail)
+        usuario.delete()
+    accounts= Account.objects.all()
+    return render(request, 'accounts/signup.html',{'accounts':accounts})
+
+
