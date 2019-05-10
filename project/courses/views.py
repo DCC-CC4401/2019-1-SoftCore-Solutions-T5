@@ -9,16 +9,6 @@ from django.shortcuts import render,redirect
 from .forms import CourseForm
 
 def courses_list(request):
-    courses= Course.objects.all().order_by('semester')
-    return render(request, 'courses/courses_list.html',{'courses':courses})
-
-def delete_course(request):
-    if request.method=='POST':
-        id=request.POST['id_course']
-        course=Course.objects.get(id=id)
-        course.delete()
-    courses= Course.objects.all().order_by('semester')
-    return render(request, 'courses/courses_list.html',{'courses':courses})
     if request.method=='POST':
         title = request.POST['title']
         code= request.POST['code']
@@ -33,6 +23,14 @@ def delete_course(request):
         return redirect('/courses', {'courses': courses})
     courses = Course.objects.all().order_by('semester')
     return render(request,'courses/courses_list.html', {'courses': courses})
+
+def delete_course(request):
+    if request.method=='POST':
+        id=request.POST['id_course']
+        course=Course.objects.get(id=id)
+        course.delete()
+    courses= Course.objects.all().order_by('semester')
+    return render(request, 'courses/courses_list.html',{'courses':courses})
 
 
 def course_details(request, course_key):
