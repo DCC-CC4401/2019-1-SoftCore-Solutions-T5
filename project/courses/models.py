@@ -8,10 +8,12 @@ class Course(models.Model):
     CHOICES2 = ((1,1),(2, 2),)
     CHOICES3 = ((2018,2018),(2019, 2019),(2020,2020),(2021,2021),)
     title=models.CharField(max_length=200)
-    code=models.CharField(max_length=20)
-    semester=models.CharField(choices=CHOICES1, default="Primavera", max_length=15)
-    section=models.IntegerField(choices=CHOICES2,default=1)
-    year=models.CharField(max_length=4,default="2019")
+
+    # Llave primaria (no permitir nulls)
+    code=models.CharField(max_length=20, blank=False, null=False)
+    semester=models.CharField(choices=CHOICES1, default="Primavera", max_length=15, blank=False, null=False)
+    section=models.IntegerField(choices=CHOICES2,default=1, blank=False, null=False)
+    year=models.CharField(max_length=4,default="2019", blank=False, null=False)
     
     class Meta:
         unique_together= ('code', 'section', 'year', 'semester')

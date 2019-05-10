@@ -15,10 +15,11 @@ def courses_list(request):
         semester = request.POST['semester']
         section = request.POST['section']
         year = request.POST['year']
-        course = Course.objects.create(title = title, code = code,
-                                       semester = semester,
-                                       section = section, year = year)
-        course.save()
+        if (title != '' and code != '' and semester != '' and section != '' and year != ''):
+            course = Course.objects.create(title = title, code = code,
+                                           semester = semester,
+                                           section = section, year = year)
+            course.save()
         courses = Course.objects.all().order_by('semester')
         return redirect('/courses', {'courses': courses})
     courses = Course.objects.all().order_by('semester')
