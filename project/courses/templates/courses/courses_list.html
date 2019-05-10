@@ -28,7 +28,7 @@ body {font-size:16px;}
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:340px;margin-right:40px"
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <!-- Portada -->
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
@@ -41,7 +41,8 @@ body {font-size:16px;}
 {% for course in courses %}
   <div class="w3-row-padding w3-center w3-margin-top">
   <div class="w3-quarter w3-margin-top">
-      <button onclick="document.getElementById('gestionar').style.display='block'" class="w3-card w3-container w3-hover-shadow w3-light-gray" style="max-height:380px;min-height: 317px">
+      <button onclick="goToDetails('{{course.code}}', '{{course.section}}', '{{course.year}}', '{{course.semester}}')">
+      <!-- La función goToDetails está definida en el script de abajo -->
 
         <h3>{{course.title}}</h3><br>
     <i class="fas fa-book" style="font-size:100px"></i>
@@ -84,26 +85,35 @@ body {font-size:16px;}
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center">
             <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-            <form class="w3-container" action="/action_page.php">
-        <div class="w3-section">
-          <label><b>Curso</b></label>
-          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Ingrese nombre del curso" name="usrname" required>
-          <label><b>Código</b></label>
-          <input class="w3-input w3-border" type="text" placeholder="Ingrese código del curso" name="psw" required>
-            <label><b>Sección</b></label>
-          <input class="w3-input w3-border" type="text" placeholder="Ingrese número de sección" name="secc" required>
-            <label><b>Año</b></label>
-          <input class="w3-input w3-border" type="text" placeholder="Ingrese año" name="year" required>
-            <label><b>Semestre</b></label>
-          <div class="semester"><select id="semester" name="semester">
-              <option value="priv">Primavera</option>
-              <option value="oto">Otoño</option>
-          </select>
-          </div>
-          <button class="w3-button w3-block w3-red w3-section w3-padding" type="submit">Agregar</button>
-        </div>
-      </form>
-      </div>
+
+            <div class="w3-section">
+              <form name="coursesForm" class="site-form" action="/courses/" method="post">
+                {% csrf_token %}
+                  <label for="title">Titulo</label>
+                  <input type="text" name="title" placeholder="Titulo">
+                  <br><br>
+                  <label for="code">Código</label>
+                  <input type="text" name="code" placeholder="Código">
+                  <br><br>
+                  <label for="semester">Semestre</label>
+                  <select name="semester">
+                    <option value="Primavera">Primavera</option>
+                    <option value="Otoño">Otoño</option>
+                  </select>
+                  <br><br>
+                  <label for="section">Sección</label>
+                  <select name="section">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                  <br><br>
+                  <label for="year">Año</label>
+                  <input type="text" name="year" placeholder="2019">
+                  <br><br>
+                <input type="submit" value="Registrar" />
+                  <br><br>
+
+            </div>
     <!--cierre de cajas de cursos-->
 </div>
 <!--cierre de contenido-->
@@ -124,6 +134,12 @@ function onClick(element) {
   document.getElementById("modal01").style.display = "block";
   var captionText = document.getElementById("caption");
   captionText.innerHTML = element.alt;
+}
+
+// Función para ver los detalles del curso
+function goToDetails(code, section, year, semester) {
+    let str= code + "-" + section + "-" + year + "-" + semester;
+    location.href= str;
 }
 </script>
 
