@@ -46,3 +46,36 @@ def logout_view(request):
     if request.method=='POST':
         logout(request)
         return redirect('.')
+
+def account_details(request, account_key):
+    account_keys= account_key.split("-")
+    account= Account.objects.get(nombre=account_keys[0], appellido=account_keys[1])
+
+    if request.method=='POST':
+        nombre = request.POST['nombre']
+        appellido= request.POST['appellido']
+        correo = request.POST['correo']
+        clave = request.POST['clave']
+        nickname= nombre+appellido
+        original_email=account.correo
+        user=User.objects.get(email=original_email)
+        print(user.username)
+        print(user.email)
+        print(user.password)
+        account.nombre=nombre
+        account.appellido=appellido
+        account.correo=correo
+        account.clave=clave
+        account.save()
+        user.email=correo
+        user.username=nickname
+        user.set_password(clave)
+        user.save()
+        print(user.password)
+
+        return redirect('/accounts/signup')
+
+    """Para cuando se seleccione el botón de curso"""
+
+     # filter puede retornar más de un parámetro
+    return render(request, 'accounts/accounts_details.html', {'account': account})
