@@ -59,7 +59,7 @@ body {font-size:16px;}
         </style>
       </head>
       <body>
-        <button class="button2 button2">Título de la rúbrica  <i class="fas fa-edit"></i></button><br>
+        <button class="button2 button2" contenteditable="true">Título de la rúbrica</button><br>
       </body>
     </div>
 
@@ -132,56 +132,23 @@ body {font-size:16px;}
     </style>
   </head>
   <body>
-  <table>
+  <table id="rubric">
     <tr>
       <th></th>
-      <th>Asignar puntajes    <i class="fas fa-edit"></i></th>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th>0.0</th>
+      <th>0.3</th>
+      <th>0.7</th>
+      <th>1.0</th>
+
     </tr>
     <tr>
-      <td><b>Modificar aspecto  <i class="fas fa-edit"></i></b></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
     </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+
   </table>
   </body>
 
@@ -210,10 +177,10 @@ body {font-size:16px;}
     </head>
     <body>
       <div class="btn-group">
-        <button class="button">Agregar fila  <i class="fas fa-plus"></i></button>
-        <button class="button">Agregar columna  <i class="fas fa-plus"></i></button>
-        <button class="button">Borrar fila  <i class="fas fa-trash"></i></button>
-        <button class="button">Borrar columna  <i class="fas fa-trash"></i></button>
+        <button class="button" onclick="add_row();">Agregar fila  <i class="fas fa-plus"></i></button>
+        <!--button class="button">Agregar columna  <i class="fas fa-plus"></i></button-->
+        <button class="button" onclick="delete_row()">Borrar fila  <i class="fas fa-trash"></i></button>
+        <!--button class="button">Borrar columna  <i class="fas fa-trash"></i></button-->
       </div>
     </body>
   </div>
@@ -247,6 +214,24 @@ body {font-size:16px;}
 
 <script>
 // Script to open and close sidebar
+function add_row(){
+  var table = document.getElementById("rubric");
+  var rows = table.rows;
+  var cells = rows[0].cells.length;
+  var row = table.insertRow(-1);
+  for(var i = 0; i < cells; i++){
+    var cell = row.insertCell(i);
+    cell.contentEditable='true';
+  }
+}
+
+function delete_row(){
+  var table = document.getElementById("rubric");
+  var rows = table.rows;
+  if(rows.length > 1){
+    table.deleteRow(-1);
+  }
+}
 function w3_open() {
   document.getElementById("mySidebar").style.display = "block";
   document.getElementById("myOverlay").style.display = "block";
