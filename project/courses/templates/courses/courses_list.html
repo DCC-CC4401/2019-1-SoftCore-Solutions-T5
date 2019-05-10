@@ -49,10 +49,30 @@ body {font-size:16px;}
     <p>{{course.section}}</p>
     <p>{{course.semester}}</p>
         <button class="w3-btn w3-red">Modificar</button>
-        <button class="w3-btn w3-red">Eliminar</button>
+        <button onclick="document.getElementById('delete_course_{{course.id}}').style.display='block'" class="w3-btn w3-red">Eliminar</button>
+        <div class="w3-modal" id="delete_course_{{course.id}}">
+          <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">          
+            <div class="w3-center">
+              <h4 class="modal-title">Eliminar Curso</h4>
+              <span onclick="document.getElementById('delete_course_{{course.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+              <div class="w3-section">
+                <div>¿Está seguro que quiere eliminar el curso {{course.title}}?</div>
+                <form id="delete_course_form_{{course.id}}" method="post" action="/courses/delete/">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <input type="hidden" name="id_course" value="{{course.id}}">
+                  </div>
+                  <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>  
       </button>
+    </div>
   </div>
   {% endfor %}
+
     <!--Caja de agregar-->
 <div class="w3-quarter w3-margin-top">
   <button onclick="document.getElementById('agregar').style.display='block'" class="w3-card w3-container w3-light-gray w3-hover-shadow" style="min-height: 317px">
@@ -62,7 +82,7 @@ body {font-size:16px;}
 </div>
     <div id="agregar" class="w3-modal">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-        <div class="w3-center"><br>
+        <div class="w3-center">
             <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
             <form class="w3-container" action="/action_page.php">
         <div class="w3-section">

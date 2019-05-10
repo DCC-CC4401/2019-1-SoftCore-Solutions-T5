@@ -1,10 +1,10 @@
 from django.db import models
 
-from courses.models import *
+from courses.models import Course, Student, Team
 
-from rubrics.models import *
+from rubrics.models import Rubric, Criteria, Field
 
-from accounts.models import *
+from accounts.models import Account
 
 # Create your models here.
 class Evaluation(models.Model):
