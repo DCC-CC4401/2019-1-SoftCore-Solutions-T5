@@ -30,8 +30,9 @@ body {font-size:16px;}
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:340px;margin-right:40px">
 
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+  {% if user.is_superuser %}
   <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Ficha de rúbrica</b></h1>
 
   <!DOCTYPE html>
@@ -59,6 +60,7 @@ body {font-size:16px;}
         </style>
       </head>
       <body>
+
         <button class="button2 button2" contenteditable="true">Título de la rúbrica</button><br>
       </body>
     </div>
@@ -132,6 +134,7 @@ body {font-size:16px;}
     </style>
   </head>
   <body>
+
   <table id="rubric">
     <tr>
       <th></th>
@@ -207,6 +210,10 @@ body {font-size:16px;}
   </head>
   <body>
     <button class="button1 button1">Guardar rúbrica  <i class="far fa-save"></i></button>
+    {% else %}
+    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
+    
+    {% endif %}
   </body>
 
 

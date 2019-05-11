@@ -29,6 +29,7 @@ body {font-size:16px;}
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
+{% if user.is_superuser %}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <!-- Portada -->
@@ -115,5 +116,17 @@ body {font-size:16px;}
         {% endif %}
     </div>
 </div>
+</div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
+  </div>
+</div>
+
+{% endif %}
 
 {% endblock %}
