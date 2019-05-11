@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="es">
+<title>Plataforma de evaluación-Cursos</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+</style>
+<body>
+
+
+
+<!-- Top menu on small screens -->
+<header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+  <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
+  <span>Usuario</span>
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Evaluador {{course.title}} {{course.code}}</b></h1><br />
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+  <div class="course-detail">
+      <div class="course">
+          <h2>Detalles del curso {{course.code}}-{{course.section}}</h2>
+          <div class="w3-container">
+              <div class="row">
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th>Título</th>
+                              <th>Código</th>
+                              <th>Sección</th>
+                              <th>Semestre</th>
+                              <th>Año</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>{{course.title}}</td>
+                              <td>{{course.code}}</td>
+                              <td>{{course.section}}</td>
+                              <td>{{course.semester}}</td>
+                              <td>{{course.year}}</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+
+<div class="modificar">
+  <h2>Modificar los detalles del curso</h2><br />
+
+  <form name="CoursesForm" class="site-form"  onSubmit="formAction(this)"method="post">
+    <input type="hidden" name="length" value=8>
+    {% csrf_token %}
+    <label for="title">Título</label>
+      <input type="text" name="title"  value={{course.title}}>
+      <br><br>
+      <label for="code">Código</label>
+      <input type="text" name="code"  value={{course.code}}>
+      <br><br>
+      <label for="semester">Semestre</label>
+      <select name="semester" value={{course.semester}}>
+        <option value="Primavera">Primavera</option>
+        <option value="Otoño">Otoño</option>
+      </select>
+      <br><br>
+      <label for="section">Sección</label>
+      <select name="section" value={{course.section}}>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+      <br><br>
+      <label for="year">Año</label>
+      <input type="text" name="year"  value={{course.year}}>
+      <br><br>
+    <input type="submit" value="Actualizar datos" />
+      <br><br>
+
+
+</form>
+</div>
+
+
+
+</div>
+
+<script>
+function URLonClick(nombre,apellido) {
+    document.accountsForm.action = "/courses/modify/"+'{{code}}'+"-"+'{{session}}'+"-"+"{{year}}"+"-"+"{{semester}}"+"/"
+}
+
+</script>
+</body>
+
+{% endblock %}

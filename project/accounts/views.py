@@ -59,9 +59,6 @@ def account_details(request, account_key):
         nickname= nombre+appellido
         original_email=account.correo
         user=User.objects.get(email=original_email)
-        print(user.username)
-        print(user.email)
-        print(user.password)
         account.nombre=nombre
         account.appellido=appellido
         account.correo=correo
@@ -71,7 +68,6 @@ def account_details(request, account_key):
         user.username=nickname
         user.set_password(clave)
         user.save()
-        print(user.password)
 
         return redirect('/accounts/signup')
 
@@ -90,5 +86,3 @@ def delete_account(request):
         usuario.delete()
     accounts= Account.objects.all()
     return render(request, 'accounts/signup.html',{'accounts':accounts})
-
-

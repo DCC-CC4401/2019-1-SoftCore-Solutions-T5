@@ -33,6 +33,31 @@ def delete_course(request):
     courses= Course.objects.all().order_by('semester')
     return render(request, 'courses/courses_list.html',{'courses':courses})
 
+def courses_modify(request, course_key):
+    course_keys= course_key.split("-")
+    course= Course.objects.get(code=course_keys[0], section=course_keys[1], year=course_keys[2], semester=course_keys[3])
+
+    if request.method=='POST':
+        title = request.POST['title']
+        code= request.POST['code']
+        semester = request.POST['semester']
+        section = request.POST['section']
+        year= request.POST['year']
+    
+        course.title=title
+        course.code=code
+        course.semester=semester
+        course.section=section
+        course.year=year
+        course.save()
+
+
+        return redirect('/courses')
+
+    """Para cuando se seleccione el botón de curso"""
+
+     # filter puede retornar más de un parámetro
+    return render(request, 'courses/courses_modify.html', {'course': course})
 
 def course_details(request, course_key):
     """Para cuando se seleccione el botón de curso"""
@@ -44,7 +69,3 @@ def course_details(request, course_key):
     lenTeams= teamsList.count()
     print(lenTeams)
     return render(request, 'courses/course_details.html', {'course': course, 'teams': teamsList, 'lenTeams': lenTeams, 'students': students})
-
-def saveCourse(request):
-    """Para cuando se envíe la información del nuevo curso por post"""
-    # Forma de invocar varoables post: variable= request.POST['nombre_del_campo']

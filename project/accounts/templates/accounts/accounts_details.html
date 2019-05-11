@@ -75,7 +75,7 @@ body {font-size:16px;}
 <div class="modificar">
   <h2>Modificar los detalles del evaluador</h2><br />
 
-  <form name="accountsForm" class="site-form"  onSubmit="formAction(this, '{{account.nombre}}','{{account.apellido}}')"method="post">
+  <form name="accountsForm" class="site-form"  onSubmit="formAction(this)"method="post">
     <input type="hidden" name="length" value=8>
     {% csrf_token %}
     <label for="nombre">Nombre</label>
@@ -99,8 +99,9 @@ body {font-size:16px;}
     <input type="submit" value="Actualizar datos" />
       <br><br>
 
-</div>
+
 </form>
+</div>
 
 
 
