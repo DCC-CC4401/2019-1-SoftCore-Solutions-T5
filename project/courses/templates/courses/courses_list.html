@@ -49,10 +49,11 @@ body {font-size:16px;}
     <p>{{course.code}}</p>
     <p>{{course.section}}</p>
     <p>{{course.semester}}</p>
+      </button>
         <button class="w3-btn w3-red">Modificar</button>
         <button onclick="document.getElementById('delete_course_{{course.id}}').style.display='block'" class="w3-btn w3-red">Eliminar</button>
         <div class="w3-modal" id="delete_course_{{course.id}}">
-          <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">          
+          <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
             <div class="w3-center">
               <h4 class="modal-title">Eliminar Curso</h4>
               <span onclick="document.getElementById('delete_course_{{course.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
@@ -68,19 +69,20 @@ body {font-size:16px;}
               </div>
             </div>
           </div>
-        </div>  
-      </button>
+        </div>
+
     </div>
   </div>
   {% endfor %}
 
     <!--Caja de agregar-->
+<div class="w3-row-padding w3-center w3-margin-top">
 <div class="w3-quarter w3-margin-top">
   <button onclick="document.getElementById('agregar').style.display='block'" class="w3-card w3-container w3-light-gray w3-hover-shadow" style="min-height: 317px">
   <h3>Agregar curso nuevo</h3><br>
   <i class="fas fa-plus" style="font-size:100px;text-align: center; padding:50px"></i>
   </button>
-</div>
+
     <div id="agregar" class="w3-modal">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center"><br>
@@ -117,6 +119,9 @@ body {font-size:16px;}
     <!--cierre de cajas de cursos-->
 </div>
 <!--cierre de contenido-->
+</div>
+</div>
+</div>
 </div>
 <script>
 // Script to open and close sidebar

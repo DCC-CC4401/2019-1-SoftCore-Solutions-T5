@@ -50,11 +50,11 @@ body {font-size:16px;}
 <div class="w3-quarter w3-margin-top">
   <button class="w3-card w3-container w3-hover-shadow" style="max-height:380px;min-height: 317px; max-width: 300px">
     <h3>{{account.nombre}} {{account.appellido}}</h3>
-    <i class="fas fa-user-alt" style="font-size:100px; padding:10px"></i><br>
-  <button onclick="goToDetailsModify('{{account.nombre}}', '{{account.appellido}}')"class="w3-button w3-red w3-section w3-padding:10px" type="submit">Modificar </button>  
+    <i class="fas fa-user-alt" style="font-size:100px; padding:10px"></i></button><br>
+  <button onclick="goToDetailsModify('{{account.nombre}}', '{{account.appellido}}')"class="w3-button w3-red w3-section w3-padding:10px" type="submit">Modificar </button>
   <button onclick="document.getElementById('delete_account_{{account.id}}').style.display='block'" class="w3-btn w3-red">Eliminar</button>
   <div class="w3-modal" id="delete_account_{{account.id}}">
-    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">          
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
       <div class="w3-center">
         <h4 class="modal-title">Eliminar Evaluador</h4>
         <span onclick="document.getElementById('delete_account_{{account.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
@@ -70,8 +70,8 @@ body {font-size:16px;}
         </div>
       </div>
     </div>
-  </div> 
-  </button> 
+  </div>
+
 </div>
 
     {% endfor %}
