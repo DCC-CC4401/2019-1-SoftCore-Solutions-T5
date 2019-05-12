@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib import messages
 
 from .models import Course, Student, Team
 
@@ -22,6 +23,8 @@ def courses_list(request):
             course.save()
         courses = Course.objects.all().order_by('semester')
         return redirect('/courses', {'courses': courses})
+
+    # else, no había request method POST
     courses = Course.objects.all().order_by('semester')
     return render(request,'courses/courses_list.html', {'courses': courses})
 

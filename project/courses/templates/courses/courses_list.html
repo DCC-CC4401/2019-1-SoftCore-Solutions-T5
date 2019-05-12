@@ -35,7 +35,7 @@ body {font-size:16px;}
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
     <h1 class="w3-xxxlarge w3-text-red"><b>Cursos</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <p><h3>Seleccione un curso</p></h2>
+    <p><h3>Seleccione un curso</p></h3>
   </div>
 
 <!--Cajas cursos-->
@@ -87,37 +87,43 @@ body {font-size:16px;}
 
     <div id="agregar" class="w3-modal">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-        <div class="w3-center"><br>
-            <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
 
-            <div class="w3-section">
-              <form name="coursesForm" class="site-form" action="/courses/" method="post">
-                {% csrf_token %}
-                  <label for="title">Titulo</label>
-                  <input type="text" name="title" placeholder="Titulo">
+          <div class="w3-section">
+            <form name="coursesForm" class="site-form" action="/courses/" method="post" onsubmit="return validateCourseData();">
+              {% csrf_token %}
+                <label>Titulo
+                  <input type="text" id="title" name="title" placeholder="Titulo">
+                </label>
                   <br><br>
-                  <label for="code">Código</label>
-                  <input type="text" name="code" placeholder="Código">
+                <label>Código
+                  <input type="text" id="code" name="code" placeholder="Código">
+                </label>
                   <br><br>
-                  <label for="semester">Semestre</label>
-                  <select name="semester">
+                <label>Semestre
+                  <select id="semester" name="semester">
                     <option value="Primavera">Primavera</option>
                     <option value="Otoño">Otoño</option>
                   </select>
+                </label>
                   <br><br>
-                  <label for="section">Sección</label>
-                  <select name="section">
+                <label>Sección
+                  <select id="section" name="section">
                     <option value="1">1</option>
                     <option value="2">2</option>
                   </select>
+                </label>
                   <br><br>
-                  <label for="year">Año</label>
-                  <input type="text" name="year" placeholder="2019">
+                <label>Año
+                  <input type="text" id="year" name="year" placeholder="2019">
+                </label>
                   <br><br>
+                <p id="p-error" style="display: none; color: red;">Los datos no son válidos. Por favor ingrese datos válidos.</p>
                 <input type="submit" value="Registrar" />
                   <br><br>
-
-            </div>
+            </form>
+          </div>
     <!--cierre de cajas de cursos-->
 </div>
 <!--cierre de contenido-->
@@ -138,7 +144,6 @@ body {font-size:16px;}
 
 {% endif %}
 
-</div>
 <script>
 // Script to open and close sidebar
 function w3_open() {
@@ -159,13 +164,41 @@ function onClick(element) {
 
 // Función para ver los detalles del curso
 function goToDetails(code, section, year, semester) {
-    let str= code + "-" + section + "-" + year + "-" + semester;
-    location.href= str;
+  location.href= code + "-" + section + "-" + year + "-" + semester;
 }
 
 function goToDetailsModify(code, section, year, semester) {
-    let str= "modify/"+code + "-" + section + "-" + year + "-" + semester;
-    location.href= str;
+  location.href= "modify/" + code + "-" + section + "-" + year + "-" + semester;
+}
+
+// Función para no generar cursos si los datos no son válidos
+function validateCourseData() {
+  let title, code, semester, section, year, perror;
+  title= document.getElementById("title");
+  code= document.getElementById("code");
+  semester= document.getElementById("semester");
+  section= document.getElementById("section");
+  year= document.getElementById("year");
+  perror= document.getElementById("p-error");
+  // Por ahora, válido será no vacío
+  valid= true;
+  if (isBlank(title.value)) {
+    perror.style.display= "block";
+    valid= false;
+  }
+  if (isBlank(code.value)) {
+    perror.style.display= "block";
+    valid= false;
+  }
+  if (isBlank(year.value)) {
+    perror.style.display= "block";
+    valid= false;
+  }
+  return valid;
+}
+
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
 }
 </script>
 
