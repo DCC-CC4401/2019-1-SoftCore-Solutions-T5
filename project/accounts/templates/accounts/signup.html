@@ -34,13 +34,13 @@ body {font-size:16px;}
 
 <!-- !PAGE CONTENT! -->
 {% if user.is_superuser %}
-<div class="w3-main" style="margin-left:340px;margin-right:40px"
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <!-- Portada -->
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
     <h1 class="w3-xxxlarge w3-text-red"><b>Evaluadores</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <p><h3>Seleccione un evaluador</p></h2>
+    <p><h3>Seleccione un evaluador</h3></p>
   </div>
 
 <!--Cajas evaluadores-->
@@ -94,35 +94,37 @@ body {font-size:16px;}
           <form name="accountsForm" class="site-form" action="/accounts/signup/" method="post">
             <input type="hidden" name="length" value=8>
             {% csrf_token %}
-            <label for="nombre">Nombre</label>
+            <label>Nombre
               <input type="text" name="nombre" placeholder="Nombre">
-              <br><br>
-              <label for="apellido">Apellido</label>
+            </label>
+            <br><br>
+            <label>Apellido
               <input type="text" name="apellido" placeholder="Apellido">
-              <br><br>
-              <label for="correo">Email</label>
+            </label>
+            <br><br>
+            <label>Email
               <input type="email" name="correo" placeholder="mail@example.com">
-              <br><br>
-              <p>Pulsa el botón para generar contraseña al azar</p>
-              <label for="clave">Password</label>
+            </label>
+            <br><br>
+            <p>Pulsa el botón para generar contraseña al azar</p>
+            <label>Password
               <input type="text" name="clave">
-              <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
-              <br />
-              <p style="color:red">
-                Por favor, no olvida anotar esta contraseña y enviarla al evaluador
-              </p>
+            </label>
+            <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
+            <br />
+            <p style="color:red">
+              Por favor, no olvide anotar esta contraseña y enviarla al evaluador
+            </p>
               <br><br>
             <input type="submit" value="Registrar" />
               <br><br>
-
+          </form>
         </div>
-      </form>
       </div>
     </div>
     <!--cierre de cajas de cursos-->
 </div>
 <!--cierre de contenido-->
-</div>
 </div>
 {% else %}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
@@ -146,8 +148,7 @@ function w3_close() {
   document.getElementById("myOverlay").style.display = "none";
 }
 function goToDetailsModify(nombre,apellido) {
-    let str= nombre + "-" + apellido;
-    location.href= str;
+  location.href= nombre + "-" + apellido;
 }
 // Modal Image Gallery
 function onClick(element) {
