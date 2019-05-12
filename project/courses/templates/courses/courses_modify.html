@@ -72,26 +72,31 @@ body {font-size:16px;}
   <form name="CoursesForm" class="site-form"  onSubmit="formAction(this)"method="post">
     <input type="hidden" name="length" value=8>
     {% csrf_token %}
-    <label for="title">Título</label>
-      <input type="text" name="title"  value={{course.title}}>
+    <label>Título
+      <input type="text" name="title"  value="{{course.title}}">
+    </label>
       <br><br>
-      <label for="code">Código</label>
-      <input type="text" name="code"  value={{course.code}}>
+    <label>Código
+      <input type="text" name="code"  value="{{course.code}}">
+    </label>
       <br><br>
-      <label for="semester">Semestre</label>
-      <select name="semester" value={{course.semester}}>
+    <label>Semestre
+      <select name="semester" value="{{course.semester}}">
         <option value="Primavera">Primavera</option>
         <option value="Otoño">Otoño</option>
       </select>
+    </label>
       <br><br>
-      <label for="section">Sección</label>
-      <select name="section" value={{course.section}}>
+    <label>Sección
+      <select name="section" value="{{course.section}}">
         <option value="1">1</option>
         <option value="2">2</option>
       </select>
+    </label>
       <br><br>
-      <label for="year">Año</label>
-      <input type="text" name="year"  value={{course.year}}>
+    <label>Año
+      <input type="text" name="year"  value="{{course.year}}">
+    </label>
       <br><br>
     <input type="submit" value="Actualizar datos" />
       <br><br>
