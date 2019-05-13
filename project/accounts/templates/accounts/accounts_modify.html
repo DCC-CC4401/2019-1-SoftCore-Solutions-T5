@@ -80,22 +80,18 @@ body {font-size:16px;}
   <form name="accountsForm" class="site-form"  onSubmit="formAction(this)"method="post">
     <input type="hidden" name="length" value=8>
     {% csrf_token %}
-    <label>Nombre
-      <input type="text" name="nombre"  value="{{account.nombre}}">
-    </label>
+    <label for="nombre">Nombre</label>
+      <input type="text" name="nombre"  value={{account.nombre}}>
       <br><br>
-    <label>Apellido
-      <input type="text" name="appellido"  value="{{account.appellido}}">
-    </label>
+      <label for="apellido">Apellido</label>
+      <input type="text" name="appellido"  value={{account.appellido}}>
       <br><br>
-    <label>Email
-      <input type="email" name="correo" value="{{account.correo}}">
-    </label>
+      <label for="correo">Email</label>
+      <input type="email" name="correo" value={{account.correo}}>
       <br><br>
       <p>Entra una nueva contraseña communicada por el evaluador o pulsa el botón para generar otra contraseña</p>
-    <label>Password
-      <input type="text" name="clave" value="{{account.clave}}">
-    </label>
+      <label for="clave">Password</label>
+      <input type="text" name="clave" value={{account.clave}}>
       <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
       <br />
       <p style="color:red">

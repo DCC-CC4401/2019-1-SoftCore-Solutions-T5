@@ -74,7 +74,7 @@ def account_details(request, account_key):
     """Para cuando se seleccione el botón de curso"""
 
      # filter puede retornar más de un parámetro
-    return render(request, 'accounts/accounts_details.html', {'account': account})
+    return render(request, 'accounts/accounts_modify.html', {'account': account})
 
 def delete_account(request):
     if request.method=='POST':
@@ -86,3 +86,30 @@ def delete_account(request):
         usuario.delete()
     accounts= Account.objects.all()
     return render(request, 'accounts/signup.html',{'accounts':accounts})
+
+def details_view(request):
+    account=Account.objects.get(correo=request.user.email)
+    if request.method=='POST':
+        nombre = request.POST['nombre']
+        appellido= request.POST['appellido']
+        correo = request.POST['correo']
+        clave = request.POST['clave']
+        nickname= nombre+appellido
+        original_email=account.correo
+        user=User.objects.get(email=original_email)
+        account.nombre=nombre
+        account.appellido=appellido
+        account.correo=correo
+        account.clave=clave
+        account.save()
+        user.email=correo
+        print(user.email)
+        user.username=nickname
+        print(user.username)
+        user.set_password(clave)
+        user.save()
+        user2 = authenticate(username=nickname, password=clave)
+        login(request, user2)
+
+        return redirect('/home', {'user':user})
+    return render(request, 'accounts/details.html',{'account':account})
