@@ -13,6 +13,7 @@ body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
 body {font-size:16px;}
 .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
 .w3-half img:hover{opacity:1}
+.p-error {display: none; color: red;}
 </style>
 <body>
 
@@ -96,30 +97,39 @@ body {font-size:16px;}
                 <label>Titulo
                   <input type="text" id="title" name="title" placeholder="Titulo">
                 </label>
-                  <br><br>
+                  <br>
+                <p id="p-error-title" class="p-error">Asegúrese que el título sea válido.</p>
+                <br>
                 <label>Código
                   <input type="text" id="code" name="code" placeholder="Código">
                 </label>
-                  <br><br>
+                  <br>
+                <p id="p-error-code" class="p-error">Asegúrese que el código sea válido.</p>
+                <br>
                 <label>Semestre
                   <select id="semester" name="semester">
                     <option value="Primavera">Primavera</option>
                     <option value="Otoño">Otoño</option>
                   </select>
                 </label>
-                  <br><br>
+                  <br>
+                <p id="p-error-semester" class="p-error">Asegúrese que el semestre sea válido.</p>
+                <br>
                 <label>Sección
                   <select id="section" name="section">
                     <option value="1">1</option>
                     <option value="2">2</option>
                   </select>
                 </label>
-                  <br><br>
+                  <br>
+                <p id="p-error-section" class="p-error">Asegúrese que la sección sea válida.</p>
+                <br>
                 <label>Año
                   <input type="text" id="year" name="year" placeholder="2019">
                 </label>
-                  <br><br>
-                <p id="p-error" style="display: none; color: red;">Los datos no son válidos. Por favor ingrese datos válidos.</p>
+                  <br>
+                <p id="p-error-year" class="p-error">Asegúrese que el año sea válido.</p>
+                <br>
                 <input type="submit" value="Registrar" />
                   <br><br>
             </form>
@@ -173,27 +183,35 @@ function goToDetailsModify(code, section, year, semester) {
 
 // Función para no generar cursos si los datos no son válidos
 function validateCourseData() {
-  let title, code, semester, section, year, perror;
+  let title, code, semester, section, year;
+  let perrortitle, perrorcode, perrorsemester, perrorsection, perroryear;
   title= document.getElementById("title");
   code= document.getElementById("code");
   semester= document.getElementById("semester");
   section= document.getElementById("section");
   year= document.getElementById("year");
-  perror= document.getElementById("p-error");
+  perrortitle= document.getElementById("p-error-title");
+  perrorcode= document.getElementById("p-error-code");
+  perrorsemester= document.getElementById("p-error-semester");
+  perrorsection= document.getElementById("p-error-section");
+  perroryear= document.getElementById("p-error-year");
   // Por ahora, válido será no vacío
   valid= true;
   if (isBlank(title.value)) {
-    perror.style.display= "block";
+    perrortitle.style.display= "block";
     valid= false;
   }
+  else perrortitle.style.display= "none";
   if (isBlank(code.value)) {
-    perror.style.display= "block";
+    perrorcode.style.display= "block";
     valid= false;
   }
+  else perrorcode.style.display= "none";
   if (isBlank(year.value)) {
-    perror.style.display= "block";
+    perroryear.style.display= "block";
     valid= false;
   }
+  else perroryear.style.display= "none";
   return valid;
 }
 
