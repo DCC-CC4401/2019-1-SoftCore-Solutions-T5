@@ -1,23 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="es">
+
 <title>Plataforma de evaluación-Cursos</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<style>
-body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
-body {font-size:16px;}
-.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
-.w3-half img:hover{opacity:1}
-.p-error {display: none; color: red;}
-</style>
+
 <body>
-
-
 
 <!-- Top menu on small screens -->
 <header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
@@ -36,7 +22,7 @@ body {font-size:16px;}
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
     <h1 class="w3-xxxlarge w3-text-red"><b>Cursos</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-    <p><h3>Seleccione un curso</p></h3>
+      <p><h3>Seleccione un curso</h3></p>
   </div>
 
 <!--Cajas cursos-->
@@ -183,7 +169,7 @@ function goToDetailsModify(code, section, year, semester) {
 
 // Función para no generar cursos si los datos no son válidos
 function validateCourseData() {
-  let title, code, semester, section, year;
+  let title, code, semester, section, year, valid;
   let perrortitle, perrorcode, perrorsemester, perrorsection, perroryear;
   title= document.getElementById("title");
   code= document.getElementById("code");
