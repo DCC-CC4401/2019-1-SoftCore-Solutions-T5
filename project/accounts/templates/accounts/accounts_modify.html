@@ -5,17 +5,6 @@
 
 <body>
 
-
-
-<!-- Top menu on small screens -->
-<header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
-  <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
-  <span>Usuario</span>
-</header>
-
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
 <!-- !PAGE CONTENT! -->
 
 {% if user.is_superuser %}
@@ -68,19 +57,25 @@
   <form name="accountsForm" class="site-form"  onSubmit="formAction(this)"method="post">
     <input type="hidden" name="length" value=8>
     {% csrf_token %}
-    <label for="nombre">Nombre</label>
-      <input type="text" name="nombre"  value={{account.nombre}}>
+      <label>Nombre
+        <input type="text" name="nombre"  value="{{account.nombre}}">
+      </label>
       <br><br>
-      <label for="apellido">Apellido</label>
-      <input type="text" name="appellido"  value={{account.appellido}}>
+      <label>Apellido
+        <input type="text" name="appellido"  value="{{account.appellido}}">
+      </label>
       <br><br>
-      <label for="correo">Email</label>
-      <input type="email" name="correo" value={{account.correo}}>
+      <label>Email
+        <input type="email" name="correo" value="{{account.correo}}">
+      </label>
       <br><br>
-      <p>Entra una nueva contraseña communicada por el evaluador o pulsa el botón para generar otra contraseña</p>
-      <label for="clave">Password</label>
-      <input type="text" name="clave" value={{account.clave}}>
+      <p>Entra una nueva contraseña comunicada por el evaluador, o pulsa el botón para generar una nueva</p>
+      <label>Password
+        <input type="text" name="clave" value="{{account.clave}}">
+      </label>
+
       <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
+
       <br />
       <p style="color:red">
         Por favor, no olvide anotar esta contraseña y enviarla de nuevo al evaluador
