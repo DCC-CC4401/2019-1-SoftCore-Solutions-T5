@@ -4,5 +4,5 @@ from django.shortcuts import render
 from .models import Evaluation
 
 def evaluation_list(request):
-    evaluation= Evaluation.objects.all().order_by('init_date')
-    return render(request,'evaluation/evaluation_list.html',{'evaluation':evaluation})
+    evaluations= Evaluation.objects.all().order_by('init_date')
+    return render(request,'evaluation/evaluation_list.html',{'evaluations':evaluations})

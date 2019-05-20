@@ -3,6 +3,59 @@
 
 <title>Plataforma de evaluación - Evaluaciones</title>
 
+<!-- Page content -->
+{% if user.is_superuser %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+    <!-- Portada -->
+    <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+        <h1 class="w3-xxxlarge w3-text-red"><b>Cursos</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+        <p><h3>Seleccione un evaluación</h3></p></hr>
+    </div>
 
+    <!-- Cajas de evaluaciones -->
+    {% for evaluation in evaluations %}
+    <div class="w3-row-padding w3-center w3-margin-top">
+        <div class="w3-quarter w3-margin-top">
+            <button onclick=""><!-- El onclick debiera ir a los detalles -->
+                <h3>{{evaluation.name}}</h3>
+                <br>
+                <i class="fas fa-book" style="font-size:100px"></i>
+                <p>Desde: {{evaluation.init_date}}</p>
+                <p>Hasta: {{evaluation.fin_date}}}</p>
+                {% if evaluation.state %}
+                <p>Estado: abierta</p>
+                {% else %}
+                <p>Estado: cerrada</p>
+                {% endif %}
+            </button>
+
+            <br>
+
+            <button class="w3-btn w3-red" onclick="">Modificar</button><!-- Aquí debe ir goToDetailsModify() -->
+            <button onclick="" class="w3-btn w3-red">Eliminar</button><!-- Lógica de eliminación de un curso, invoca a delete_evaluation -->
+            <div class="w3-modal" id="delete_evaluation_{{evaluation.id}}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center">
+                        <h4 class="modal-title">Eliminar Evaluación</h4>
+                        <span onclick="document.getElementById('delete_evaluation_{{evaluation.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <div class="w3-section">
+                            <div>¿Está seguro que quiere eliminar la evaluación {{evaluation.name}}?</div>
+                            <form id="delete_evaluation_form_{{evaluation.id}}" method="post" action="/evaluation/delete/">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="hidden" name="id_evaluation" value="{{evaluation.id}}">
+                            </div>
+                            <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endif %}
 
 {% endblock %}
