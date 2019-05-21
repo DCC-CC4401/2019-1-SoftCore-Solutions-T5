@@ -1,7 +1,10 @@
 {% extends "base.html" %}
-{% block content %}
 
-<title>Plataforma de evaluación - Evaluaciones</title>
+{% block title %}
+Evaluaciones - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
 
 <!-- Page content -->
 {% if user.is_superuser %}
@@ -17,7 +20,7 @@
     {% for evaluation in evaluations %}
     <div class="w3-row-padding w3-center w3-margin-top">
         <div class="w3-quarter w3-margin-top">
-            <button onclick=""><!-- El onclick debiera ir a los detalles -->
+            <button onclick="goToDetails('{{evaluation.id}}')"><!-- El onclick debiera ir a los detalles -->
                 <h3>{{evaluation.name}}</h3>
                 <br>
                 <i class="fas fa-book" style="font-size:100px"></i>
@@ -55,6 +58,82 @@
         </div>
     </div>
     {% endfor %}
+
+    <!--Caja de agregar-->
+    <div class="w3-row-padding w3-center w3-margin-top">
+        <div class="w3-quarter w3-margin-top">
+            <button onclick="document.getElementById('agregar').style.display='block'" class="w3-card w3-container w3-light-gray w3-hover-shadow" style="min-height: 317px">
+                <h3>Agregar curso nuevo</h3>
+                <br>
+                <i class="fas fa-plus" style="font-size:100px;text-align: center; padding:50px"></i>
+            </button>
+
+            <div id="agregar" class="w3-modal">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center">
+                        <br>
+                        <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+
+                        <div class="w3-section">
+                            <form name="coursesForm" class="site-form" action="/courses/" method="post" onsubmit="return validateCourseData();">
+                                {% csrf_token %}
+                                <label>Titulo
+                                    <input type="text" id="title" name="title" placeholder="Titulo">
+                                </label>
+                                <br>
+                                <p id="p-error-title" class="p-error">Asegúrese que el título sea válido.</p>
+                                <br>
+                                <label>Código
+                                    <input type="text" id="code" name="code" placeholder="Código">
+                                </label>
+                                <br>
+                                <p id="p-error-code" class="p-error">Asegúrese que el código sea válido.</p>
+                                <br>
+                                <label>Semestre
+                                    <select id="semester" name="semester">
+                                        <option value="Primavera">Primavera</option>
+                                        <option value="Otoño">Otoño</option>
+                                    </select>
+                                </label>
+                                <br>
+                                <p id="p-error-semester" class="p-error">Asegúrese que el semestre sea válido.</p>
+                                <br>
+                                <label>Sección
+                                    <select id="section" name="section">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                </label>
+                                <br>
+                                <p id="p-error-section" class="p-error">Asegúrese que la sección sea válida.</p>
+                                <br>
+                                <label>Año
+                                    <input type="text" id="year" name="year" placeholder="2019">
+                                </label>
+                                <br>
+                                <p id="p-error-year" class="p-error">Asegúrese que el año sea válido.</p>
+                                <br>
+                                <input type="submit" value="Registrar" />
+                                <br><br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- fin del modal -->
+        </div>
+    </div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+    <!-- Portada -->
+    <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+        <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;">
+            <b>Solo los administradores pueden acceder a esta página</b>
+        </h1>
+    </div>
+
+</div>
 
 {% endif %}
 
