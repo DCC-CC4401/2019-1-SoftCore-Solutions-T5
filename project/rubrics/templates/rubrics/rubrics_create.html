@@ -38,7 +38,7 @@ Rúbricas - Plataforma de evaluación
       </head>
       <body>
 
-        <button class="button2 button2" contenteditable="true">Título de la rúbrica</button><br>
+        <button id="title" class="button2 button2" contenteditable="true">Título de la rúbrica</button><br>
       </body>
     </div>
 
@@ -78,11 +78,13 @@ Rúbricas - Plataforma de evaluación
         </style>
       </head>
       <body>
-        <form class="form-inline">
-          <label>Intervalo de presentación</label>
-          <input placeholder="Ej: 7-10" name="intervalo">
-          <button type="submit">Ok</button>
-        </form>
+          <br>
+          <label>Duración mínima</label>
+          <input placeholder="Ej: 4" size="5px" maxlength="5" id="intervalo_min">
+
+          <label>Duración máxima</label>
+          <input placeholder="Ej: 8" size="5px" maxlength="5" id="intervalo_max">
+
       </body>
     </div>
   </div>
@@ -186,7 +188,11 @@ Rúbricas - Plataforma de evaluación
     </style>
   </head>
   <body>
-    <button class="button1 button1">Guardar rúbrica  <i class="far fa-save"></i></button>
+    <form class="w3-container" action="" method="post">
+      {% csrf_token %}
+      <button type="submit" class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></button>
+    </form>
+
     {% else %}
     <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
     
@@ -195,8 +201,33 @@ Rúbricas - Plataforma de evaluación
 
 
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+</script>
 <script>
+
+function post(){
+  var title = document.getElementById("title").innerText;
+  var min = document.getElementById("intervalo_min").value;
+  var max = document.getElementById("intervalo_max").value;
+  if(min==='')
+    min = 4;
+  if(max==='')
+    max = 8;
+  var data = new FormData();
+  data.append('csrfmiddlewaretoken', '{{csrf_token}}');
+  data.append('name', title);
+  data.append('dur_min', min);
+  data.append('dur_max', max);
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     document.location='{% url 'rubrics:rubrics' %}';
+    }
+  };
+  xhttp.open("POST", "{% url 'rubrics:rubrics' %}", true);
+  xhttp.send(data);
+}
 // Script to open and close sidebar
 function add_row(){
   var table = document.getElementById("rubric");
