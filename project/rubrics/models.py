@@ -15,11 +15,12 @@ class Rubric(models.Model):
 
 
 class Criteria(models.Model):
-    name = models.CharField(max_length=200, primary_key=True)
+    key = models.CharField(default='0', max_length=200, primary_key=True)
+    name = models.CharField(max_length=200)
     rubric = models.ForeignKey(Rubric, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return "name: {}, rubric: {}".format(self.name, self.rubric)
 
 
 class Field(models.Model):
@@ -28,4 +29,4 @@ class Field(models.Model):
     criteria = models.ForeignKey(Criteria, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.description
+        return "desc: {}, level: {}".format(self.description, self.level)

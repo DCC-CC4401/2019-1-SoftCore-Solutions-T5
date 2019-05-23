@@ -188,6 +188,7 @@ Rúbricas - Plataforma de evaluación
     </style>
   </head>
   <body>
+    <button id="test" onclick="print()" class="button2 button2" contenteditable="true">Título de la rúbrica</button><br>
     <form class="w3-container" action="" method="post">
       {% csrf_token %}
       <button type="submit" class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></button>
@@ -204,7 +205,22 @@ Rúbricas - Plataforma de evaluación
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
 </script>
 <script>
+function print(){
+  var matrix = '';
+  var table = document.getElementById("rubric");
+  var rows = table.rows;
 
+  for(var i=0; i<rows.length; i++){
+    var cells = rows[i].cells;
+    matrix += cells[0].innerText;
+    for(var j=1; j<cells.length; j++){
+      matrix += ','
+      matrix += cells[j].innerText;
+    }
+    matrix += '\n';
+  }
+  console.log(matrix);
+}
 function post(){
   var title = document.getElementById("title").innerText;
   var min = document.getElementById("intervalo_min").value;
@@ -218,6 +234,22 @@ function post(){
   data.append('name', title);
   data.append('dur_min', min);
   data.append('dur_max', max);
+
+  var matrix = '';
+  var table = document.getElementById("rubric");
+  var rows = table.rows;
+
+  for(var i=0; i<rows.length; i++){
+    var cells = rows[i].cells;
+    matrix += cells[0].innerText;
+    for(var j=1; j<cells.length; j++){
+      matrix += ','
+      matrix += cells[j].innerText;
+    }
+    matrix += '\n';
+  }
+
+  data.append('table', matrix);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
