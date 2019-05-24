@@ -2,7 +2,7 @@ from django.db import models
 
 from courses.models import Course, Student, Team
 
-from rubrics.models import Rubric, Criteria, Field
+from rubrics.models import Rubric
 
 from accounts.models import Account
 
