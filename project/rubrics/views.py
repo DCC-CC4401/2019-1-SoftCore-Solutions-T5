@@ -44,3 +44,7 @@ def create_rubric(request):
     return render(request, 'rubrics/rubrics_create.html', {'form': form})
 
 
+def rubric_details(request, rubric_key):
+    rubric = Rubric.objects.get(name=rubric_key)
+    rub = rubric.get_rubric()
+    return render(request, 'rubrics/rubrics_details.html', {'rubric': rubric, 'levels': rub[0], 'rows': rub[1:]})

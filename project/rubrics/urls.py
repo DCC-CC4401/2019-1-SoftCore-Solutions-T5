@@ -6,4 +6,5 @@ app_name='rubrics'
 urlpatterns=[
     url(r'^$', views.rubrics_list, name="rubrics"),
     url(r'^create/$', views.create_rubric, name='create_rubric'),
+    url(r'^(?P<rubric_key>[\w-]+)/$', views.rubric_details),
 ]
