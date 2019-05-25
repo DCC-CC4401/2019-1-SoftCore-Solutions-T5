@@ -19,10 +19,12 @@ def rubrics_list(request):
         t = data['table']
         t = t.replace('\t', '')
         rows = t.split('\n')
-        levels = rows[0].split(',')
-        for row in rows[1:len(rows)-1]:
-            print(row.split(','))
-        print(levels)
+        rub = []
+        for row in rows[:len(rows)-1]:
+            r = row.split(',')
+            print(r)
+            rub.append(r)
+
         rubric = Rubric.objects.all()
         create = True
         for r in rubric:
@@ -30,14 +32,8 @@ def rubrics_list(request):
                 create = False
         if create:
             ru = Rubric.objects.create(name=name, duration_min=mi, duration_max=ma, state=False)
+            ru.set_rubric(rub)
             ru.save()
-            for r in range(1, len(rows)-1):
-                fields = rows[r].split(',')
-                c = Criteria.objects.create(key="crit {}, rubric {}".format(r, ru), name=fields[0], rubric=ru)
-                c.save()
-                for i in range(1, len(fields)):
-                    f = Field.objects.create(description=fields[i], level=levels[i], criteria=c)
-                    f.save()
 
     rubrics = Rubric.objects.all()
     return render(request,'rubrics/rubrics_list.html', {'rubrics': rubrics})
@@ -48,3 +44,7 @@ def create_rubric(request):
     return render(request, 'rubrics/rubrics_create.html', {'form': form})
 
 
+def rubric_details(request, rubric_key):
+    rubric = Rubric.objects.get(name=rubric_key)
+    rub = rubric.get_rubric()
+    return render(request, 'rubrics/rubrics_details.html', {'rubric': rubric, 'levels': rub[0], 'rows': rub[1:]})
