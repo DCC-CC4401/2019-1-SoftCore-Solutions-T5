@@ -11,22 +11,23 @@ Evaluaciones - Plataforma de evaluación
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
     <!-- Portada -->
     <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
-        <h1 class="w3-xxxlarge w3-text-red"><b>Cursos</b></h1>
+        <h1 class="w3-xxxlarge w3-text-red"><b>Evaluaciones</b></h1>
         <hr style="width:50px;border:5px solid red" class="w3-round">
         <p><h3>Seleccione un evaluación</h3></p></hr>
     </div>
 
     <!-- Cajas de evaluaciones -->
-    {% for evaluation in evaluations %}
+    {% for data in evaluations %}
     <div class="w3-row-padding w3-center w3-margin-top">
         <div class="w3-quarter w3-margin-top">
             <button onclick="goToDetails('{{evaluation.id}}')"><!-- El onclick debiera ir a los detalles -->
-                <h3>{{evaluation.name}}</h3>
+                <h3>{{data.0.name}}</h3>
+                <h5>{{data.1.course.title}}</h5>
                 <br>
                 <i class="fas fa-book" style="font-size:100px"></i>
-                <p>Desde: {{evaluation.init_date}}</p>
-                <p>Hasta: {{evaluation.fin_date}}}</p>
-                {% if evaluation.state %}
+                <p>Desde: {{data.0.init_date}}</p>
+                <p>Hasta: {{data.0.fin_date}}</p>
+                {% if data.0.state %}
                 <p>Estado: abierta</p>
                 {% else %}
                 <p>Estado: cerrada</p>
@@ -36,18 +37,22 @@ Evaluaciones - Plataforma de evaluación
             <br>
 
             <button class="w3-btn w3-red" onclick="">Modificar</button><!-- Aquí debe ir goToDetailsModify() -->
-            <button onclick="" class="w3-btn w3-red">Eliminar</button><!-- Lógica de eliminación de un curso, invoca a delete_evaluation -->
-            <div class="w3-modal" id="delete_evaluation_{{evaluation.id}}">
+            <button onclick="document.getElementById('delete_evaluation_{{forloop.counter}}').style.display='block'" class="w3-btn w3-red">Eliminar</button><!-- Lógica de eliminación de un curso, invoca a delete_evaluation -->
+            <div class="w3-modal" id="delete_evaluation_{{forloop.counter}}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
                     <div class="w3-center">
                         <h4 class="modal-title">Eliminar Evaluación</h4>
-                        <span onclick="document.getElementById('delete_evaluation_{{evaluation.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <span onclick="document.getElementById('delete_evaluation_{{forloop.counter}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
                         <div class="w3-section">
-                            <div>¿Está seguro que quiere eliminar la evaluación {{evaluation.name}}?</div>
-                            <form id="delete_evaluation_form_{{evaluation.id}}" method="post" action="/evaluation/delete/">
+                            <div>¿Está seguro que quiere eliminar la evaluación {{data.0.name}}?</div>
+                            <form id="delete_evaluation_form_{{forloop.counter}}" method="post" action="/evaluation/delete/">
                             {% csrf_token %}
                             <div class="form-group">
-                                <input type="hidden" name="id_evaluation" value="{{evaluation.id}}">
+                                <input type="hidden" name="eval_name" value="{{data.0.name}}">
+                                <input type="hidden" name="code_course" value="{{data.1.course.code}}">
+                                <input type="hidden" name="section_course" value="{{data.1.course.section}}">
+                                <input type="hidden" name="semester_course" value="{{data.1.course.semester}}">
+                                <input type="hidden" name="year_course" value="{{data.1.course.year}}">
                             </div>
                             <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
                             </form>
@@ -63,7 +68,7 @@ Evaluaciones - Plataforma de evaluación
     <div class="w3-row-padding w3-center w3-margin-top">
         <div class="w3-quarter w3-margin-top">
             <button onclick="document.getElementById('agregar').style.display='block'" class="w3-card w3-container w3-light-gray w3-hover-shadow" style="min-height: 317px">
-                <h3>Agregar curso nuevo</h3>
+                <h3>Agregar nueva evaluación</h3>
                 <br>
                 <i class="fas fa-plus" style="font-size:100px;text-align: center; padding:50px"></i>
             </button>
@@ -75,44 +80,31 @@ Evaluaciones - Plataforma de evaluación
                         <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
 
                         <div class="w3-section">
-                            <form name="coursesForm" class="site-form" action="/courses/" method="post" onsubmit="return validateCourseData();">
+                            <form name="coursesForm" class="site-form" action="/evaluation/" method="post" >
                                 {% csrf_token %}
-                                <label>Titulo
-                                    <input type="text" id="title" name="title" placeholder="Titulo">
-                                </label>
-                                <br>
-                                <p id="p-error-title" class="p-error">Asegúrese que el título sea válido.</p>
-                                <br>
-                                <label>Código
-                                    <input type="text" id="code" name="code" placeholder="Código">
-                                </label>
-                                <br>
-                                <p id="p-error-code" class="p-error">Asegúrese que el código sea válido.</p>
-                                <br>
-                                <label>Semestre
-                                    <select id="semester" name="semester">
-                                        <option value="Primavera">Primavera</option>
-                                        <option value="Otoño">Otoño</option>
-                                    </select>
-                                </label>
-                                <br>
-                                <p id="p-error-semester" class="p-error">Asegúrese que el semestre sea válido.</p>
-                                <br>
-                                <label>Sección
-                                    <select id="section" name="section">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                    </select>
-                                </label>
-                                <br>
-                                <p id="p-error-section" class="p-error">Asegúrese que la sección sea válida.</p>
-                                <br>
-                                <label>Año
-                                    <input type="text" id="year" name="year" placeholder="2019">
-                                </label>
-                                <br>
-                                <p id="p-error-year" class="p-error">Asegúrese que el año sea válido.</p>
-                                <br>
+                                <label for="title">Titulo de Evaluación</label>
+                                <input type="text" id="title" name="title" placeholder="Titulo">
+                                <br><br>
+                                <label for="init_date">Fecha de inicio</label>
+                                <input type="date" id="init_date" name="init_date">
+                                <br><br>
+                                <label for="fin_date">Fecha de Fin</label>
+                                <input type="date" id="fin_date" name="fin_date">
+                                <br><br>
+                                <label for="rubric">Seleccione la rúbrica</label>
+                                <select id="rubric" name="rubric">
+                                    {% for rubric in rubrics %}
+                                        <option value="{{rubric.name}}">{{rubric.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br><br>
+                                <label for="course">Seleccione el curso</label>
+                                <select id="course" name="course">
+                                    {% for course in courses %}
+                                        <option value="{{course.code}}-{{course.section}}-{{course.semester}}-{{course.year}}">{{course.code}}-{{course.section}} {{course.semester}} {{course.year}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br><br>
                                 <input type="submit" value="Registrar" />
                                 <br><br>
                             </form>
