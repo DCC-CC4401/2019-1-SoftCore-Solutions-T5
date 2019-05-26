@@ -10,7 +10,7 @@ class Rubric(models.Model):
     duration_min = models.PositiveSmallIntegerField()
     duration_max = models.PositiveSmallIntegerField()
     state = models.BooleanField()
-    rubric = models.CharField(max_length=300)
+    rubric = models.TextField()
 
     def set_rubric(self, data):
         self.rubric = json.dumps(data)
