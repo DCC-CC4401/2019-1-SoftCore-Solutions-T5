@@ -100,6 +100,7 @@ Evaluadores - Plataforma de evaluación
 </div>
 <!--cierre de contenido-->
 </div>
+</div>
 {% else %}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
@@ -110,28 +111,11 @@ Evaluadores - Plataforma de evaluación
 </div>
 
 {% endif %}
+
+{% endblock %}
+
+{% block script %}
 <script>
-// Script to open and close sidebar
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-  document.getElementById("myOverlay").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
-}
-function goToDetailsModify(nombre,apellido) {
-  location.href= nombre + "-" + apellido;
-}
-// Modal Image Gallery
-function onClick(element) {
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
-  var captionText = document.getElementById("caption");
-  captionText.innerHTML = element.alt;
-}
-
 function randomPassword(length) {
     var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP1234567890";
     var pass = "";
@@ -147,5 +131,4 @@ function generate() {
 }
 </script>
 
-</body>
 {% endblock %}

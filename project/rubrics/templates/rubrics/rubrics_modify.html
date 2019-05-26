@@ -202,10 +202,12 @@ Rúbricas - Plataforma de evaluación
     
     {% endif %}
   </body>
+</div>
+
+{% endblock %}
 
 
-
-
+{% block script %}
 <script>
   if (sessionStorage.length != 0){
     var title = document.getElementById("title");
@@ -366,7 +368,4 @@ Rúbricas - Plataforma de evaluación
     captionText.innerHTML = element.alt;
   }
 </script>
-
-</body>
-</html>
 {% endblock %}
