@@ -12,13 +12,15 @@ from django.shortcuts import render, redirect
 
 def rubrics_list(request):
     if request.POST:
+        newl = "%n%"
         data = request.POST
         name = data['name']
         mi = data['dur_min']
         ma = data['dur_max']
         t = data['table']
         t = t.replace('\t', '')
-        rows = t.split('%\n%')
+        t = t.replace('\r', '')
+        rows = t.split(newl)
         rub = [rows[0].split('%,%')]
         for row in rows[1:len(rows)]:
             r = row.split('%,%')
@@ -43,7 +45,9 @@ def rubrics_list(request):
             ru = Rubric.objects.create(name=name, duration_min=mi, duration_max=ma, state=False)
             ru.set_rubric(rub)
             ru.save()
-
+        #rubrics = Rubric.objects.all()
+        #print("dasfasdfasdfasdf")
+        return redirect('rubrics:rubrics')
     rubrics = Rubric.objects.all()
     return render(request,'rubrics/rubrics_list.html', {'rubrics': rubrics})
 
@@ -67,7 +71,7 @@ def rubric_modify(request, rubric_key):
 def rubric_modify_database(request, rubric_key):
     rubric = Rubric.objects.get(name=rubric_key)
     rubric.delete()
-
+    newl = "%n%"
     if request.method == 'POST':
         data = request.POST
         name = data['name']
@@ -75,7 +79,8 @@ def rubric_modify_database(request, rubric_key):
         ma = data['dur_max']
         t = data['table']
         t = t.replace('\t', '')
-        rows = t.split('%\n%')
+        t = t.replace('\r', '')
+        rows = t.split(newl)
         rub = [rows[0].split('%,%')]
         for row in rows[1:len(rows)]:
             r = row.split('%,%')

@@ -190,9 +190,9 @@ Rúbricas - Plataforma de evaluación
   <body>
     <form class="w3-container" action="" method="post">
       {% csrf_token %}
-      <button type="submit" class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></button>
+      <a class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></a>
     </form>
-    <button onclick="location.href='/rubrics'"> Volver </button>
+    <button onclick="sessionStorage.clear(); location.href='/rubrics'"> Volver </button>
     {% else %}
     <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
     
@@ -204,6 +204,7 @@ Rúbricas - Plataforma de evaluación
 
 {% block script %}
 <script>
+  var newl = "%n%";
   if (sessionStorage.length != 0){
     var title = document.getElementById("title");
     title.value = sessionStorage.getItem('title');
@@ -215,7 +216,7 @@ Rúbricas - Plataforma de evaluación
     var table = document.getElementById("rubric");
     table.innerHTML='';
     rubric = sessionStorage.getItem('rubric');
-    var text_rows = rubric.split("%\n%");
+    var text_rows = rubric.split(newl);
 
     for(var i = 0; i < text_rows.length; i++){
       var cells = text_rows[i].split("%,%");
@@ -233,6 +234,21 @@ Rúbricas - Plataforma de evaluación
       }
     }
   }
+  /*
+  function validate_sum(rubric){
+    var rows = rubric.split(newl);
+    var levels = rows[0].split("%,%");
+    var sum = 0;
+    for(var i = 1; i < rows.length; i++){
+        row = rows[i].split("%,%")
+        var max = 0;
+        for(var j = 1; j < row.length; j++){
+            if()
+        }
+    }
+    console.log(levels);
+  }
+  */
   function post(){
     var title = document.getElementById("title").value;
     var min = document.getElementById("intervalo_min").value;
@@ -252,13 +268,14 @@ Rúbricas - Plataforma de evaluación
       var cells = rows[i].cells;
       matrix += cells[0].innerText;
       for(var j=1; j<cells.length; j++){
+        matrix = matrix.replace(/\r/gi, "");
         matrix += '%,%'
         matrix += cells[j].innerText;
       }
       if(i != rows.length-1)
-        matrix += '%\n%';
+        matrix += newl;
     }
-
+    //validate_sum(matrix)
     var b = true;
     var falta = [];
     sessionStorage.setItem('rubric', matrix);
@@ -293,6 +310,7 @@ Rúbricas - Plataforma de evaluación
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
+       console.log("dasfasdfasdf");
        document.location='{% url 'rubrics:rubrics' %}';
       }
     };

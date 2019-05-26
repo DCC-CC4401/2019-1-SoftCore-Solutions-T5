@@ -193,7 +193,7 @@ Rúbricas - Plataforma de evaluación
   <body>
     <form class="w3-container" action="" method="post">
       {% csrf_token %}
-      <button type="submit" class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></button>
+      <a class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></a>
     </form>
 
     <button onclick="sessionStorage.clear(); location.href='/rubrics'"> Volver </button>
@@ -220,7 +220,7 @@ Rúbricas - Plataforma de evaluación
     var table = document.getElementById("rubric");
     table.innerHTML='';
     rubric = sessionStorage.getItem('rubric');
-    var text_rows = rubric.split("%\n%");
+    var text_rows = rubric.split("%n%");
 
     for(var i = 0; i < text_rows.length; i++){
       var cells = text_rows[i].split("%,%");
@@ -262,7 +262,7 @@ Rúbricas - Plataforma de evaluación
         matrix += cells[j].innerText;
       }
       if(i != rows.length-1)
-        matrix += '%\n%';
+        matrix += '%n%';
     }
 
     var b = true;
