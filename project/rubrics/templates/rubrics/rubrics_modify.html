@@ -38,7 +38,8 @@ Rúbricas - Plataforma de evaluación
       </head>
       <body>
 
-        <button id="title" class="button2 button2" contenteditable="true">{{rubric.name}}</button><br>
+        Nombre de la Rúbrica: <input id="title" type="text" contenteditable="true" value="{{rubric.name}}"><br>
+      <input id="aux_title" style="display: none" type="text" value="{{rubric.name}}"><br>
       </body>
     </div>
 
@@ -98,12 +99,12 @@ Rúbricas - Plataforma de evaluación
         width: 100%;
         cursor: pointer;
         margin: 10px 0.5% 0.5%;
+        table-layout: fixed
       }
 
       td, th {
         border: 1px solid #665f5f;
         text-align: center;
-        width: 20%;
         padding: 2.3%;
       }
 
@@ -117,7 +118,11 @@ Rúbricas - Plataforma de evaluación
   <table id="rubric">
     <tr>
       {% for level in levels %}
-      <th contenteditable="true">{{level}}</th>
+        {% if level == '' %}
+          <th>{{level}}</th>
+        {% else %}
+          <th contenteditable="true">{{level}}</th>
+        {% endif %}
       {% endfor %}
 
     </tr>
@@ -191,7 +196,7 @@ Rúbricas - Plataforma de evaluación
       <button type="submit" class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></button>
     </form>
 
-    <button onclick="location.href='/rubrics'"> Volver </button>
+    <button onclick="sessionStorage.clear(); location.href='/rubrics'"> Volver </button>
     {% else %}
     <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
     
@@ -202,107 +207,164 @@ Rúbricas - Plataforma de evaluación
 
 
 <script>
+  if (sessionStorage.length != 0){
+    var title = document.getElementById("title");
+    title.value = sessionStorage.getItem('title');
+    var min = document.getElementById("intervalo_min");
+    min.value = sessionStorage.getItem('min');
+    var max = document.getElementById("intervalo_max");
+    max.value = sessionStorage.getItem('max');
 
-function post(){
-  var title = document.getElementById("title").innerText;
-  var min = document.getElementById("intervalo_min").value;
-  var max = document.getElementById("intervalo_max").value;
-  if(min==='')
-    min = 4;
-  if(max==='')
-    max = 8;
-  var data = new FormData();
-  var name = title.replace(/ /g, "_");
-  data.append('csrfmiddlewaretoken', '{{csrf_token}}');
-  data.append('name', name);
-  data.append('dur_min', min);
-  data.append('dur_max', max);
+    var table = document.getElementById("rubric");
+    table.innerHTML='';
+    rubric = sessionStorage.getItem('rubric');
+    var text_rows = rubric.split("%\n%");
 
-  var matrix = '';
-  var table = document.getElementById("rubric");
-  var rows = table.rows;
+    for(var i = 0; i < text_rows.length; i++){
+      var cells = text_rows[i].split("%,%");
+      var row = table.insertRow(-1);
+      for(var j = 0; j < cells.length; j++){
+        var cell = row.insertCell(j);
+        if(i==0){
+          if(j==0)
+            cell.outerHTML = "<th>" + cells[j] + "</th>";
+          else
+            cell.outerHTML = "<th contentEditable='true'>" + cells[j] + "</th>";
+        }
+        else
+          cell.outerHTML = "<td contentEditable='true'>" + cells[j] + "</td>";
 
-  for(var i=0; i<rows.length; i++){
-    var cells = rows[i].cells;
-    matrix += cells[0].innerText;
-    for(var j=1; j<cells.length; j++){
-      matrix += ','
-      matrix += cells[j].innerText;
-    }
-    matrix += '\n';
-  }
-  var url = '/rubrics/modify_database/' + name + '/'
-  data.append('table', matrix);
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-     document.location='{% url 'rubrics:rubrics' %}';
-    }
-  };
-  xhttp.open("POST", url, true);
-  xhttp.send(data);
-}
-// Script to open and close sidebar
-function add_row(){
-  var table = document.getElementById("rubric");
-  var rows = table.rows;
-  var cells = rows[0].cells.length;
-  var row = table.insertRow(-1);
-  for(var i = 0; i < cells; i++){
-    var cell = row.insertCell(i);
-    cell.contentEditable='true';
-  }
-}
-
-function add_column(){
-  var table = document.getElementById("rubric");
-  var rows = table.rows;
-  for(var i = 0; i<rows.length; i++){
-      if(i==0){
-        rows[i].insertCell(-1).outerHTML = "<th contentEditable='true'> </th>";
       }
-      else{
-        rows[i].insertCell(-1).outerHTML = "<td contentEditable='true'> </td>";
+    }
+  }
+  function post(){
+    var title = document.getElementById("title").value;
+    var min = document.getElementById("intervalo_min").value;
+    var max = document.getElementById("intervalo_max").value;
+    var data = new FormData();
+    var name = title.replace(/ /g, "_");
+    data.append('csrfmiddlewaretoken', '{{csrf_token}}');
+    data.append('name', name);
+    data.append('dur_min', min);
+    data.append('dur_max', max);
+
+    var matrix = '';
+    var table = document.getElementById("rubric");
+    var rows = table.rows;
+
+    for(var i=0; i<rows.length; i++){
+      var cells = rows[i].cells;
+      matrix += cells[0].innerText;
+      for(var j=1; j<cells.length; j++){
+        matrix += '%,%'
+        matrix += cells[j].innerText;
       }
+      if(i != rows.length-1)
+        matrix += '%\n%';
+    }
+
+    var b = true;
+    var falta = [];
+    sessionStorage.setItem('rubric', matrix);
+    sessionStorage.setItem('title', title);
+    sessionStorage.setItem('min', min);
+    sessionStorage.setItem('max', max);
+    if(title == ''){
+      falta.push("-Nombre de la rúbrica\n");
+      b = false;
+    }
+    if(min===''){
+      falta.push("-Duración mínima\n");
+      b = false;
+    }
+    if(max===''){
+      falta.push("-Duración máxima\n");
+      b = false;
+    }
+    if(!b){
+      var alert_text = 'Faltan los siguientes campos: \n';
+      for (var i = 0; i < falta.length; i++) {
+        alert_text += falta[i];
+      }
+      alert(alert_text);
+      return false;
+    }
+
+
+    sessionStorage.clear();
+
+    var url = '/rubrics/modify_database/' + document.getElementById("aux_title").value + '/';
+    data.append('table', matrix);
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+       document.location='{% url 'rubrics:rubrics' %}';
+      }
+    };
+    xhttp.open("POST", url, true);
+    xhttp.send(data);
+  }
+  // Script to open and close sidebar
+  function add_row(){
+    var table = document.getElementById("rubric");
+    var rows = table.rows;
+    var cells = rows[0].cells.length;
+    var row = table.insertRow(-1);
+    for(var i = 0; i < cells; i++){
+      var cell = row.insertCell(i);
+      cell.contentEditable='true';
+    }
   }
 
-}
-
-function delete_row(){
-  var table = document.getElementById("rubric");
-  var rows = table.rows;
-  if(rows.length > 1){
-    table.deleteRow(-1);
-  }
-}
-
-function delete_column(){
-  var table = document.getElementById("rubric");
-  var rows = table.rows;
-  if(rows[0].cells.length > 1){
+  function add_column(){
+    var table = document.getElementById("rubric");
+    var rows = table.rows;
     for(var i = 0; i<rows.length; i++){
-      rows[i].deleteCell(-1);
+        if(i==0){
+          rows[i].insertCell(-1).outerHTML = "<th contentEditable='true'> </th>";
+        }
+        else{
+          rows[i].insertCell(-1).outerHTML = "<td contentEditable='true'> </td>";
+        }
+    }
+
+  }
+
+  function delete_row(){
+    var table = document.getElementById("rubric");
+    var rows = table.rows;
+    if(rows.length > 1){
+      table.deleteRow(-1);
     }
   }
-}
 
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-  document.getElementById("myOverlay").style.display = "block";
-}
+  function delete_column(){
+    var table = document.getElementById("rubric");
+    var rows = table.rows;
+    if(rows[0].cells.length > 1){
+      for(var i = 0; i<rows.length; i++){
+        rows[i].deleteCell(-1);
+      }
+    }
+  }
 
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-  document.getElementById("myOverlay").style.display = "none";
-}
+  function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+  }
 
-// Modal Image Gallery
-function onClick(element) {
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
-  var captionText = document.getElementById("caption");
-  captionText.innerHTML = element.alt;
-}
+  function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+  }
+
+  // Modal Image Gallery
+  function onClick(element) {
+    document.getElementById("img01").src = element.src;
+    document.getElementById("modal01").style.display = "block";
+    var captionText = document.getElementById("caption");
+    captionText.innerHTML = element.alt;
+  }
 </script>
 
 </body>
