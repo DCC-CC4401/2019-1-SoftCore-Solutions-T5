@@ -26,7 +26,7 @@ Rúbricas - Plataforma de evaluación
     <i class="fas fa-book" style="font-size:100px"></i>
       </button>
       <br/>
-        <button class="w3-btn w3-red" onclick="">Modificar</button>
+        <button class="w3-btn w3-red" onclick="goToModify('{{rubric.name}}')">Modificar</button>
         <button onclick="" class="w3-btn w3-red">Eliminar</button>
         <div class="w3-modal" id="delete_course_{{course.id}}">
           <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
@@ -86,7 +86,11 @@ function onClick(element) {
 }
 
 function goToDetails(name) {
-  location.href= name;
+  location.href= 'details/' + name;
+}
+
+function goToModify(name) {
+  location.href= 'modify/' + name;
 }
 
 

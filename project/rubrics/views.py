@@ -40,11 +40,40 @@ def rubrics_list(request):
 
 
 def create_rubric(request):
-    form = RubricForm()
-    return render(request, 'rubrics/rubrics_create.html', {'form': form})
+    return render(request, 'rubrics/rubrics_create.html')
 
 
 def rubric_details(request, rubric_key):
     rubric = Rubric.objects.get(name=rubric_key)
     rub = rubric.get_rubric()
     return render(request, 'rubrics/rubrics_details.html', {'rubric': rubric, 'levels': rub[0], 'rows': rub[1:]})
+
+
+def rubric_modify(request, rubric_key):
+    rubric = Rubric.objects.get(name=rubric_key)
+    rub = rubric.get_rubric()
+    return render(request, 'rubrics/rubrics_modify.html', {'rubric': rubric, 'levels': rub[0], 'rows': rub[1:]})
+
+
+def rubric_modify_database(request, rubric_key):
+    rubric = Rubric.objects.get(name=rubric_key)
+    if request.method == 'POST':
+        data = request.POST
+        name = data['name']
+        mi = data['dur_min']
+        ma = data['dur_max']
+        t = data['table']
+        t = t.replace('\t', '')
+        rows = t.split('\n')
+        table = []
+        for row in rows[:len(rows) - 1]:
+            r = row.split(',')
+            table.append(r)
+
+        rubric.name = name
+        rubric.duration_min = mi
+        rubric.duration_max = ma
+        rubric.set_rubric(table)
+        rubric.save()
+    rubrics = Rubric.objects.all()
+    return render(request, 'rubrics/rubrics_list.html', {'rubrics': rubrics})

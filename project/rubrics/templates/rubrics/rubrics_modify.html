@@ -38,7 +38,7 @@ Rúbricas - Plataforma de evaluación
       </head>
       <body>
 
-        <button id="title" class="button2 button2" contenteditable="true">Título de la rúbrica</button><br>
+        <button id="title" class="button2 button2" contenteditable="true">{{rubric.name}}</button><br>
       </body>
     </div>
 
@@ -80,10 +80,10 @@ Rúbricas - Plataforma de evaluación
       <body>
           <br>
           <label>Duración mínima</label>
-          <input placeholder="Ej: 4" size="5px" maxlength="5" id="intervalo_min">
+          <input size="5px" maxlength="5" value='{{rubric.duration_min}}' id="intervalo_min">
 
           <label>Duración máxima</label>
-          <input placeholder="Ej: 8" size="5px" maxlength="5" id="intervalo_max">
+          <input size="5px" maxlength="5" value='{{rubric.duration_max}}' id="intervalo_max">
 
       </body>
     </div>
@@ -116,20 +116,18 @@ Rúbricas - Plataforma de evaluación
 
   <table id="rubric">
     <tr>
-      <th></th>
-      <th contenteditable="true">0.0</th>
-      <th contenteditable="true">0.3</th>
-      <th contenteditable="true">0.7</th>
-      <th contenteditable="true">1.0</th>
+      {% for level in levels %}
+      <th contenteditable="true">{{level}}</th>
+      {% endfor %}
 
     </tr>
+    {% for row in rows %}
     <tr>
-      <td contenteditable="true"></td>
-      <td contenteditable="true"></td>
-      <td contenteditable="true"></td>
-      <td contenteditable="true"></td>
-      <td contenteditable="true"></td>
+      {% for field in row %}
+      <td contenteditable="true">{{field}}</td>
+      {% endfor %}
     </tr>
+    {% endfor %}
 
   </table>
   </body>
@@ -192,6 +190,7 @@ Rúbricas - Plataforma de evaluación
       {% csrf_token %}
       <button type="submit" class="button1 button1" onclick="post()">Guardar rúbrica  <i class="far fa-save"></i></button>
     </form>
+
     <button onclick="location.href='/rubrics'"> Volver </button>
     {% else %}
     <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
@@ -213,8 +212,9 @@ function post(){
   if(max==='')
     max = 8;
   var data = new FormData();
+  var name = title.replace(/ /g, "_");
   data.append('csrfmiddlewaretoken', '{{csrf_token}}');
-  data.append('name', title.replace(/ /g, "_"));
+  data.append('name', name);
   data.append('dur_min', min);
   data.append('dur_max', max);
 
@@ -231,16 +231,15 @@ function post(){
     }
     matrix += '\n';
   }
-
+  var url = '/rubrics/modify_database/' + name + '/'
   data.append('table', matrix);
-
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
      document.location='{% url 'rubrics:rubrics' %}';
     }
   };
-  xhttp.open("POST", "{% url 'rubrics:rubrics' %}", true);
+  xhttp.open("POST", url, true);
   xhttp.send(data);
 }
 // Script to open and close sidebar
