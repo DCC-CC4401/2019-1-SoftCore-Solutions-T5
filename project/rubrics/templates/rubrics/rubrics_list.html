@@ -26,7 +26,25 @@ Rúbricas - Plataforma de evaluación
     </button><br>
 
     <button class="w3-button w3-red w3-section w3-padding:10px" onclick="goToModify('{{rubric.name}}')">Modificar</button>
-    <button class="w3-button w3-red w3-section w3-padding:10px" onclick="">Eliminar</button>
+    <button class="w3-button w3-red w3-section w3-padding:10px" onclick="document.getElementById('delete_rubric_{{rubric.name}}').style.display='block'">Eliminar</button>
+    <div class="w3-modal" id="delete_rubric_{{rubric.name}}">
+      <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+          <h4 class="modal-title">Eliminar Rúbrica</h4>
+          <span onclick="document.getElementById('delete_rubric_{{rubric.name}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+          <div class="w3-section">
+            <div>¿Está seguro que quiere eliminar la rúbrica {{rubric.name}}?</div>
+            <form id="delete_rubric_form_{{rubric.name}}" method="post" action="/rubrics/delete/">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="hidden" name="name_rubric" value="{{rubric.name}}">
+              </div>
+              <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="w3-modal" id="delete_course_{{course.id}}">
       <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">

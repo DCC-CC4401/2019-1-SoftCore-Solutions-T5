@@ -45,8 +45,6 @@ def rubrics_list(request):
             ru = Rubric.objects.create(name=name, duration_min=mi, duration_max=ma, state=False)
             ru.set_rubric(rub)
             ru.save()
-        #rubrics = Rubric.objects.all()
-        #print("dasfasdfasdfasdf")
         return redirect('rubrics:rubrics')
     rubrics = Rubric.objects.all()
     return render(request,'rubrics/rubrics_list.html', {'rubrics': rubrics})
@@ -54,6 +52,16 @@ def rubrics_list(request):
 
 def create_rubric(request):
     return render(request, 'rubrics/rubrics_create.html')
+
+
+def delete_rubric(request):
+    if request.method=='POST':
+        name=request.POST['name_rubric']
+        rubric=Rubric.objects.get(name=name)
+        rubric.delete()
+        return redirect('rubrics:rubrics')
+    rubrics = Rubric.objects.all()
+    return render(request, '/rubrics/rubrics_list.html', {'rubrics': rubrics})
 
 
 def rubric_details(request, rubric_key):
