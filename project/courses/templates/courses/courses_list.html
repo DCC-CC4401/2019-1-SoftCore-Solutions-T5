@@ -18,41 +18,40 @@ Cursos - Plataforma de evaluación
 
 <!--Cajas cursos-->
 {% for course in courses %}
-  <div class="w3-row-padding w3-center w3-margin-top">
-  <div class="w3-quarter w3-margin-top">
+
+  <div class="w3-quarter w3-center w3-margin-top">
       <button onclick="goToDetails('{{course.code}}', '{{course.section}}', '{{course.year}}', '{{course.semester}}')">
       <!-- La función goToDetails está definida en el script de abajo -->
-
         <h3>{{course.title}}</h3><br>
-    <i class="fas fa-book" style="font-size:100px"></i>
-    <p>{{course.code}}</p>
-    <p>{{course.section}}</p>
-    <p>{{course.semester}}</p>
+        <i class="fas fa-book" style="font-size:100px"></i>
+        <p>{{course.code}}</p>
+        <p>{{course.section}}</p>
+        <p>{{course.semester}}</p>
       </button>
-      <br />
-        <button class="w3-btn w3-red" onclick="goToDetailsModify('{{course.code}}', '{{course.section}}', '{{course.year}}', '{{course.semester}}')">Modificar</button>
-        <button onclick="document.getElementById('delete_course_{{course.id}}').style.display='block'" class="w3-btn w3-red">Eliminar</button>
-        <div class="w3-modal" id="delete_course_{{course.id}}">
-          <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-            <div class="w3-center">
-              <h4 class="modal-title">Eliminar Curso</h4>
-              <span onclick="document.getElementById('delete_course_{{course.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-              <div class="w3-section">
-                <div>¿Está seguro que quiere eliminar el curso {{course.title}}?</div>
-                <form id="delete_course_form_{{course.id}}" method="post" action="/courses/delete/">
-                  {% csrf_token %}
-                  <div class="form-group">
-                    <input type="hidden" name="id_course" value="{{course.id}}">
-                  </div>
-                  <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
-                </form>
-              </div>
+      <br>
+      <button class="w3-button w3-red w3-section w3-padding:10px" onclick="goToDetailsModify('{{course.code}}', '{{course.section}}', '{{course.year}}', '{{course.semester}}')">Modificar</button>
+      <button class="w3-button w3-red w3-section w3-padding:10px" onclick="document.getElementById('delete_course_{{course.id}}').style.display='block'">Eliminar</button>
+      <div class="w3-modal" id="delete_course_{{course.id}}">
+        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+          <div class="w3-center">
+            <h4 class="modal-title">Eliminar Curso</h4>
+            <span onclick="document.getElementById('delete_course_{{course.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+              <div>¿Está seguro que quiere eliminar el curso {{course.title}}?</div>
+              <form id="delete_course_form_{{course.id}}" method="post" action="/courses/delete/">
+                {% csrf_token %}
+                <div class="form-group">
+                  <input type="hidden" name="id_course" value="{{course.id}}">
+                </div>
+                <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
+              </form>
             </div>
           </div>
         </div>
+      </div>
 
     </div>
-  </div>
+
   {% endfor %}
 
     <!--Caja de agregar-->
