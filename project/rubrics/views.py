@@ -51,7 +51,11 @@ def rubrics_list(request):
 
 
 def create_rubric(request):
-    return render(request, 'rubrics/rubrics_create.html')
+    rubrics = Rubric.objects.all()
+    names = []
+    for r in rubrics:
+        names.append(r.name)
+    return render(request, 'rubrics/rubrics_create.html', {"names": names})
 
 
 def delete_rubric(request):
@@ -73,7 +77,11 @@ def rubric_details(request, rubric_key):
 def rubric_modify(request, rubric_key):
     rubric = Rubric.objects.get(name=rubric_key)
     rub = rubric.get_rubric()
-    return render(request, 'rubrics/rubrics_modify.html', {'rubric': rubric, 'levels': rub[0], 'rows': rub[1:]})
+    rubrics = Rubric.objects.all()
+    names = []
+    for r in rubrics:
+        names.append(r.name)
+    return render(request, 'rubrics/rubrics_modify.html', {'rubric': rubric, 'levels': rub[0], 'rows': rub[1:], 'names': names})
 
 
 def rubric_modify_database(request, rubric_key):

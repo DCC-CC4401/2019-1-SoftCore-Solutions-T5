@@ -264,12 +264,7 @@ Rúbricas - Plataforma de evaluación
     var title = document.getElementById("title").value;
     var min = document.getElementById("intervalo_min").value;
     var max = document.getElementById("intervalo_max").value;
-    var data = new FormData();
     var name = title.replace(/ /g, "_");
-    data.append('csrfmiddlewaretoken', '{{csrf_token}}');
-    data.append('name', name);
-    data.append('dur_min', min);
-    data.append('dur_max', max);
 
     var matrix = '';
     var table = document.getElementById("rubric");
@@ -311,6 +306,12 @@ Rúbricas - Plataforma de evaluación
         falta.push("-Suma total de campos es diferente de 6\n");
     }
 
+    var exists = false;
+    {% for name in names %}
+      if (name == '{{name}}')
+        exists = true;
+    {% endfor %}
+
     if(!b){
       var alert_text = 'Faltan los siguientes campos: \n';
       for (var i = 0; i < falta.length; i++) {
@@ -323,8 +324,14 @@ Rúbricas - Plataforma de evaluación
 
     sessionStorage.clear();
 
-    var url = '/rubrics/modify_database/' + document.getElementById("aux_title").value + '/';
+    var data = new FormData();
+    data.append('csrfmiddlewaretoken', '{{csrf_token}}');
     data.append('table', matrix);
+    data.append('name', name);
+    data.append('dur_min', min);
+    data.append('dur_max', max);
+
+    var url = '/rubrics/modify_database/' + document.getElementById("aux_title").value + '/';
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
