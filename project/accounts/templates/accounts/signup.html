@@ -65,31 +65,39 @@ Evaluadores - Plataforma de evaluación
             <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
 
         <div class="w3-section">
-          <form name="accountsForm" class="site-form" action="/accounts/signup/" method="post">
+          <form name="accountsForm" class="site-form" action="/accounts/signup/" method="post" onsubmit="return validateAccountData();">
             <input type="hidden" name="length" value=8>
             {% csrf_token %}
             <label>Nombre
-              <input type="text" name="nombre" placeholder="Nombre">
+              <input type="text" id="nombre" name="nombre" placeholder="Nombre">
             </label>
-            <br><br>
+            <br>
+            <p id="p-error-nombre" class="p-error">Asegúrese que el nombre sea válido.</p>
+            <br>
             <label>Apellido
-              <input type="text" name="apellido" placeholder="Apellido">
+              <input type="text" id="apellido" name="apellido" placeholder="Apellido">
             </label>
-            <br><br>
+            <br>
+            <p id="p-error-apellido" class="p-error">Asegúrese que el apellido sea válido.</p>
+            <br>
             <label>Email
-              <input type="email" name="correo" placeholder="mail@example.com">
+              <input type="email" id="correo" name="correo" placeholder="mail@example.com">
             </label>
-            <br><br>
+            <br>
+            <p id="p-error-correo-existe" class="p-error">El correo ya existe.</p>
+            <p id="p-error-correo" class="p-error">Asegúrese que el correo sea válido.</p>
+            <br>
             <p>Pulsa el botón para generar contraseña al azar</p>
             <label>Password
-              <input type="text" name="clave">
+              <input type="text" id="clave" name="clave">
             </label>
             <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
             <br />
             <p style="color:red">
               Por favor, no olvide anotar esta contraseña y enviarla al evaluador
             </p>
-              <br><br>
+            <p id="p-error-clave" class="p-error">Asegúrese que la clave sea válida.</p>
+            <br>
             <input type="submit" value="Registrar" />
               <br><br>
           </form>
@@ -128,6 +136,59 @@ function randomPassword(length) {
 
 function generate() {
     accountsForm.clave.value = randomPassword(accountsForm.length.value);
+}
+
+// Función para no generar cuentas si los datos no son válidos
+function validateAccountData() {
+  let nombre, apellido, correo, clave, valid;
+  let perrornombre, perrorapellido, perrorcorreo, perrorcorreoexiste, perrorclave;
+  nombre = document.getElementById("nombre");
+  apellido = document.getElementById("apellido");
+  correo = document.getElementById("correo");
+  clave = document.getElementById("clave");
+  perrornombre = document.getElementById("p-error-nombre");
+  perrorapellido = document.getElementById("p-error-apellido");
+  perrorcorreo = document.getElementById("p-error-correo");
+  perrorcorreoexiste = document.getElementById("p-error-correo-existe");
+  perrorclave = document.getElementById("p-error-clave");
+
+  // Por ahora, válido será no vacío
+  valid= true;
+  if (isBlank(nombre.value)) {
+    perrornombre.style.display= "block";
+    valid= false;
+  }
+  else perrornombre.style.display= "none";
+  if (isBlank(apellido.value)) {
+    perrorapellido.style.display= "block";
+    valid= false;
+  }
+  else perrorapellido.style.display= "none";
+  if (isBlank(correo.value)) {
+    perrorcorreo.style.display= "block";
+    valid= false;
+  }
+  else perrorcorreo.style.display= "none";
+  if (isBlank(clave.value)) {
+    perrorclave.style.display= "block";
+    valid= false;
+  }
+  else perrorclave.style.display= "none";
+  let exists = false;
+  {% for mail in mails %}
+    if (correo.value == '{{mail}}')
+      exists = true;
+  {% endfor %}
+  if (exists) {
+    perrorcorreoexiste.style.display= "block";
+    valid= false;
+  }
+  else perrorcorreoexiste.style.display= "none";
+  return valid;
+}
+
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
 }
 </script>
 

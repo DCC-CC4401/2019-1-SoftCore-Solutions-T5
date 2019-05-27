@@ -25,7 +25,10 @@ def signup_view(request):
         accounts = Account.objects.all()
         return redirect('/accounts/signup', {'accounts': accounts})
     accounts = Account.objects.all()
-    return render(request,'accounts/signup.html', {'accounts': accounts})
+    mails = []
+    for account in accounts:
+        mails.append(account.correo)
+    return render(request,'accounts/signup.html', {'accounts': accounts, 'mails': mails})
 
 def login_view(request):
     if request.method=='POST':
