@@ -113,7 +113,7 @@ Rúbricas - Plataforma de evaluación
       }
     </style>
   </head>
-  <body>
+  <body onload="max_sum()">
 
   <table id="rubric">
     <tr>
@@ -135,6 +135,8 @@ Rúbricas - Plataforma de evaluación
     {% endfor %}
 
   </table>
+  <label>Suma campos máximos: </label> <label id="suma_campos"></label>
+  <br><button onclick="max_sum()"> Actualizar</button>
   </body>
 
   <div>
@@ -239,6 +241,25 @@ Rúbricas - Plataforma de evaluación
       }
     }
   }
+
+  function max_sum(){
+    rubric = document.getElementById("rubric");
+    var rows = rubric.rows;
+    var levels = rows[0].cells;
+    var sum = 0;
+    for(var i = 1; i < rows.length; i++){
+        var cells = rows[i].cells;
+        var max = 0;
+        for(var j = 1; j < cells.length; j++){
+            if(cells[j].innerHTML.replace(/(<br>|\n|\t|\r)/g,"") != ''){
+                max = parseFloat(levels[j].innerHTML);
+            }
+        }
+        sum += max;
+    }
+    document.getElementById("suma_campos").innerHTML = sum;
+  }
+
   function post(){
     var title = document.getElementById("title").value;
     var min = document.getElementById("intervalo_min").value;
@@ -283,6 +304,13 @@ Rúbricas - Plataforma de evaluación
       falta.push("-Duración máxima\n");
       b = false;
     }
+
+    max_sum()
+    if(document.getElementById("suma_campos").innerHTML != 6){
+        b=false
+        falta.push("-Suma total de campos es diferente de 6\n");
+    }
+
     if(!b){
       var alert_text = 'Faltan los siguientes campos: \n';
       for (var i = 0; i < falta.length; i++) {
