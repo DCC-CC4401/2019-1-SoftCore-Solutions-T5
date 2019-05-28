@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -72,3 +74,11 @@ def delete_evaluation(request):
     return render(request, 'evaluation/evaluation_list.html', {'evaluations': eval,
                                                                'courses': courses,
                                                                'rubrics': rubrics})
+
+def evaluation_details(request, evaluation_key):
+    evaluation= Evaluation.objects.get(id=evaluation_key)
+    return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation})
+
+def evaluation_modify(request, evaluation_key):
+    evaluation= Evaluation.object.get(id=evaluation_key)
+    return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation})
