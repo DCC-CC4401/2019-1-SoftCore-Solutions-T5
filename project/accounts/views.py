@@ -77,8 +77,13 @@ def account_details(request, account_key):
 
     """Para cuando se seleccione el botón de curso"""
 
-     # filter puede retornar más de un parámetro
-    return render(request, 'accounts/accounts_modify.html', {'account': account})
+    # filter puede retornar más de un parámetro
+    users = User.objects.all()
+    mails = []
+    for user in users:
+        if user.email != account.correo:
+            mails.append(user.email)
+    return render(request, 'accounts/accounts_modify.html', {'account': account, 'mails':mails})
 
 def delete_account(request):
     if request.method=='POST':

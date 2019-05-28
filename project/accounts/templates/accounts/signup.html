@@ -124,6 +124,11 @@ Evaluadores - Plataforma de evaluación
 
 {% block script %}
 <script>
+
+function goToDetailsModify(nombre, apellido) {
+  location.href= "/accounts/signup/" + nombre + "-" + apellido;
+}
+
 function randomPassword(length) {
     var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP1234567890";
     var pass = "";
