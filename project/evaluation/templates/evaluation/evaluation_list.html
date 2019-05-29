@@ -20,7 +20,7 @@ Evaluaciones - Plataforma de evaluación
     {% for data in evaluations %}
     <div class="w3-row-padding w3-center w3-margin-top">
         <div class="w3-quarter w3-margin-top">
-            <button onclick="goToDetails('{{evaluation.id}}')"><!-- El onclick debiera ir a los detalles -->
+            <button onclick="goToDetails('{{data.0}}')"><!-- La evaluación se identifica por el nombre -->
                 <h3>{{data.0.name}}</h3>
                 <h5>{{data.1.course.title}}</h5>
                 <br>
@@ -36,7 +36,7 @@ Evaluaciones - Plataforma de evaluación
 
             <br>
 
-            <button class="w3-btn w3-red" onclick="">Modificar</button><!-- Aquí debe ir goToDetailsModify() -->
+            <button class="w3-btn w3-red" onclick="goToDetailsModify('{{data.0}}')">Modificar</button><!-- Aquí debe ir goToDetailsModify() -->
             <button onclick="document.getElementById('delete_evaluation_{{forloop.counter}}').style.display='block'" class="w3-btn w3-red">Eliminar</button><!-- Lógica de eliminación de un curso, invoca a delete_evaluation -->
             <div class="w3-modal" id="delete_evaluation_{{forloop.counter}}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
@@ -134,8 +134,11 @@ Evaluaciones - Plataforma de evaluación
 
 {% block script %}
 <script>
-function goToDetails(evaluation_id) {
-    location.href= evaluation_id;
+function goToDetails(evaluation_name) {
+    location.href= evaluation_name;
+}
+function goToDetailsModify(evaluation_name) {
+    location.href= "modify/" + evaluation_name;
 }
 </script>
 {% endblock %}
