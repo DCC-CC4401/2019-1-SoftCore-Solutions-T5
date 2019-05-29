@@ -6,6 +6,7 @@ from rubrics.models import Rubric
 
 from accounts.models import Account
 
+
 # Create your models here.
 class Evaluation(models.Model):
     name= models.CharField(max_length=200, primary_key=True)
@@ -17,9 +18,11 @@ class Evaluation(models.Model):
     def __str__(self):
         return self.name
 
+
 class Evaluation_Course(models.Model):
     evaluation_name=models.ForeignKey(Evaluation, on_delete=models.CASCADE)
     course=models.ForeignKey(Course, on_delete=models.CASCADE)
+
 
 class Evaluation_Account(models.Model):
     evaluation_name=models.ForeignKey(Evaluation, on_delete=models.CASCADE)

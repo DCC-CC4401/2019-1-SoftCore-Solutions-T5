@@ -59,8 +59,9 @@ def courses_modify(request, course_key):
 
     """Para cuando se seleccione el botón de curso"""
 
-     # filter puede retornar más de un parámetro
+    # filter puede retornar más de un parámetro
     return render(request, 'courses/courses_modify.html', {'course': course})
+
 
 def course_details(request, course_key):
     """Para cuando se seleccione el botón de curso"""

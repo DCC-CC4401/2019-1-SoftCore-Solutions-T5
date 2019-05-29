@@ -7,6 +7,9 @@ from .models import Evaluation, Evaluation_Course, Evaluation_Account
 from courses.models import Course
 from rubrics.models import Rubric
 
+# Para trabajar con queries complejas, como con negación
+from django.db.models import Q
+
 
 def evaluation_list(request):
     if request.method == 'POST':
@@ -40,10 +43,9 @@ def evaluation_list(request):
         eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
         eval.append((evaluation, eval_course))
 
-    return render(request,'evaluation/evaluation_list.html',{'evaluations':eval,
-                                                             'courses':courses,
-                                                             'rubrics':rubrics})
-
+    return render(request,'evaluation/evaluation_list.html', {'evaluations': eval,
+                                                              'courses': courses,
+                                                              'rubrics': rubrics})
 
 
 def delete_evaluation(request):
@@ -66,7 +68,7 @@ def delete_evaluation(request):
     courses = Course.objects.all()
     rubrics = Rubric.objects.all()
 
-    ### Seleccionar las evaluaciones, junto con la info del curso correspondiente
+    # Seleccionar las evaluaciones, junto con la info del curso correspondiente
     for evaluation in evaluations:
         eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
         eval.append((evaluation, eval_course))
@@ -75,10 +77,23 @@ def delete_evaluation(request):
                                                                'courses': courses,
                                                                'rubrics': rubrics})
 
-def evaluation_details(request, evaluation_key):
-    evaluation= Evaluation.objects.get(id=evaluation_key)
-    return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation})
 
-def evaluation_modify(request, evaluation_key):
-    evaluation= Evaluation.object.get(id=evaluation_key)
-    return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation})
+def evaluation_details(request, evaluation_name):
+    evaluation= Evaluation.objects.get(name=evaluation_name)
+    eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation_name)
+    course= eval_course.course
+    return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
+                                                                  'course': course})
+
+
+def evaluation_modify(request, evaluation_name):
+    evaluation= Evaluation.objects.get(name=evaluation_name)
+    eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_name)
+    course = eval_course.course
+    rubric= evaluation.rubric
+    otherCourses= Course.objects.filter(~Q(course=course))
+    otherRubrics=Rubric.objects.filter(~Q(rubric=rubric))
+    return render(request, 'evaluation/evaluation_modify.html', {'evaluation': evaluation,
+                                                                 'course': course,
+                                                                 'otherCourses': otherCourses,
+                                                                 'otherRubrics': otherRubrics})
