@@ -9,7 +9,7 @@ from accounts.models import Account
 
 # Create your models here.
 class Evaluation(models.Model):
-    name= models.CharField(max_length=200, primary_key=True)
+    name= models.CharField(max_length=200)
     init_date= models.DateField()
     fin_date= models.DateField()
     rubric= models.ForeignKey(Rubric, on_delete=models.SET_NULL, null=True)

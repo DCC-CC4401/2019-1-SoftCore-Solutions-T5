@@ -91,7 +91,7 @@ def evaluation_modify(request, evaluation_name):
     eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_name)
     course = eval_course.course
     rubric= evaluation.rubric
-    otherCourses= Course.objects.filter(~Q(course=course))
+    otherCourses= Course.objects.filter(~Q(id=course.id))
     otherRubrics=Rubric.objects.filter(~Q(rubric=rubric))
     return render(request, 'evaluation/evaluation_modify.html', {'evaluation': evaluation,
                                                                  'course': course,
