@@ -8,13 +8,30 @@ Detalles de la evaluación - Plataforma de evaluación
 
 {% if user.is_superuser %}
 
+<style>
+  li{
+
+  cursor:pointer;
+}
+.opcion:hover{
+  opacity:0.5;
+  color: rgb(0, 110, 255);
+}
+.selected{
+  background-color:rgba(10, 202, 10, 0.534);
+
+}
+.presentado{
+  color:rgb(0, 180, 0);
+}
+</style>
+
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
 <!-- Portada -->
   <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
-    <h1 class="w3-xxxlarge w3-text-red"><b>Evaluación</b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b>{{evaluation.name}}</b></h1>
       <hr style="width:50px;border:5px solid red" class="w3-round">
-      <p><h3>Seleccione una evaluación</h3></p>
   </div>
 
   <div class="evaluation-detail">
@@ -23,9 +40,9 @@ Detalles de la evaluación - Plataforma de evaluación
       <div class="row">
         <table class="table">
           <thead>
-          <tr>
+          <tr style="background-color: darkgray">
             <th>Nombre</th>
-            <th>Curso(s??) asociado(s??)</th>
+            <th>Curso asociado</th>
             <th>Fecha de inicio</th>
             <th>Fecha de término</th>
             <th>Rúbrica</th>
@@ -33,7 +50,7 @@ Detalles de la evaluación - Plataforma de evaluación
           </tr>
           </thead>
           <tbody>
-          <tr>
+          <tr style="background-color: lightgray">
             <td>{{evaluation.name}}</td>
             <td><a href="../../courses/{{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}">
               {{course.title}}</a></td>
@@ -56,6 +73,53 @@ Detalles de la evaluación - Plataforma de evaluación
     </div>
   </div>
 
+  <div class="w3-row-padding" style="margin-top:30px">
+        <div class="w3-half w3-margin-bottom ">
+          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32"> Equipos <i class="fas fa-user-friends"></i></li>
+            {% for team in teams %}
+            <li class="presentado w3-padding-16">{{team.name}} <i class="far fa-check-circle"></i> <i class="w3-small">ya presentó</i></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="w3-half w3-margin-bottom ">
+          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32">Evaluadores <i class="fas fa-chalkboard-teacher"></i></li>
+            {% for evaluator in evaluators %}
+            <li class="w3-padding-16">{{evaluator.nombre}} {{evaluator.appellido}}<i style="margin-left: 10px" class="w3-large fas fa-times"></i></li>
+            {% endfor %}
+            <li class=" opcion w3-padding-16" id="mas" onclick="document.getElementById('add_evaluator').style.display='block'"> Agregar evaluador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+
+          </ul>
+        </div>
+      </div>
+
+</div>
+
+<div class="w3-modal" id="add_evaluator">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Agregar Evaluador</h4>
+            <span onclick="document.getElementById('add_evaluator').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <form id="add_evaluator_form" method="post" action="/evaluation/{{evaluation.id}}/addEvaluator/">
+                {% csrf_token %}
+                <div class="form-group">
+                    <ul style="list-style-type: none">
+                        {% for account in accounts %}
+                            {% if account not in evaluators %}
+                                <li><input type="checkbox" name="id_eval_{{forloop.counter0}}" value="{{account.id}}">{{account.nombre}} {{account.appellido}}</li>
+                            {% endif%}
+                        {% endfor %}
+                    </ul>
+                    <input type="hidden" name="number_accounts" value="{{accounts|length}}">
+                </div>
+                <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Agregar</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% else %}

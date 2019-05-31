@@ -7,5 +7,6 @@ urlpatterns=[
     url(r'^$', views.evaluation_list, name="evaluation"),
     url(r'^delete/$', views.delete_evaluation, name='delete_evaluation'),
     url(r'^modify/(?P<evaluation_name>[\w ]+)/$', views.evaluation_modify),
-    url(r'^(?P<evaluation_name>[\w ]+)/$', views.evaluation_details),
+    url(r'^(?P<evaluation_id>[\w ]+)/$', views.evaluation_details),
+    url(r'^(?P<evaluation_id>[\w ]+)/addEvaluator/$', views.add_evaluator),
 ]

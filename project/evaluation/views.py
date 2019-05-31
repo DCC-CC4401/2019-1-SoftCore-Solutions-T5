@@ -4,8 +4,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from .models import Evaluation, Evaluation_Course, Evaluation_Account
-from courses.models import Course
+from courses.models import Course, Team
 from rubrics.models import Rubric
+from accounts.models import Account
 
 # Para trabajar con queries complejas, como con negación
 from django.db.models import Q
@@ -78,12 +79,23 @@ def delete_evaluation(request):
                                                                'rubrics': rubrics})
 
 
-def evaluation_details(request, evaluation_name):
-    evaluation= Evaluation.objects.get(name=evaluation_name)
-    eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation_name)
+def evaluation_details(request, evaluation_id):
+    evaluation= Evaluation.objects.get(id=evaluation_id)
+    eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation)
     course= eval_course.course
+
+    accounts = Account.objects.all()
+    evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
+    accounts_evaluators = []
+    for v in evaluators:
+        accounts_evaluators.append(v.account)
+    teams = Team.objects.filter(course=course)
+
     return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
-                                                                  'course': course})
+                                                                  'course': course,
+                                                                  'accounts': accounts,
+                                                                  'evaluators': accounts_evaluators,
+                                                                  'teams': teams})
 
 
 def evaluation_modify(request, evaluation_name):
@@ -97,3 +109,34 @@ def evaluation_modify(request, evaluation_name):
                                                                  'course': course,
                                                                  'otherCourses': otherCourses,
                                                                  'otherRubrics': otherRubrics})
+
+
+def add_evaluator(request, evaluation_id):
+    evaluation = Evaluation.objects.get(id=evaluation_id)
+
+    if request.method == 'POST':
+        n_accounts = int(request.POST['number_accounts'])
+        for i in range(n_accounts):
+            value = 'id_eval_' + str(i)
+            if value in request.POST:
+                account_id = request.POST[value]
+                acc = Account.objects.get(id=account_id)
+                new_eval_acc = Evaluation_Account.objects.create(evaluation_name=evaluation, account=acc)
+                new_eval_acc.save()
+
+    eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
+    course = eval_course.course
+
+    accounts = Account.objects.all()
+    evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
+
+    accounts_evaluators = []
+    for v in evaluators:
+        accounts_evaluators.append(v.account)
+    teams = Team.objects.filter(course=course)
+
+    return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
+                                                                  'course': course,
+                                                                  'accounts': accounts,
+                                                                  'evaluators': accounts_evaluators,
+                                                                  'teams': teams})

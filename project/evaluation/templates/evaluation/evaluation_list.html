@@ -20,7 +20,7 @@ Evaluaciones - Plataforma de evaluación
     {% for data in evaluations %}
     <div class="w3-row-padding w3-center w3-margin-top">
         <div class="w3-quarter w3-margin-top">
-            <button onclick="goToDetails('{{data.0}}')"><!-- La evaluación se identifica por el nombre -->
+            <button onclick="goToDetails('{{data.0.id}}')"><!-- La evaluación se identifica por el nombre -->
                 <h3>{{data.0.name}}</h3>
                 <h5>{{data.1.course.title}}</h5>
                 <br>
@@ -134,8 +134,8 @@ Evaluaciones - Plataforma de evaluación
 
 {% block script %}
 <script>
-function goToDetails(evaluation_name) {
-    location.href= evaluation_name;
+function goToDetails(evaluation_id) {
+    location.href= evaluation_id;
 }
 function goToDetailsModify(evaluation_name) {
     location.href= "modify/" + evaluation_name;

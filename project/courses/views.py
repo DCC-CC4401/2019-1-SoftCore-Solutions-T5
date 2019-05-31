@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 
-from .models import Course, Student, Team
+from .models import Course, Student, Team, Student_Team
 
 from django.shortcuts import render,redirect
 
@@ -68,8 +68,12 @@ def course_details(request, course_key):
     course_keys= course_key.split("-")
     course= Course.objects.get(code=course_keys[0], section=course_keys[1], year=course_keys[2], semester=course_keys[3])
     teamsList= Team.objects.filter(course=course)
-    students=Student.objects.all()
+
+    data = []
+    for team in teamsList:
+        students= Student.objects.filter(team=team)
+        data.append((team, students))
      # filter puede retornar más de un parámetro
     lenTeams= teamsList.count()
     print(lenTeams)
-    return render(request, 'courses/course_details.html', {'course': course, 'teams': teamsList, 'lenTeams': lenTeams, 'students': students})
+    return render(request, 'courses/course_details.html', {'course': course, 'teams': data, 'lenTeams': lenTeams})

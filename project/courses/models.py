@@ -21,21 +21,6 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-class Student(models.Model):
-    """Modelo que representa a los estudiantes"""
-    first_name= models.CharField(max_length=100, help_text='Ingrese el(los) nombre(s) del estudiante (Ej: Juan Pedro)')
-    family_name= models.CharField(max_length=100, help_text='Ingrese el(los) apellido(s) del estudiante (Ej: Pérez González)')
-
-    # Un estudiante puede pertencer a más de un equipo a la vez, y un equipo puede tener más de un estudiante a la vez
-    # Esto está dado por la cantidad de cursos y de evaluaciones en las que puede estar
-    team= models.ManyToManyField('Team', help_text='Seleccione un equipo para el estudiante')
-
-    class Meta:
-        unique_together= ('first_name', 'family_name')
-        ordering= ['family_name', 'first_name']
-
-    def __str__(self):
-        return '{}, {}'.format(self.family_name, self.first_name)
 
 class Team(models.Model):
     """Modelo que representa a los equipos"""
@@ -49,3 +34,27 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Student(models.Model):
+    """Modelo que representa a los estudiantes"""
+    first_name = models.CharField(max_length=100, help_text='Ingrese el(los) nombre(s) del estudiante (Ej: Juan Pedro)')
+    family_name = models.CharField(max_length=100,
+                                   help_text='Ingrese el(los) apellido(s) del estudiante (Ej: Pérez González)')
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('first_name', 'family_name')
+        ordering = ['family_name', 'first_name']
+
+    def __str__(self):
+        return '{}, {}'.format(self.family_name, self.first_name)
+
+
+class Student_Team(models.Model):
+   """Modelo que representa la relacion entre estudiantes y equipos"""
+   student = models.ForeignKey(Student, on_delete=models.CASCADE)
+   team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+   def __str__(self):
+       return self.student.first_name + ' ' + self.student.family_name + '-' + self.team.name
