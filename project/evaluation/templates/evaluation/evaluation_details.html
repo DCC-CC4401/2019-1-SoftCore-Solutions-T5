@@ -206,8 +206,9 @@ Detalles de la evaluación - Plataforma de evaluación
         var divs = evaluation.getElementsByTagName('div');
         var res = 1;
         for(var i=0; i<divs.length; i++){
-            res = res + parseFloat(divs[i].getAttribute("name"))
+            res = res + parseFloat(divs[i].getAttribute("name"));
         }
+        res = res.toFixed(1);
         document.getElementById("nota").innerHTML = res;
     }
 </script>
