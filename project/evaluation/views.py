@@ -90,12 +90,14 @@ def evaluation_details(request, evaluation_id):
     for v in evaluators:
         accounts_evaluators.append(v.account)
     teams = Team.objects.filter(course=course)
+    rubric = evaluation.rubric.get_rubric()
 
     return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
                                                                   'course': course,
                                                                   'accounts': accounts,
                                                                   'evaluators': accounts_evaluators,
-                                                                  'teams': teams})
+                                                                  'teams': teams,
+                                                                  'rubric': rubric})
 
 
 def evaluation_modify(request, evaluation_name):

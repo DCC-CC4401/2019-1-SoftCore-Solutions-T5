@@ -25,7 +25,7 @@ Detalles de la evaluación - Plataforma de evaluación
   color:rgb(0, 180, 0);
 }
 </style>
-
+<body onload="load({{rubric}}); calculate_grade()">
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
 <!-- Portada -->
@@ -94,7 +94,17 @@ Detalles de la evaluación - Plataforma de evaluación
           </ul>
         </div>
       </div>
+<div class="w3-container" id="designers" style="margin-top:50px">
+    <div id="evaluate" class="w3-container w3-center">
+        <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> </div>
 
+    </div>
+    <div>
+        <label>Nota Actual: </label> <label id="nota"></label>
+    </div>
+    <div class="w3-panel w3-right w3-half">
+        <button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Entregar evaluación</button>
+    </div>
 </div>
 
 <div class="w3-modal" id="add_evaluator">
@@ -121,7 +131,7 @@ Detalles de la evaluación - Plataforma de evaluación
         </div>
     </div>
 </div>
-
+</body>
 {% else %}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
   <!-- Portada -->
@@ -131,4 +141,74 @@ Detalles de la evaluación - Plataforma de evaluación
 </div>
 {% endif %}
 
+{% endblock %}
+
+{% block script %}
+<script>
+    var li_class = "opcion w3-padding-16";
+    var li_warn_class = "w3-orange w3-xlarge w3-padding-32";
+    var li_select_class = "w3-red w3-xlarge w3-padding-32";
+    var li_warn_html = "<i class='fas fa-exclamation-circle'></i><i class='w3-medium'> falta seleccionar</i>";
+    var li_select_html = "<i class='far fa-check-circle'></i>";
+    function load(rubric){
+        eval = document.getElementById('evaluate');
+        var levels = rubric[0];
+        for(var i=1; i<rubric.length; i++){
+            var row = rubric[i];
+            var div = document.createElement('div');
+            div.className = "w3-panel  w3-margin-bottom";
+            div.setAttribute("id", i);
+            div.setAttribute("name", "0");
+            var ul = document.createElement('ul');
+            ul.className = "w3-ul w3-light-grey w3-center w3-card-4";
+            var li = document.createElement('li');
+            li.className = "w3-orange w3-xlarge w3-padding-32";
+            li.setAttribute("name", row[0]);
+            li.innerHTML = row[0] + '<i class="fas fa-exclamation-circle"></i><i class="w3-medium"> falta seleccionar</i>';
+            ul.appendChild(li);
+            for(var j=1; j<row.length; j++){
+                if(row[j] != ''){
+                    var li = document.createElement('li');
+                    li.setAttribute("name", levels[j]);
+                    li.setAttribute("onclick", 'select(this.parentNode, ' + i + ', ' + levels[j] + ')');
+                    li.className = li_class;
+                    li.innerHTML = row[j];
+                    ul.appendChild(li);
+                }
+            }
+            div.appendChild(ul);
+            eval.appendChild(div);
+        }
+        console.log(eval);
+    }
+
+    function select(ul, id, name){
+        var lis = ul.getElementsByTagName('li');
+        lis[0].className = li_select_class;
+        lis[0].innerHTML = lis[0].getAttribute("name") + ' ' + li_select_html;
+
+        for(var i=1; i<lis.length; i++){
+            li_name = lis[i].getAttribute("name");
+            if(li_name == name){
+                lis[i].className = "opcion w3-padding-16 selected";
+            }else{
+                lis[i].className = "opcion w3-padding-16";
+            }
+        }
+
+        var div = document.getElementById(id);
+        div.setAttribute("name", name);
+        calculate_grade()
+    }
+
+    function calculate_grade(){
+        var evaluation = document.getElementById("evaluate");
+        var divs = evaluation.getElementsByTagName('div');
+        var res = 1;
+        for(var i=0; i<divs.length; i++){
+            res = res + parseFloat(divs[i].getAttribute("name"))
+        }
+        document.getElementById("nota").innerHTML = res;
+    }
+</script>
 {% endblock %}
