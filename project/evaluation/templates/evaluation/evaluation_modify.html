@@ -24,7 +24,7 @@ Modificar la evaluación - Plataforma de evaluación
           <thead>
           <tr>
             <th>Nombre</th>
-            <th>Curso(s??) asociado(s??)</th>
+            <th>Curso(s) asociado(s)</th>
             <th>Fecha de inicio</th>
             <th>Fecha de término</th>
             <th>Rúbrica</th>
@@ -59,39 +59,60 @@ Modificar la evaluación - Plataforma de evaluación
     <h2>Modificar los detalles del curso</h2>
     <br>
 
-    <form name="EvaluationsForm" class="site-form" method="post">
+    <form name="EvaluationsForm" class="site-form" onSubmit="formAction(this)" method="post">
       <input type="hidden" name="length" value=8>
       {% csrf_token %}
+
       <label>Nombre
         <input type="text" name="name" value="{{evaluation.name}}">
       </label>
         <br><br>
+
       <label>Curso
-        <select multiple name="course">
+        <select multiple name="courses">
+          {% for course in courses %}
           {# Teóricamente, aquí debieran poder ser más de 1 #}
           <option value="{{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}"
                   title="{{course.title}}">
             {{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}
           </option>
+          {% endfor %}
         </select>
       </label>
       <p>Nota: mantenga presionada la tecla Ctrl (Windows) o Command (Mac) para seleccionar múltiples opciones.</p>
         <br><br>
+
       <label>Fecha de inicio
         <input type="date" id="init_date" name="init_date" value="{{evaluation.init_date}}">
       </label>
         <br><br>
+
       <label>Fecha de término
         <input type="date" id="fin_date" name="fin_date" value="{{evaluation.fin_date}}">
       </label>
         <br><br>
+
       <label>Rúbrica
-        <input type="radio" name="rubric">
-      </label>
+          <select name="rubric">
+            {% for rubric in rubrics %}
+            <option value="{{rubric.name}}"
+                    title="{{rubric.title}}">
+              {{rubric.name}}
+            </option>
+            {% endfor %}
+          </select>
+        </label>
         <br><br>
-      <label>Estado
-      </label>
+
+
+        <label>Estado
+          <select name="state" >
+            <option value="true">Abierta</option>
+            <option value="false">Cerrada</option>
+          </select>
+        </label>
       <br><br>
+
       <input type="submit" value="Actualizar datos" />
         <br><br>
     </form>
@@ -118,5 +139,11 @@ window.onload= function setDates() {
   init_date.value= new Date(init_date.value).getDate().toISOString();
   console.log("Se debe haber escrito: " + init_date);
 }
+
+function URLonClick(nombre,apellido) {
+    document.accountsForm.action = "/evaluation/modify/"+'{{id}}'+"/"
+}
+
+
 </script>
 {% endblock %}

@@ -105,12 +105,45 @@ def evaluation_modify(request, evaluation_id):
     eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_id)
     course = eval_course.course
     rubric= evaluation.rubric
+    courses=Course.objects.all();
+    rubrics=Rubric.objects.all();
     otherCourses= Course.objects.filter(~Q(id=course.id))
     otherRubrics=Rubric.objects.filter(~Q(rubric=rubric))
+    if request.method=='POST':
+        name = request.POST['name']
+        print(name)
+        init_date = request.POST['init_date']
+        print(init_date)
+        fin_date = request.POST['fin_date']
+        print(fin_date)
+        if request.POST['state']==1:
+            state= True
+        else:
+            state= False
+        print(state)
+        courses= request.POST.getlist('courses')
+        for course in courses:
+            print(1)
+        print(courses)
+        rubric_name= request.POST['rubric']
+        rubric_eval = Rubric.objects.get(name=rubric_name)
+
+        evaluation.name=name
+        evaluation.init_date=init_date
+        evaluation.fin_date=fin_date
+        evaluation.state=state
+        #evaluation.rubric=rubric_eval
+        evaluation.save()
+
+
+        return redirect('/evaluation')
+
     return render(request, 'evaluation/evaluation_modify.html', {'evaluation': evaluation,
                                                                  'course': course,
                                                                  'otherCourses': otherCourses,
-                                                                 'otherRubrics': otherRubrics})
+                                                                 'otherRubrics': otherRubrics,
+                                                                 'courses': courses,
+                                                                 'rubrics': rubrics })
 
 
 def add_evaluator(request, evaluation_id):
