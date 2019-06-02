@@ -36,7 +36,7 @@ Evaluaciones - Plataforma de evaluación
 
             <br>
 
-            <button class="w3-btn w3-red" onclick="goToDetailsModify('{{data.0}}')">Modificar</button><!-- Aquí debe ir goToDetailsModify() -->
+            <button class="w3-btn w3-red" onclick="goToDetailsModify('{{data.0.id}}')">Modificar</button><!-- Aquí debe ir goToDetailsModify() -->
             <button onclick="document.getElementById('delete_evaluation_{{forloop.counter}}').style.display='block'" class="w3-btn w3-red">Eliminar</button><!-- Lógica de eliminación de un curso, invoca a delete_evaluation -->
             <div class="w3-modal" id="delete_evaluation_{{forloop.counter}}">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
@@ -137,8 +137,8 @@ Evaluaciones - Plataforma de evaluación
 function goToDetails(evaluation_id) {
     location.href= evaluation_id;
 }
-function goToDetailsModify(evaluation_name) {
-    location.href= "modify/" + evaluation_name;
+function goToDetailsModify(evaluation_id) {
+    location.href= "modify/" + evaluation_id;
 }
 </script>
 {% endblock %}

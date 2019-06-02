@@ -100,9 +100,9 @@ def evaluation_details(request, evaluation_id):
                                                                   'rubric': rubric})
 
 
-def evaluation_modify(request, evaluation_name):
-    evaluation= Evaluation.objects.get(name=evaluation_name)
-    eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_name)
+def evaluation_modify(request, evaluation_id):
+    evaluation= Evaluation.objects.get(id=evaluation_id)
+    eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_id)
     course = eval_course.course
     rubric= evaluation.rubric
     otherCourses= Course.objects.filter(~Q(id=course.id))
