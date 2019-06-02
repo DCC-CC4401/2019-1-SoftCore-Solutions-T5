@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from .models import Evaluation, Evaluation_Course, Evaluation_Account
@@ -126,20 +126,4 @@ def add_evaluator(request, evaluation_id):
                 new_eval_acc = Evaluation_Account.objects.create(evaluation_name=evaluation, account=acc)
                 new_eval_acc.save()
 
-    eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
-    course = eval_course.course
-
-    accounts = Account.objects.all()
-    evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
-
-    accounts_evaluators = []
-    for v in evaluators:
-        accounts_evaluators.append(v.account)
-    teams = Team.objects.filter(course=course)
-    rubric = evaluation.rubric.get_rubric()
-    return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
-                                                                  'course': course,
-                                                                  'accounts': accounts,
-                                                                  'evaluators': accounts_evaluators,
-                                                                  'teams': teams,
-                                                                  'rubric': rubric})
+    return redirect('/evaluation/' + evaluation_id + '/')
