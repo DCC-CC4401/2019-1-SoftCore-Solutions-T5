@@ -35,7 +35,7 @@ class Evaluation_Account(models.Model):
 class Evaluation_Student(models.Model):
     evaluation_id = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    grade = models.IntegerField()
+    grade = models.FloatField()
 
     def __str__(self):
-        return self.evaluation_id.name + '-' + self.student.nombre + ' ' + self.student.appellido
+        return self.evaluation_id.name + '-' + self.student.first_name + ' ' + self.student.family_name

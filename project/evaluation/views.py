@@ -3,10 +3,10 @@
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from .models import Evaluation, Evaluation_Course, Evaluation_Account
-from courses.models import Course, Team
-from rubrics.models import Rubric
-from accounts.models import Account
+from .models import *
+from courses.models import *
+from rubrics.models import *
+from accounts.models import *
 
 # Para trabajar con queries complejas, como con negación
 from django.db.models import Q
@@ -32,6 +32,14 @@ def evaluation_list(request):
         course_eval = Course.objects.get(code=code, section=section, semester=semester, year=year)
         new_eval_course = Evaluation_Course.objects.create(evaluation_name=new_eval, course=course_eval)
         new_eval_course.save()
+
+        teams = Team.objects.filter(course=course_eval)
+
+        for team in teams:
+            people = Student.objects.filter(team=team)
+            for student in people:
+                eval = Evaluation_Student.objects.create(evaluation_id=new_eval, student=student, grade=0.0)
+                eval.save()
 
     eval = []
     evaluations = Evaluation.objects.all().order_by('init_date')
@@ -92,11 +100,29 @@ def evaluation_details(request, evaluation_id):
     teams = Team.objects.filter(course=course)
     rubric = evaluation.rubric.get_rubric()
 
+    ready = Evaluation_Student.objects.filter(grade__gt=0)
+    ready_teams = []
+    not_ready_teams = []
+    for st in ready:
+        team = st.student.team
+        if team not in ready_teams:
+            ready_teams.append(team)
+    team_members=[]
+    for team in teams:
+        if team not in ready_teams:
+            not_ready_teams.append(team)
+            students = Student.objects.filter(team=team)
+            s = []
+            for st in students:
+                s.append(st.first_name + " " + st.family_name)
+            team_members.append(s)
     return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
                                                                   'course': course,
                                                                   'accounts': accounts,
                                                                   'evaluators': accounts_evaluators,
-                                                                  'teams': teams,
+                                                                  'ready_teams': ready_teams,
+                                                                  'not_ready_teams': not_ready_teams,
+                                                                  'team_members': team_members,
                                                                   'rubric': rubric})
 
 
