@@ -87,6 +87,45 @@ def delete_evaluation(request):
                                                                'rubrics': rubrics})
 
 
+def evaluate(request, evaluation_id):
+    evaluation = Evaluation.objects.get(id=evaluation_id)
+    eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
+    course = eval_course.course
+
+    accounts = Account.objects.all()
+    evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
+    accounts_evaluators = []
+    for v in evaluators:
+        accounts_evaluators.append(v.account)
+    teams = Team.objects.filter(course=course)
+    rubric = evaluation.rubric.get_rubric()
+
+    ready = Evaluation_Student.objects.filter(grade__gt=0)
+    ready_teams = []
+    not_ready_teams = []
+    for st in ready:
+        team = st.student.team
+    if team not in ready_teams:
+        ready_teams.append(team)
+    team_members = []
+    for team in teams:
+        if team not in ready_teams:
+            not_ready_teams.append(team)
+            students = Student.objects.filter(team=team)
+            s = []
+            for st in students:
+                s.append(st.first_name + " " + st.family_name)
+            team_members.append(s)
+    return render(request, 'evaluation/evaluation.html', {'evaluation': evaluation,
+                                                                  'course': course,
+                                                                  'accounts': accounts,
+                                                                  'evaluators': accounts_evaluators,
+                                                                  'ready_teams': ready_teams,
+                                                                  'not_ready_teams': not_ready_teams,
+                                                                  'team_members': team_members,
+                                                                  'rubric': rubric})
+
+
 def evaluation_details(request, evaluation_id):
     evaluation= Evaluation.objects.get(id=evaluation_id)
     eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation)

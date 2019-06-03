@@ -131,18 +131,27 @@ Detalles de la evaluación - Plataforma de evaluación
             <li class="w3-dark-grey w3-xlarge w3-padding-32">Miembros que presentan <i class="fas fa-chalkboard-teacher"></i></li>
 
           </ul>
-          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-              <li class=" opcion w3-padding-16" id="mas" onclick=""> Agregar otro <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
-          </ul>
         </div>
   </div>
 
 <div class="w3-container" id="designers" style="margin-top:50px">
     <div class="w3-panel w3-center w3-half">
-        <button class="w3-button w3-xlarge w3-red" style="margin-left: 80%"> <i class="fas fa-arrow-right"></i> Evaluar</button>
+        <button class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="document.getElementById('submit').style.display='block'"> <i class="fas fa-arrow-right"></i> Evaluar</button>
     </div>
 </div>
 
+<div class="w3-modal" id="submit">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Evaluar</h4>
+            <span onclick="document.getElementById('submit').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('submit').style.display='none'">Cancelar</button>
+                <button class="w3-button w3-block w3-green w3-padding" onclick="evaluate()">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="w3-modal" id="add_evaluator">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center">
@@ -181,23 +190,21 @@ Detalles de la evaluación - Plataforma de evaluación
 
 {% block script %}
 <script>
+function evaluate(){
+    location.href='/evaluation/{{evaluation.id}}/evaluate/'
+}
 function show_members(index, members, element){
     var ul = document.getElementById("team_members");
-    var presentan = document.getElementById("presentan");
-    presentan.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'>Miembros que presentan <i class='fas fa-chalkboard-teacher'></i></li>"
     ul.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'> Miembros del Equipo <i class='fas fa-user-friends'></i></li>";
     team = members[index-1]
     for(var i=0; i<team.length; i++){
         var li1 = document.createElement('li');
         li1.className = "w3-padding-16";
+        li1.setAttribute("onclick", 'select_student(this)');
+        li1.setAttribute("name", '0');
         li1.innerHTML = team[i];
         ul.appendChild(li1);
     }
-
-    var li2 = document.createElement('li');
-    li2.className = "w3-padding-16";
-    li2.innerHTML = team[0];
-    presentan.appendChild(li2);
 
     var equipos = document.getElementById('equipos');
     var lis = equipos.getElementsByTagName('li');
@@ -205,6 +212,36 @@ function show_members(index, members, element){
         lis[i].className="w3-padding-16";
     }
     element.className = "w3-padding-16 selected";
+}
+
+function select_student(element){
+    var name = element.getAttribute("name");
+    if(name=='0'){
+        element.setAttribute("name", '1');
+        element.className = "w3-padding-16 selected";
+    }
+    if(name=='1'){
+        element.setAttribute("name", '0');
+        element.className = "w3-padding-16";
+    }
+    load_members();
+}
+
+function load_members(){
+    var presentan = document.getElementById("presentan");
+    presentan.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'>Miembros que presentan <i class='fas fa-chalkboard-teacher'></i></li>";
+    var members = document.getElementById("team_members");
+    var li_members = members.getElementsByTagName("li");
+    for(var i=0; i< li_members.length; i++){
+        var name = li_members[i].getAttribute("name");
+        if(name=='1'){
+            var li = document.createElement("li");
+            li.innerHTML = li_members[i].innerHTML;
+            li.className = "w3-padding-16";
+            presentan.appendChild(li);
+        }
+    }
+
 }
 </script>
 {% endblock %}
