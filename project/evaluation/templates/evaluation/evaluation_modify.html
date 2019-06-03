@@ -45,9 +45,9 @@ Modificar la evaluación - Plataforma de evaluación
             <td><a href="../../rubrics/details/{{evaluation.rubric}}">{{evaluation.rubric}}</a></td>
             {% endif %}
             {% if evaluation.state %}
-            <td>Abierta</td>
+            <td style="color:green">Abierta</td>
             {% else %}
-            <td color="red">Cerrada</td>
+            <td style="color:red">Cerrada</td>
             {% endif %}
             <td>{{rubric.duration_min}}</td>
             <td>{{rubric.duration_max}}</td>
@@ -114,8 +114,8 @@ Modificar la evaluación - Plataforma de evaluación
 
         <label>Estado
           <select name="state"  value="{{status}}">
-            <option value="true">Abierta</option>
-            <option value="false">Cerrada</option>
+            <option value="1">Abierta</option>
+            <option value="0">Cerrada</option>
           </select>
         </label>
       <br><br>

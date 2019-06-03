@@ -129,12 +129,6 @@ def evaluation_details(request, evaluation_id):
 def evaluation_modify(request, evaluation_id):
     evaluation= Evaluation.objects.get(id=evaluation_id)
     eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_id)
-    if evaluation.state==True:
-        status="Abierta"
-    else:
-        status="Cerrada"
-
-    print(status)
 
     course = eval_course.course
     rubric= evaluation.rubric
@@ -146,10 +140,12 @@ def evaluation_modify(request, evaluation_id):
         name = request.POST['name']
         init_date = request.POST['init_date']
         fin_date = request.POST['fin_date']
-        if request.POST['state']==1:
+        if request.POST['state']=="1":
             state= True
         else:
             state= False
+
+        print(state)
         course= request.POST['courses']
 
         rubric_name= request.POST['rubric']
@@ -164,7 +160,7 @@ def evaluation_modify(request, evaluation_id):
         evaluation.rubric=rubric_eval
         evaluation.save()
 
-        print(course.title)
+        #print(course.title)
         course_keys= course.split("-")
         coursem= Course.objects.get(code=course_keys[0], section=course_keys[1], year=course_keys[2], semester=course_keys[3])
         eval_course.delete()
@@ -183,7 +179,7 @@ def evaluation_modify(request, evaluation_id):
                                                                  'otherCourses': otherCourses,
                                                                  'otherRubrics': otherRubrics,
                                                                  'courses': courses,
-                                                                 'rubrics': rubrics, 'status': status, 'rubric':rubric })
+                                                                 'rubrics': rubrics,'rubric':rubric })
 
 
 def add_evaluator(request, evaluation_id):
