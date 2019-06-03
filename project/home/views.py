@@ -17,7 +17,6 @@ def homepage(request):
             password = user.password
             acc = Account.objects.create(nombre=username, appellido='', correo=email, clave=password, is_superuser=True)
             acc.save()
-    eval = []
     evaluations = Evaluation.objects.order_by('-init_date')
 
     courses = Course.objects.all()
@@ -30,17 +29,16 @@ def homepage(request):
 
     c = 0
 
+    eval = []
+
     for evaluation in evaluations:
         eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
         team_count = len(Team.objects.filter(course=eval_course.course))
-        accounts =[]
-        eval_account = Evaluation_Account.objects.filter(evaluation_name=evaluation)
-        for e in eval_account:
-            accounts.append(e.account)
-        if acc_user in accounts and c<10:
+        eval_account = Evaluation_Account.objects.filter(evaluation_name=evaluation, account=acc_user)
+        print(eval_account)
+        if len(eval_account)==1 and c<10:
             eval.append((evaluation, eval_course, team_count, eval_account))
             c+=1
-
     return render(request,'home/homepage.html', {'evaluations': eval,
                                                  'courses': courses,
                                                  'rubrics': rubrics})
