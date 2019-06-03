@@ -6,8 +6,6 @@ Detalles de la evaluación - Plataforma de evaluación
 
 {% block content %}
 
-{% if user.is_superuser %}
-
 <style>
   li{
 
@@ -107,6 +105,8 @@ Detalles de la evaluación - Plataforma de evaluación
     </div>
 </div>
 
+{# Agregar evaluador es una característica solo para superusuarios #}
+{% if user.is_superuser %}
 <div class="w3-modal" id="add_evaluator">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center">
@@ -132,13 +132,6 @@ Detalles de la evaluación - Plataforma de evaluación
     </div>
 </div>
 </body>
-{% else %}
-<div class="w3-main" style="margin-left:340px;margin-right:40px">
-  <!-- Portada -->
-  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
-    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
-  </div>
-</div>
 {% endif %}
 
 {% endblock %}

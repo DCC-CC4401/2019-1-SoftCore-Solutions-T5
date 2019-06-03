@@ -6,8 +6,6 @@ Detalles de la evaluación - Plataforma de evaluación
 
 {% block content %}
 
-{% if user.is_superuser %}
-
 <style>
   li{
 
@@ -88,6 +86,7 @@ Detalles de la evaluación - Plataforma de evaluación
           </ul>
         </div>
 
+      {% if user.is_superuser %}
         <div class="w3-half w3-margin-bottom ">
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
             <li class="w3-dark-grey w3-xlarge w3-padding-32">Evaluadores <i class="fas fa-chalkboard-teacher"></i></li>
@@ -116,6 +115,7 @@ Detalles de la evaluación - Plataforma de evaluación
 
           </ul>
         </div>
+      {% endif %}
   </div>
 
   <div class="w3-row-padding" style="margin-top:30px">
@@ -177,14 +177,6 @@ Detalles de la evaluación - Plataforma de evaluación
     </div>
 </div>
 </body>
-{% else %}
-<div class="w3-main" style="margin-left:340px;margin-right:40px">
-  <!-- Portada -->
-  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
-    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
-  </div>
-</div>
-{% endif %}
 
 {% endblock %}
 
