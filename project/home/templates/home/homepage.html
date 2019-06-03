@@ -26,10 +26,10 @@ Plataforma de evaluación
         <i class="fas fa-book" style="font-size:100px"></i>
         <p>Desde: {{data.0.init_date}}</p>
         <p>Hasta: {{data.0.fin_date}}</p>
-        {% if data.3.count == data.2 %}
+        {% if data.3.0.count == data.2 %}
         <p>Estado: Contestada</p>
         {% else %}
-        <p>Estado: Pendiente</p>
+        <p>Estado: Pendientes {{data.3.0.count}} / {{data.2}}</p>
         {% endif %}
       </button>
     </div>

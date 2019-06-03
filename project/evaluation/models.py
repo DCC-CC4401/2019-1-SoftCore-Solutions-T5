@@ -30,7 +30,7 @@ class Evaluation_Account(models.Model):
     count=models.IntegerField()
 
     def __str__(self):
-        return self.evaluation_name.name + '-' + self.account.nombre + ' ' + self.account.appellido
+        return self.evaluation_name.name + '-' + self.account.nombre + ' ' + self.account.appellido + '' + str(self.count)
 
 
 class Evaluation_Student(models.Model):
