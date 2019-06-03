@@ -7,6 +7,16 @@ from rubrics.models import Rubric
 from accounts.models import Account
 
 def homepage(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        try:
+            user = request.user
+            email = user.email
+            acc = Account.objects.get(correo=email)
+        except Account.DoesNotExist:
+            username = user.username
+            password = user.password
+            acc = Account.objects.create(nombre=username, appellido='', correo=email, clave=password, is_superuser=True)
+            acc.save()
     eval = []
     evaluations = Evaluation.objects.order_by('-init_date')
 
