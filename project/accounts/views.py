@@ -7,6 +7,7 @@ from django.shortcuts import render,redirect
 from django.http import *
 from .models import Account
 from .forms import AccountForm
+from django.db.models import Q
 
 # Create your views here.
 def signup_view(request):
@@ -24,7 +25,8 @@ def signup_view(request):
         user.save()
         accounts = Account.objects.all()
         return redirect('/accounts/signup', {'accounts': accounts})
-    accounts = Account.objects.all()
+    accounts = Account.objects.filter(~Q(correo=request.user.email))
+    print(request.user.email)
     users = User.objects.all()
     mails = []
     for user in users:
