@@ -29,6 +29,8 @@ Modificar la evaluación - Plataforma de evaluación
             <th>Fecha de término</th>
             <th>Rúbrica</th>
             <th>Estado</th>
+            <th>Duración mínima esperada</th>
+            <th>Duración máxima esperada</th>
           </tr>
           </thead>
           <tbody>
@@ -48,6 +50,8 @@ Modificar la evaluación - Plataforma de evaluación
             {% else %}
             <td color="red">Cerrada</td>
             {% endif %}
+            <td>{{rubric.duration_min}}</td>
+            <td>{{rubric.duration_max}}</td>
           </tr>
           </tbody>
         </table>

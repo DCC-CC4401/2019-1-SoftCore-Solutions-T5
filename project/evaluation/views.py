@@ -157,7 +157,7 @@ def evaluation_modify(request, evaluation_id):
                                                                  'otherCourses': otherCourses,
                                                                  'otherRubrics': otherRubrics,
                                                                  'courses': courses,
-                                                                 'rubrics': rubrics, 'status': status })
+                                                                 'rubrics': rubrics, 'status': status, 'rubric':rubric })
 
 
 def add_evaluator(request, evaluation_id):
