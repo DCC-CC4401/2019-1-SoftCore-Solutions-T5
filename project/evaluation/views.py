@@ -131,6 +131,11 @@ def evaluation_details(request, evaluation_id):
     eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation)
     course= eval_course.course
 
+    evaluations_done = Evaluation_Student_Presented.objects.filter(evaluation_id=evaluation)
+    students_evaluated = []
+    for e in evaluations_done:
+        students_evaluated.append(e.student)
+
     accounts = Account.objects.filter(~Q(correo=request.user.email))
     evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
     accounts_evaluators = []
@@ -153,7 +158,10 @@ def evaluation_details(request, evaluation_id):
             students = Student.objects.filter(team=team)
             s = []
             for st in students:
-                s.append(st.first_name + " " + st.family_name)
+                if st in students_evaluated:
+                    s.append([st.first_name + " " + st.family_name, 1])
+                else:
+                    s.append([st.first_name + " " + st.family_name, 0])
             team_members.append(s)
 
     return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
