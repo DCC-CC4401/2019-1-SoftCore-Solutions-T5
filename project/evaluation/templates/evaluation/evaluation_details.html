@@ -198,9 +198,10 @@ function show_members(index, members, element){
     li2.className = "w3-padding-16";
     li2.innerHTML = team[0];
     presentan.appendChild(li2);
+
     var equipos = document.getElementById('equipos');
     var lis = equipos.getElementsByTagName('li');
-    for(var i=1; i<lis.length; i++){
+    for(var i=0; i<lis.length; i++){
         lis[i].className="w3-padding-16";
     }
     element.className = "w3-padding-16 selected";
