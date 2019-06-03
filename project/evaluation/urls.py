@@ -9,4 +9,5 @@ urlpatterns=[
     url(r'^modify/(?P<evaluation_id>[\w ]+)/$', views.evaluation_modify),
     url(r'^(?P<evaluation_id>[\w ]+)/$', views.evaluation_details),
     url(r'^(?P<evaluation_id>[\w ]+)/addEvaluator/$', views.add_evaluator),
+    url(r'^(?P<evaluation_id>[\w ]+)/deleteEvaluator/$', views.delete_evaluator),
 ]

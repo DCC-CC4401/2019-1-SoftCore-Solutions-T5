@@ -25,7 +25,7 @@ Detalles de la evaluación - Plataforma de evaluación
   color:rgb(0, 180, 0);
 }
 </style>
-<body>
+<body onload="load({{rubric}}); calculate_grade()">
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
 <!-- Portada -->
@@ -77,13 +77,8 @@ Detalles de la evaluación - Plataforma de evaluación
         <div class="w3-half w3-margin-bottom ">
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
             <li class="w3-dark-grey w3-xlarge w3-padding-32"> Equipos <i class="fas fa-user-friends"></i></li>
-            {% for team in ready_teams %}
+            {% for team in teams %}
             <li class="presentado w3-padding-16">{{team.name}} <i class="far fa-check-circle"></i> <i class="w3-small">ya presentó</i></li>
-            {% endfor %}
-          </ul>
-            <ul id="equipos" class="w3-ul w3-light-grey w3-center w3-card-4">
-            {% for team in not_ready_teams %}
-            <li onclick="show_members('{{forloop.counter}}', {{team_members}}, this)" class="w3-padding-16">{{team.name}}</li>
             {% endfor %}
           </ul>
         </div>
@@ -92,54 +87,23 @@ Detalles de la evaluación - Plataforma de evaluación
           <ul class="w3-ul w3-light-grey w3-center w3-card-4">
             <li class="w3-dark-grey w3-xlarge w3-padding-32">Evaluadores <i class="fas fa-chalkboard-teacher"></i></li>
             {% for evaluator in evaluators %}
-            <li class="w3-padding-16">{{evaluator.nombre}} {{evaluator.appellido}}<i style="margin-left: 10px" class="w3-large fas fa-times" onclick="document.getElementById('delete_evaluator_{{evaluator.id}}').style.display='block'"></i></li>
-              <div class="w3-modal" id="delete_evaluator_{{evaluator.id}}">
-                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-                    <div class="w3-center">
-                        <h4 class="modal-title">Eliminar Evaluador</h4>
-                        <span onclick="document.getElementById('delete_evaluator_{{evaluator.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-                        <div class="w3-section">
-                            <div>¿Está seguro que quiere eliminar al evaluador/a {{evaluator.nombre}} {{evaluator.appellido}}?</div>
-                            <form id="delete_evaluator_form_{{evaluator.id}}" method="post" action="/evaluation/{{evaluation.id}}/deleteEvaluator/">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <input type="hidden" name="evaluator_id" value="{{evaluator.id}}">
-                            </div>
-                            <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <li class="w3-padding-16">{{evaluator.nombre}} {{evaluator.appellido}}<i style="margin-left: 10px" class="w3-large fas fa-times"></i></li>
             {% endfor %}
             <li class=" opcion w3-padding-16" id="mas" onclick="document.getElementById('add_evaluator').style.display='block'"> Agregar evaluador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
 
           </ul>
         </div>
-  </div>
-
-  <div class="w3-row-padding" style="margin-top:30px">
-        <div class="w3-half w3-margin-bottom ">
-          <ul id="team_members" class="w3-ul w3-light-grey w3-center w3-card-4">
-            <li class="w3-dark-grey w3-xlarge w3-padding-32"> Miembros del Equipo <i class="fas fa-user-friends"></i></li>
-
-          </ul>
-        </div>
-
-        <div class="w3-half w3-margin-bottom ">
-          <ul id="presentan" class="w3-ul w3-light-grey w3-center w3-card-4">
-            <li class="w3-dark-grey w3-xlarge w3-padding-32">Miembros que presentan <i class="fas fa-chalkboard-teacher"></i></li>
-
-          </ul>
-          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
-              <li class=" opcion w3-padding-16" id="mas" onclick=""> Agregar otro <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
-          </ul>
-        </div>
-  </div>
-
+      </div>
 <div class="w3-container" id="designers" style="margin-top:50px">
-    <div class="w3-panel w3-center w3-half">
-        <button class="w3-button w3-xlarge w3-red" style="margin-left: 80%"> <i class="fas fa-arrow-right"></i> Evaluar</button>
+    <div id="evaluate" class="w3-container w3-center">
+        <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> </div>
+
+    </div>
+    <div>
+        <label>Nota Actual: </label> <label id="nota"></label>
+    </div>
+    <div class="w3-panel w3-right w3-half">
+        <button class="w3-button w3-xlarge w3-red" style="margin-left: 15%"> <i class="fas fa-envelope-open-text"></i> Entregar evaluación</button>
     </div>
 </div>
 
@@ -181,29 +145,71 @@ Detalles de la evaluación - Plataforma de evaluación
 
 {% block script %}
 <script>
-function show_members(index, members, element){
-    var ul = document.getElementById("team_members");
-    var presentan = document.getElementById("presentan");
-    presentan.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'>Miembros que presentan <i class='fas fa-chalkboard-teacher'></i></li>"
-    ul.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'> Miembros del Equipo <i class='fas fa-user-friends'></i></li>";
-    team = members[index-1]
-    for(var i=0; i<team.length; i++){
-        var li1 = document.createElement('li');
-        li1.className = "w3-padding-16";
-        li1.innerHTML = team[i];
-        ul.appendChild(li1);
+    var li_class = "opcion w3-padding-16";
+    var li_warn_class = "w3-orange w3-xlarge w3-padding-32";
+    var li_select_class = "w3-red w3-xlarge w3-padding-32";
+    var li_warn_html = "<i class='fas fa-exclamation-circle'></i><i class='w3-medium'> falta seleccionar</i>";
+    var li_select_html = "<i class='far fa-check-circle'></i>";
+    function load(rubric){
+        eval = document.getElementById('evaluate');
+        var levels = rubric[0];
+        for(var i=1; i<rubric.length; i++){
+            var row = rubric[i];
+            var div = document.createElement('div');
+            div.className = "w3-panel  w3-margin-bottom";
+            div.setAttribute("id", i);
+            div.setAttribute("name", "0");
+            var ul = document.createElement('ul');
+            ul.className = "w3-ul w3-light-grey w3-center w3-card-4";
+            var li = document.createElement('li');
+            li.className = "w3-orange w3-xlarge w3-padding-32";
+            li.setAttribute("name", row[0]);
+            li.innerHTML = row[0] + '<i class="fas fa-exclamation-circle"></i><i class="w3-medium"> falta seleccionar</i>';
+            ul.appendChild(li);
+            for(var j=1; j<row.length; j++){
+                if(row[j] != ''){
+                    var li = document.createElement('li');
+                    li.setAttribute("name", levels[j]);
+                    li.setAttribute("onclick", 'select(this.parentNode, ' + i + ', ' + levels[j] + ')');
+                    li.className = li_class;
+                    li.innerHTML = row[j];
+                    ul.appendChild(li);
+                }
+            }
+            div.appendChild(ul);
+            eval.appendChild(div);
+        }
+        console.log(eval);
     }
 
-    var li2 = document.createElement('li');
-    li2.className = "w3-padding-16";
-    li2.innerHTML = team[0];
-    presentan.appendChild(li2);
-    var equipos = document.getElementById('equipos');
-    var lis = equipos.getElementsByTagName('li');
-    for(var i=1; i<lis.length; i++){
-        lis[i].className="w3-padding-16";
+    function select(ul, id, name){
+        var lis = ul.getElementsByTagName('li');
+        lis[0].className = li_select_class;
+        lis[0].innerHTML = lis[0].getAttribute("name") + ' ' + li_select_html;
+
+        for(var i=1; i<lis.length; i++){
+            li_name = lis[i].getAttribute("name");
+            if(li_name == name){
+                lis[i].className = "opcion w3-padding-16 selected";
+            }else{
+                lis[i].className = "opcion w3-padding-16";
+            }
+        }
+
+        var div = document.getElementById(id);
+        div.setAttribute("name", name);
+        calculate_grade()
     }
-    element.className = "w3-padding-16 selected";
-}
+
+    function calculate_grade(){
+        var evaluation = document.getElementById("evaluate");
+        var divs = evaluation.getElementsByTagName('div');
+        var res = 1;
+        for(var i=0; i<divs.length; i++){
+            res = res + parseFloat(divs[i].getAttribute("name"));
+        }
+        res = res.toFixed(1);
+        document.getElementById("nota").innerHTML = res;
+    }
 </script>
 {% endblock %}
