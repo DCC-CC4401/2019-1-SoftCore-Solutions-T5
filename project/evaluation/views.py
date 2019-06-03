@@ -160,3 +160,17 @@ def add_evaluator(request, evaluation_id):
                 new_eval_acc.save()
 
     return redirect('/evaluation/' + evaluation_id + '/')
+
+
+def delete_evaluator(request, evaluation_id):
+    evaluation = Evaluation.objects.get(id=evaluation_id)
+
+    if request.method == 'POST':
+        print('se recibio algo')
+        evaluator_id = int(request.POST['evaluator_id'])
+        evaluator = Account.objects.get(id=evaluator_id)
+        print(evaluator)
+        eval_acc = Evaluation_Account.objects.get(evaluation_name=evaluation, account=evaluator)
+        eval_acc.delete()
+
+    return redirect('/evaluation/' + evaluation_id + '/')
