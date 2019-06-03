@@ -103,6 +103,13 @@ def evaluation_details(request, evaluation_id):
 def evaluation_modify(request, evaluation_id):
     evaluation= Evaluation.objects.get(id=evaluation_id)
     eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_id)
+    if evaluation.state==True:
+        status="Abierta"
+    else:
+        status="Cerrada"
+
+    print(status)
+
     course = eval_course.course
     rubric= evaluation.rubric
     courses=Course.objects.all();
@@ -111,29 +118,36 @@ def evaluation_modify(request, evaluation_id):
     otherRubrics=Rubric.objects.filter(~Q(rubric=rubric))
     if request.method=='POST':
         name = request.POST['name']
-        print(name)
         init_date = request.POST['init_date']
-        print(init_date)
         fin_date = request.POST['fin_date']
-        print(fin_date)
         if request.POST['state']==1:
             state= True
         else:
             state= False
-        print(state)
-        courses= request.POST.getlist('courses')
-        for course in courses:
-            print(1)
-        print(courses)
+        course= request.POST['courses']
+
         rubric_name= request.POST['rubric']
         rubric_eval = Rubric.objects.get(name=rubric_name)
 
         evaluation.name=name
-        evaluation.init_date=init_date
-        evaluation.fin_date=fin_date
+        if init_date!='':
+            evaluation.init_date=init_date
+        if fin_date!='':
+            evaluation.fin_date=fin_date
         evaluation.state=state
-        #evaluation.rubric=rubric_eval
+        evaluation.rubric=rubric_eval
         evaluation.save()
+
+        print(course.title)
+        course_keys= course.split("-")
+        coursem= Course.objects.get(code=course_keys[0], section=course_keys[1], year=course_keys[2], semester=course_keys[3])
+        eval_course.delete()
+        eval_course = Evaluation_Course.objects.create(evaluation_name=evaluation, course=coursem)
+        #print(eval.evaluation_name)
+
+        #new_eval_course = Evaluation_Course.objects.create(evaluation_name=evaluation, course=course)
+
+
 
 
         return redirect('/evaluation')
@@ -143,7 +157,7 @@ def evaluation_modify(request, evaluation_id):
                                                                  'otherCourses': otherCourses,
                                                                  'otherRubrics': otherRubrics,
                                                                  'courses': courses,
-                                                                 'rubrics': rubrics })
+                                                                 'rubrics': rubrics, 'status': status })
 
 
 def add_evaluator(request, evaluation_id):
