@@ -24,6 +24,9 @@ Detalles de la evaluación - Plataforma de evaluación
 .presentado{
   color:rgb(0, 180, 0);
 }
+tr:nth-child(even) {
+        background-color: #FFA07A;
+}
 </style>
 <body>
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
@@ -134,12 +137,6 @@ Detalles de la evaluación - Plataforma de evaluación
         </div>
   </div>
 
-<div class="w3-container" id="designers" style="margin-top:50px">
-    <div class="w3-panel w3-center w3-half">
-        <button class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="document.getElementById('submit').style.display='block'"> <i class="fas fa-arrow-right"></i> Evaluar</button>
-    </div>
-</div>
-
 <div class="w3-modal" id="submit">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center">
@@ -147,7 +144,7 @@ Detalles de la evaluación - Plataforma de evaluación
             <span onclick="document.getElementById('submit').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
             <div class="w3-section">
                 <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('submit').style.display='none'">Cancelar</button>
-                <button class="w3-button w3-block w3-green w3-padding" onclick="evaluate()">Continuar</button>
+                <button class="w3-button w3-block w3-green w3-padding" onclick="start_evaluation('{{evaluation.id}}')">Continuar</button>
             </div>
         </div>
     </div>
@@ -176,6 +173,39 @@ Detalles de la evaluación - Plataforma de evaluación
         </div>
     </div>
 </div>
+    <div>
+        <table id="rubric" style="font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        cursor: pointer;
+        margin: 10px 0.5% 0.5%;
+        table-layout: fixed">
+    <tr>
+      {% for level in levels %}
+      <th style="border: 1px solid #665f5f;
+        text-align: center;
+        padding: 2.3%;">{{level}}</th>
+      {% endfor %}
+
+    </tr>
+    {% for row in rows %}
+    <tr>
+      {% for field in row %}
+      <td style="border: 1px solid #665f5f;
+        text-align: center;
+        padding: 2.3%;">{{field}}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+
+  </table>
+    </div>
+
+    <div class="w3-container" id="designers" style="margin-top:50px">
+    <div class="w3-panel w3-center w3-half">
+        <button class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="document.getElementById('submit').style.display='block'"> <i class="fas fa-arrow-right"></i> Evaluar</button>
+    </div>
+</div>
 </body>
 {% else %}
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
@@ -190,8 +220,18 @@ Detalles de la evaluación - Plataforma de evaluación
 
 {% block script %}
 <script>
-function evaluate(){
-    location.href='/evaluation/{{evaluation.id}}/evaluate/'
+function start_evaluation(id){
+    var data = new FormData();
+    var students = 0;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+       document.location='{% url 'rubrics:rubrics' %}';
+      }
+    };
+    xhttp.open("POST", "{% url 'rubrics:rubrics' %}", true);
+    xhttp.send(data);
+    document.location.href='/evaluation/'+id+'/evaluate/';
 }
 function show_members(index, members, element){
     var ul = document.getElementById("team_members");

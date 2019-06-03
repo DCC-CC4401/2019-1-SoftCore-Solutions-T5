@@ -155,6 +155,7 @@ def evaluation_details(request, evaluation_id):
             for st in students:
                 s.append(st.first_name + " " + st.family_name)
             team_members.append(s)
+
     return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
                                                                   'course': course,
                                                                   'accounts': accounts,
@@ -162,7 +163,8 @@ def evaluation_details(request, evaluation_id):
                                                                   'ready_teams': ready_teams,
                                                                   'not_ready_teams': not_ready_teams,
                                                                   'team_members': team_members,
-                                                                  'rubric': rubric})
+                                                                  'rubric': rubric, 'levels': rubric[0],
+                                                                  'rows': rubric[1:]})
 
 
 def evaluation_modify(request, evaluation_id):
@@ -171,8 +173,8 @@ def evaluation_modify(request, evaluation_id):
 
     course = eval_course.course
     rubric= evaluation.rubric
-    courses=Course.objects.all();
-    rubrics=Rubric.objects.all();
+    courses=Course.objects.all()
+    rubrics=Rubric.objects.all()
     otherCourses= Course.objects.filter(~Q(id=course.id))
     otherRubrics=Rubric.objects.filter(~Q(rubric=rubric))
     if request.method=='POST':
