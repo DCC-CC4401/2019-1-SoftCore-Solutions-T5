@@ -104,7 +104,7 @@ Modificar el curso - Plataforma de evaluación
 
 {% block script %}
 <script>
-function URLonClick(nombre,apellido) {
+function URLonClick() {
     document.accountsForm.action = "/courses/modify/"+'{{code}}'+"-"+'{{session}}'+"-"+"{{year}}"+"-"+"{{semester}}"+"/"
 }
 

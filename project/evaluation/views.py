@@ -103,14 +103,61 @@ def evaluation_details(request, evaluation_id):
 def evaluation_modify(request, evaluation_id):
     evaluation= Evaluation.objects.get(id=evaluation_id)
     eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation_id)
+    if evaluation.state==True:
+        status="Abierta"
+    else:
+        status="Cerrada"
+
+    print(status)
+
     course = eval_course.course
     rubric= evaluation.rubric
+    courses=Course.objects.all();
+    rubrics=Rubric.objects.all();
     otherCourses= Course.objects.filter(~Q(id=course.id))
     otherRubrics=Rubric.objects.filter(~Q(rubric=rubric))
+    if request.method=='POST':
+        name = request.POST['name']
+        init_date = request.POST['init_date']
+        fin_date = request.POST['fin_date']
+        if request.POST['state']==1:
+            state= True
+        else:
+            state= False
+        course= request.POST['courses']
+
+        rubric_name= request.POST['rubric']
+        rubric_eval = Rubric.objects.get(name=rubric_name)
+
+        evaluation.name=name
+        if init_date!='':
+            evaluation.init_date=init_date
+        if fin_date!='':
+            evaluation.fin_date=fin_date
+        evaluation.state=state
+        evaluation.rubric=rubric_eval
+        evaluation.save()
+
+        print(course.title)
+        course_keys= course.split("-")
+        coursem= Course.objects.get(code=course_keys[0], section=course_keys[1], year=course_keys[2], semester=course_keys[3])
+        eval_course.delete()
+        eval_course = Evaluation_Course.objects.create(evaluation_name=evaluation, course=coursem)
+        #print(eval.evaluation_name)
+
+        #new_eval_course = Evaluation_Course.objects.create(evaluation_name=evaluation, course=course)
+
+
+
+
+        return redirect('/evaluation')
+
     return render(request, 'evaluation/evaluation_modify.html', {'evaluation': evaluation,
                                                                  'course': course,
                                                                  'otherCourses': otherCourses,
-                                                                 'otherRubrics': otherRubrics})
+                                                                 'otherRubrics': otherRubrics,
+                                                                 'courses': courses,
+                                                                 'rubrics': rubrics, 'status': status })
 
 
 def add_evaluator(request, evaluation_id):
@@ -125,5 +172,19 @@ def add_evaluator(request, evaluation_id):
                 acc = Account.objects.get(id=account_id)
                 new_eval_acc = Evaluation_Account.objects.create(evaluation_name=evaluation, account=acc)
                 new_eval_acc.save()
+
+    return redirect('/evaluation/' + evaluation_id + '/')
+
+
+def delete_evaluator(request, evaluation_id):
+    evaluation = Evaluation.objects.get(id=evaluation_id)
+
+    if request.method == 'POST':
+        print('se recibio algo')
+        evaluator_id = int(request.POST['evaluator_id'])
+        evaluator = Account.objects.get(id=evaluator_id)
+        print(evaluator)
+        eval_acc = Evaluation_Account.objects.get(evaluation_name=evaluation, account=evaluator)
+        eval_acc.delete()
 
     return redirect('/evaluation/' + evaluation_id + '/')
