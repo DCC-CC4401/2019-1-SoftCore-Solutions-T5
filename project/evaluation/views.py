@@ -131,7 +131,7 @@ def evaluation_details(request, evaluation_id):
     eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation)
     course= eval_course.course
 
-    accounts = Account.objects.all()
+    accounts = Account.objects.filter(~Q(correo=request.user.email))
     evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
     accounts_evaluators = []
     for v in evaluators:

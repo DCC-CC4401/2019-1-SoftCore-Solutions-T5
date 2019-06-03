@@ -15,6 +15,11 @@ Cursos - Plataforma de evaluación
     <hr style="width:50px;border:5px solid red" class="w3-round">
       <p><h3>Seleccione un curso</h3></p>
   </div>
+  {% if messages %}
+    {% for message in messages %}
+      <h3 style="color: red">{{message}}</h3>
+    {% endfor %}
+  {% endif %}
 
 <!--Cajas cursos-->
 {% for course in courses %}

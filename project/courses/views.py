@@ -17,10 +17,16 @@ def courses_list(request):
         section = request.POST['section']
         year = request.POST['year']
         if (title != '' and code != '' and semester != '' and section != '' and year != ''):
-            course = Course.objects.create(title = title, code = code,
+            try:
+                course = Course.objects.get(title = title, code = code,
                                            semester = semester,
                                            section = section, year = year)
-            course.save()
+                messages.error(request, 'El curso que intenta crear ya existe')
+            except Course.DoesNotExist:
+                course = Course.objects.create(title = title, code = code,
+                                               semester = semester,
+                                               section = section, year = year)
+                course.save()
         courses = Course.objects.all().order_by('semester')
         return redirect('/courses', {'courses': courses})
 
