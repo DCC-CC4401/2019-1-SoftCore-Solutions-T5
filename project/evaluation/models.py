@@ -27,6 +27,7 @@ class Evaluation_Course(models.Model):
 class Evaluation_Account(models.Model):
     evaluation_name=models.ForeignKey(Evaluation, on_delete=models.CASCADE)
     account=models.ForeignKey(Account, on_delete=models.CASCADE)
+    count=models.IntegerField()
 
     def __str__(self):
         return self.evaluation_name.name + '-' + self.account.nombre + ' ' + self.account.appellido

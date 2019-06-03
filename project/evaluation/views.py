@@ -192,7 +192,7 @@ def add_evaluator(request, evaluation_id):
             if value in request.POST:
                 account_id = request.POST[value]
                 acc = Account.objects.get(id=account_id)
-                new_eval_acc = Evaluation_Account.objects.create(evaluation_name=evaluation, account=acc)
+                new_eval_acc = Evaluation_Account.objects.create(evaluation_name=evaluation, account=acc, count=0)
                 new_eval_acc.save()
 
     return redirect('/evaluation/' + evaluation_id + '/')
