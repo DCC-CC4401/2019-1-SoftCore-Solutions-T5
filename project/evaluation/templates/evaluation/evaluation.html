@@ -107,7 +107,7 @@ Detalles de la evaluación - Plataforma de evaluación
                 <input type="hidden" name="nota_evaluation" id="nota_evaluation">
                 <input type="hidden" name="evaluator_mail" value="{{request.user.email}}">
                 {% for student in students %}
-                <input type="hidden" name="campo{{forloop.counter}}" value="{{student.first_name}} {{student.family_name}}"</input>
+                <input type="hidden" name="campo{{forloop.counter}}" value="{{student.id}}"</input>
                 {% endfor %}
                 <input type="hidden" name="cantidad" value="{{students|length}}">
             </div>

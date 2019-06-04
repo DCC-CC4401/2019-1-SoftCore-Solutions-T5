@@ -285,7 +285,26 @@ def send_eval(request, evaluation_id):
     if request.method == "POST":
         nota = request.POST['nota_evaluation']
         mail = request.POST['evaluator_mail']
+        evaluator = Account.objects.get(correo=mail)
+
+        evaluation = Evaluation.objects.get(id=evaluation_id)
+
         cantidad = int(request.POST['cantidad'])
         for i in range(cantidad):
             name = 'campo' + str(i+1)
+            student_id = request.POST[name]
+            student = Student.objects.get(id=student_id)
+            new_evaluated = Evaluation_Student_Presented.objects.create(evaluation_id=evaluation, student=student)
+            new_evaluated.save()
+
+        representante = request.POST['campo1']
+        team = Student.objects.get(id=representante).team
+
+        members = Student.objects.filter(team=team)
+
+        for m in members:
+            eval_student = Evaluation_Student.objects.create(evaluation_id=evaluation, student=m, grade=nota)
+            eval_student.save()
+
+    return redirect('/evaluation/' + evaluation_id + '/')
 
