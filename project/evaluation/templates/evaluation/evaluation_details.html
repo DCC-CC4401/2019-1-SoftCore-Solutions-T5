@@ -50,8 +50,12 @@ Detalles de la evaluación - Plataforma de evaluación
           <tbody>
           <tr style="background-color: lightgray">
             <td>{{evaluation.name}}</td>
+            {% if user.is_superuser %}
             <td><a href="../../courses/{{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}">
               {{course.title}}</a></td>
+            {% else %}
+            <td>{{course.title}}</td>
+            {% endif %}
             <td>{{evaluation.init_date}}</td>
             <td>{{evaluation.fin_date}}</td>
             {% if evaluation.rubric == Null %}

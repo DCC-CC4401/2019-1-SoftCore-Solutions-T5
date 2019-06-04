@@ -9,7 +9,6 @@ Rúbricas - Plataforma de evaluación
 <!-- !PAGE CONTENT! -->
 
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
-  {% if user.is_superuser %}
   <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Ficha de rúbrica</b></h1>
 
   <!DOCTYPE html>
@@ -127,10 +126,8 @@ Rúbricas - Plataforma de evaluación
 
   </table>
 
+  {% if user.is_superuser %}
   <button onclick="location.href='/rubrics'"> Volver</button>
-  {% else %}
-  <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
-
   {% endif %}
   </body>
 </div>
