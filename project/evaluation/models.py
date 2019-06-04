@@ -40,3 +40,11 @@ class Evaluation_Student(models.Model):
 
     def __str__(self):
         return self.evaluation_id.name + '-' + self.student.first_name + ' ' + self.student.family_name
+
+
+class Evaluation_Student_Presented(models.Model):
+    evaluation_id = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.evaluation_id.name + '-' + self.student.first_name + ' ' + self.student.family_name

@@ -7,6 +7,7 @@ from .models import *
 from courses.models import *
 from rubrics.models import *
 from accounts.models import *
+import json
 
 # Para trabajar con queries complejas, como con negación
 from django.db.models import Q
@@ -91,38 +92,57 @@ def evaluate(request, evaluation_id):
     evaluation = Evaluation.objects.get(id=evaluation_id)
     eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
     course = eval_course.course
-
     accounts = Account.objects.all()
-    evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
     accounts_evaluators = []
-    for v in evaluators:
-        accounts_evaluators.append(v.account)
-    teams = Team.objects.filter(course=course)
+    students = []
     rubric = evaluation.rubric.get_rubric()
+    if request.POST:
+        data = request.POST
+        print(data)
+        n = int(data['cantidad'])
+        for i in range(1, n+1):
+            st = data["campo"+str(i)]
+            first, family = st.split(" ")
+            students.append(Student.objects.get(first_name=first, family_name=family))
 
-    ready = Evaluation_Student.objects.filter(grade__gt=0)
-    ready_teams = []
-    not_ready_teams = []
-    for st in ready:
-        team = st.student.team
-    if team not in ready_teams:
-        ready_teams.append(team)
-    team_members = []
-    for team in teams:
-        if team not in ready_teams:
-            not_ready_teams.append(team)
-            students = Student.objects.filter(team=team)
-            s = []
-            for st in students:
-                s.append(st.first_name + " " + st.family_name)
-            team_members.append(s)
+
+        evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
+
+        for v in evaluators:
+            accounts_evaluators.append(v.account)
+        teams = Team.objects.filter(course=course)
+        rubric = evaluation.rubric.get_rubric()
+
+        ready = Evaluation_Student.objects.filter(grade__gt=0)
+        ready_teams = []
+        not_ready_teams = []
+        for st in ready:
+            team = st.student.team
+            if team not in ready_teams:
+                ready_teams.append(team)
+        team_members = []
+        for team in teams:
+            if team not in ready_teams:
+                not_ready_teams.append(team)
+                students = Student.objects.filter(team=team)
+                s = []
+                for st in students:
+                    s.append(st.first_name + " " + st.family_name)
+                team_members.append(s)
+        print(students)
+        return render(request, 'evaluation/evaluation.html', {'evaluation': evaluation,
+                                                              'course': course,
+                                                              'accounts': accounts,
+                                                              'evaluators': accounts_evaluators,
+                                                              'students': students,
+                                                              'rubric': rubric})
+
+    print(students)
     return render(request, 'evaluation/evaluation.html', {'evaluation': evaluation,
                                                                   'course': course,
                                                                   'accounts': accounts,
                                                                   'evaluators': accounts_evaluators,
-                                                                  'ready_teams': ready_teams,
-                                                                  'not_ready_teams': not_ready_teams,
-                                                                  'team_members': team_members,
+                                                                  'students': students,
                                                                   'rubric': rubric})
 
 
@@ -130,6 +150,11 @@ def evaluation_details(request, evaluation_id):
     evaluation= Evaluation.objects.get(id=evaluation_id)
     eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation)
     course= eval_course.course
+
+    evaluations_done = Evaluation_Student_Presented.objects.filter(evaluation_id=evaluation)
+    students_evaluated = []
+    for e in evaluations_done:
+        students_evaluated.append(e.student)
 
     accounts = Account.objects.filter(~Q(correo=request.user.email))
     evaluators = Evaluation_Account.objects.filter(evaluation_name=evaluation)
@@ -153,8 +178,12 @@ def evaluation_details(request, evaluation_id):
             students = Student.objects.filter(team=team)
             s = []
             for st in students:
-                s.append(st.first_name + " " + st.family_name)
+                if st in students_evaluated:
+                    s.append([st.first_name + " " + st.family_name, 1])
+                else:
+                    s.append([st.first_name + " " + st.family_name, 0])
             team_members.append(s)
+
     return render(request, 'evaluation/evaluation_details.html', {'evaluation': evaluation,
                                                                   'course': course,
                                                                   'accounts': accounts,
@@ -162,7 +191,8 @@ def evaluation_details(request, evaluation_id):
                                                                   'ready_teams': ready_teams,
                                                                   'not_ready_teams': not_ready_teams,
                                                                   'team_members': team_members,
-                                                                  'rubric': rubric})
+                                                                  'rubric': rubric, 'levels': rubric[0],
+                                                                  'rows': rubric[1:]})
 
 
 def evaluation_modify(request, evaluation_id):
@@ -171,8 +201,8 @@ def evaluation_modify(request, evaluation_id):
 
     course = eval_course.course
     rubric= evaluation.rubric
-    courses=Course.objects.all();
-    rubrics=Rubric.objects.all();
+    courses=Course.objects.all()
+    rubrics=Rubric.objects.all()
     otherCourses= Course.objects.filter(~Q(id=course.id))
     otherRubrics=Rubric.objects.filter(~Q(rubric=rubric))
     if request.method=='POST':
@@ -249,3 +279,32 @@ def delete_evaluator(request, evaluation_id):
         eval_acc.delete()
 
     return redirect('/evaluation/' + evaluation_id + '/')
+
+
+def send_eval(request, evaluation_id):
+    if request.method == "POST":
+        nota = request.POST['nota_evaluation']
+        mail = request.POST['evaluator_mail']
+        evaluator = Account.objects.get(correo=mail)
+
+        evaluation = Evaluation.objects.get(id=evaluation_id)
+
+        cantidad = int(request.POST['cantidad'])
+        for i in range(cantidad):
+            name = 'campo' + str(i+1)
+            student_id = request.POST[name]
+            student = Student.objects.get(id=student_id)
+            new_evaluated = Evaluation_Student_Presented.objects.create(evaluation_id=evaluation, student=student)
+            new_evaluated.save()
+
+        representante = request.POST['campo1']
+        team = Student.objects.get(id=representante).team
+
+        members = Student.objects.filter(team=team)
+
+        for m in members:
+            eval_student = Evaluation_Student.objects.create(evaluation_id=evaluation, student=m, grade=nota)
+            eval_student.save()
+
+    return redirect('/evaluation/' + evaluation_id + '/')
+

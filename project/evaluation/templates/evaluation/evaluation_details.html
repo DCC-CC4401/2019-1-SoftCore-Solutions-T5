@@ -22,6 +22,9 @@ Detalles de la evaluación - Plataforma de evaluación
 .presentado{
   color:rgb(0, 180, 0);
 }
+tr:nth-child(even) {
+        background-color: #FFA07A;
+}
 </style>
 <body>
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
@@ -138,20 +141,21 @@ Detalles de la evaluación - Plataforma de evaluación
         </div>
   </div>
 
-<div class="w3-container" id="designers" style="margin-top:50px">
-    <div class="w3-panel w3-center w3-half">
-        <button class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="document.getElementById('submit').style.display='block'"> <i class="fas fa-arrow-right"></i> Evaluar</button>
-    </div>
-</div>
-
 <div class="w3-modal" id="submit">
     <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
         <div class="w3-center">
             <h4 class="modal-title">Evaluar</h4>
             <span onclick="document.getElementById('submit').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
             <div class="w3-section">
+                <form action="evaluate/" method="post" id="evaluar_form">
+                {% csrf_token %}
+                <div class="form-group" id="inputs">
+
+                </div>
+                    <button type="submit" class="w3-button w3-block w3-green w3-padding" >Continuar</button>
+                </form>
                 <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('submit').style.display='none'">Cancelar</button>
-                <button class="w3-button w3-block w3-green w3-padding" onclick="evaluate()">Continuar</button>
+
             </div>
         </div>
     </div>
@@ -180,25 +184,99 @@ Detalles de la evaluación - Plataforma de evaluación
         </div>
     </div>
 </div>
+    <div>
+        <table id="rubric" style="font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        cursor: pointer;
+        margin: 10px 0.5% 0.5%;
+        table-layout: fixed">
+    <tr>
+      {% for level in levels %}
+      <th style="border: 1px solid #665f5f;
+        text-align: center;
+        padding: 2.3%;">{{level}}</th>
+      {% endfor %}
+
+    </tr>
+    {% for row in rows %}
+    <tr>
+      {% for field in row %}
+      <td style="border: 1px solid #665f5f;
+        text-align: center;
+        padding: 2.3%;">{{field}}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+
+  </table>
+    </div>
+
+    <div class="w3-container" id="designers" style="margin-top:50px">
+    <div class="w3-panel w3-center w3-half">
+            <button type="button" class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="evaluar(); document.getElementById('submit').style.display='block';"> <i class="fas fa-arrow-right"></i> Evaluar</button>
+    </div>
+</div>
 </body>
 
 {% endblock %}
 
 {% block script %}
 <script>
-function evaluate(){
-    location.href='/evaluation/{{evaluation.id}}/evaluate/'
+
+
+function evaluar(){
+    var f = document.getElementById('evaluar_form');
+    var presentan = document.getElementById('presentan');
+    var lis = presentan.getElementsByTagName('li');
+    var n = 0;
+    for(var i=1; i<lis.length; i++){
+        n+=1;
+        var inp = document.createElement('input')
+        inp.setAttribute("type", 'hidden');
+        inp.setAttribute("name", 'campo' + i);
+        inp.setAttribute("value", lis[i].innerHTML);
+        f.appendChild(inp);
+    }
+    var inp = document.createElement('input')
+    inp.setAttribute("type", 'hidden');
+    inp.setAttribute("name", 'cantidad');
+    inp.setAttribute("value", n);
+    f.appendChild(inp);
 }
+
+/*function start_evaluation(id){
+    var presentan = document.getElementById('presentan');
+    var lis = presentan.getElementsByTagName('li');
+    students = ''
+    for(var i=1; i<lis.length; i++){
+        students += lis[i].innerHTML + ',';
+    }
+
+    var data = new FormData();
+    data.append('csrfmiddlewaretoken', '{{csrf_token}}');
+    data.append('estudiantes', students)
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", '/evaluation/'+id+'/evaluate/', true);
+    xhttp.send(data);
+}*/
 function show_members(index, members, element){
     var ul = document.getElementById("team_members");
     ul.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'> Miembros del Equipo <i class='fas fa-user-friends'></i></li>";
     team = members[index-1]
     for(var i=0; i<team.length; i++){
         var li1 = document.createElement('li');
-        li1.className = "w3-padding-16";
-        li1.setAttribute("onclick", 'select_student(this)');
         li1.setAttribute("name", '0');
-        li1.innerHTML = team[i];
+        if(team[i][1]){
+            li1.className = "w3-padding-16 presentado";
+            li1.innerHTML = team[i][0] + " <i class='far fa-check-circle'></i> <i class='w3-small'>ya presentó</i>";
+        }
+        else{
+            li1.setAttribute("onclick", 'select_student(this)');
+            li1.className = "w3-padding-16";
+            li1.innerHTML = team[i][0];
+        }
         ul.appendChild(li1);
     }
 
