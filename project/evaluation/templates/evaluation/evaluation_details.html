@@ -263,10 +263,16 @@ function show_members(index, members, element){
     team = members[index-1]
     for(var i=0; i<team.length; i++){
         var li1 = document.createElement('li');
-        li1.className = "w3-padding-16";
-        li1.setAttribute("onclick", 'select_student(this)');
         li1.setAttribute("name", '0');
-        li1.innerHTML = team[i];
+        if(team[i][1]){
+            li1.className = "w3-padding-16 presentado";
+            li1.innerHTML = team[i][0] + " <i class='far fa-check-circle'></i> <i class='w3-small'>ya presentó</i>";
+        }
+        else{
+            li1.setAttribute("onclick", 'select_student(this)');
+            li1.className = "w3-padding-16";
+            li1.innerHTML = team[i][0];
+        }
         ul.appendChild(li1);
     }
 
