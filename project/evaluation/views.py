@@ -50,8 +50,11 @@ def evaluation_list(request):
 
     ### Seleccionar las evaluaciones, junto con la info del curso correspondiente
     for evaluation in evaluations:
-        eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
-        eval.append((evaluation, eval_course))
+        try:
+            eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
+            eval.append((evaluation, eval_course))
+        except Evaluation_Course.DoesNotExist:
+            continue
 
     return render(request,'evaluation/evaluation_list.html', {'evaluations': eval,
                                                               'courses': courses,

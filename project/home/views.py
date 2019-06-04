@@ -32,13 +32,15 @@ def homepage(request):
     eval = []
 
     for evaluation in evaluations:
-        eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
-        team_count = len(Team.objects.filter(course=eval_course.course))
-        eval_account = Evaluation_Account.objects.filter(evaluation_name=evaluation, account=acc_user)
-        print(eval_account)
-        if len(eval_account)==1 and c<10:
-            eval.append((evaluation, eval_course, team_count, eval_account))
-            c+=1
+        try:
+            eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
+            team_count = len(Team.objects.filter(course=eval_course.course))
+            eval_account = Evaluation_Account.objects.filter(evaluation_name=evaluation, account=acc_user)
+            if len(eval_account)==1 and c<10:
+                eval.append((evaluation, eval_course, team_count, eval_account))
+                c+=1
+        except Evaluation_Course.DoesNotExist:
+            continue
     return render(request,'home/homepage.html', {'evaluations': eval,
                                                  'courses': courses,
                                                  'rubrics': rubrics})
