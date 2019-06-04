@@ -63,14 +63,14 @@ def evaluation_list(request):
 
 def delete_evaluation(request):
     if request.method == 'POST':
-        eval_name = request.POST['eval_name']
+        eval_id = request.POST['eval_id']
         code_course = request.POST['code_course']
         section_course = request.POST['section_course']
         semester_course = request.POST['semester_course']
         year_course = request.POST['year_course']
 
         course = Course.objects.get(code=code_course, section=section_course, semester=semester_course, year=year_course)
-        del_evaluation = Evaluation.objects.get(name=eval_name)
+        del_evaluation = Evaluation.objects.get(id=eval_id)
 
         eval_course = Evaluation_Course.objects.get(evaluation_name=del_evaluation, course=course)
         eval_course.delete()

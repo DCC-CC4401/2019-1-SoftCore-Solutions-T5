@@ -47,7 +47,7 @@ Evaluaciones - Plataforma de evaluación
                     <form id="delete_evaluation_form_{{forloop.counter}}" method="post" action="/evaluation/delete/">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input type="hidden" name="eval_name" value="{{data.0.name}}">
+                        <input type="hidden" name="eval_id" value="{{data.0.id}}">
                         <input type="hidden" name="code_course" value="{{data.1.course.code}}">
                         <input type="hidden" name="section_course" value="{{data.1.course.section}}">
                         <input type="hidden" name="semester_course" value="{{data.1.course.semester}}">
