@@ -136,7 +136,7 @@ def evaluation_details(request, evaluation_id):
     eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation)
     course= eval_course.course
 
-    evaluations_done = Evaluation_Student_Presented.objects.filter(evaluation_id=evaluation)
+    evaluations_done = Evaluation_Student_Presented.objects.all()
     students_evaluated = []
     for e in evaluations_done:
         students_evaluated.append(e.student)
@@ -275,6 +275,7 @@ def send_eval(request, evaluation_id):
         evaluation = Evaluation.objects.get(id=evaluation_id)
 
         cantidad = int(request.POST['cantidad'])
+        print(request.POST)
         for i in range(cantidad):
             name = 'campo' + str(i+1)
             student_id = request.POST[name]
@@ -288,7 +289,8 @@ def send_eval(request, evaluation_id):
         members = Student.objects.filter(team=team)
 
         for m in members:
-            eval_student = Evaluation_Student.objects.create(evaluation_id=evaluation, student=m, grade=nota)
+            eval_student = Evaluation_Student.objects.get(evaluation_id=evaluation, student=m, grade=nota)
+            eval_student.grade = nota
             eval_student.save()
 
     return redirect('/evaluation/' + evaluation_id + '/')
