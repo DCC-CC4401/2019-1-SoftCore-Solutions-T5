@@ -116,6 +116,18 @@ Detalles de la evaluación - Plataforma de evaluación
     </div>
 </div>
 
+<div class="w3-modal" id="evaluation_alert">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Falta seleccionar campos</h4>
+            <span onclick="document.getElementById('evaluation_alert').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('evaluation_alert').style.display='none'"> Ok </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {# Agregar evaluador es una característica solo para superusuarios #}
 {% if user.is_superuser %}
 <div class="w3-modal" id="add_evaluator">
@@ -230,6 +242,9 @@ Detalles de la evaluación - Plataforma de evaluación
         if(respondido == divs.length){
             form = document.getElementById('evaluation_done_form');
             form.submit();
+        }
+        else{
+            document.getElementById('evaluation_alert').style.display='block';
         }
     }
 </script>
