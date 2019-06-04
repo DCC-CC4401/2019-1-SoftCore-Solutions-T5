@@ -86,9 +86,7 @@ def delete_evaluation(request):
         eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
         eval.append((evaluation, eval_course))
 
-    return render(request, 'evaluation/evaluation_list.html', {'evaluations': eval,
-                                                               'courses': courses,
-                                                               'rubrics': rubrics})
+    return redirect('/evaluation')
 
 
 def evaluate(request, evaluation_id):
