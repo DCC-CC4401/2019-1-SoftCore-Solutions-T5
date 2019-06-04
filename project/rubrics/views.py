@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from .models import *
+from evaluation.models import *
 
 from .forms import *
 
@@ -86,6 +87,10 @@ def rubric_modify(request, rubric_key):
 
 def rubric_modify_database(request, rubric_key):
     rubric = Rubric.objects.get(name=rubric_key)
+    evaluations = Evaluation.objects.filter(rubric=rubric)
+    ids_eval = []
+    for eval in evaluations:
+        ids_eval.append(eval.id)
     rubric.delete()
     newl = "%n%"
     if request.method == 'POST':
@@ -119,5 +124,9 @@ def rubric_modify_database(request, rubric_key):
             ru = Rubric.objects.create(name=name, duration_min=mi, duration_max=ma, state=False)
             ru.set_rubric(rub)
             ru.save()
+            for id in ids_eval:
+                evaluation = Evaluation.objects.get(id=id)
+                evaluation.rubric = ru
+                evaluation.save()
     rubrics = Rubric.objects.all()
     return render(request, 'rubrics/rubrics_list.html', {'rubrics': rubrics})
