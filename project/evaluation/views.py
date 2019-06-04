@@ -289,7 +289,7 @@ def send_eval(request, evaluation_id):
         members = Student.objects.filter(team=team)
 
         for m in members:
-            eval_student = Evaluation_Student.objects.get(evaluation_id=evaluation, student=m, grade=nota)
+            eval_student = Evaluation_Student.objects.get(evaluation_id=evaluation, student=m, grade=0.0)
             eval_student.grade = nota
             eval_student.save()
 
