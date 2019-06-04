@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}
+Modificar el curso - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+<!-- !PAGE CONTENT! -->
+{% if user.is_superuser %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Curso {{course.title}} {{course.code}}</b></h1><br />
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+  <div class="course-detail">
+      <div class="course">
+          <h2>Detalles del curso {{course.code}}-{{course.section}}</h2>
+          <div class="w3-container">
+              <div class="row">
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th>Título</th>
+                              <th>Código</th>
+                              <th>Sección</th>
+                              <th>Semestre</th>
+                              <th>Año</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>{{course.title}}</td>
+                              <td>{{course.code}}</td>
+                              <td>{{course.section}}</td>
+                              <td>{{course.semester}}</td>
+                              <td>{{course.year}}</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+
+<div class="modificar">
+  <h2>Modificar los detalles del curso</h2><br />
+
+  <form name="CoursesForm" class="site-form"  onSubmit="formAction(this)"method="post">
+    <input type="hidden" name="length" value=8>
+    {% csrf_token %}
+    <label>Título
+      <input type="text" name="title"  value="{{course.title}}">
+    </label>
+      <br><br>
+    <label>Código
+      <input type="text" name="code"  value="{{course.code}}">
+    </label>
+      <br><br>
+    <label>Semestre
+      <select name="semester" value="{{course.semester}}">
+        <option value="Primavera">Primavera</option>
+        <option value="Otoño">Otoño</option>
+      </select>
+    </label>
+      <br><br>
+    <label>Sección
+      <select name="section" value="{{course.section}}">
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </label>
+      <br><br>
+    <label>Año
+      <input type="text" name="year"  value="{{course.year}}">
+    </label>
+      <br><br>
+    <input type="submit" value="Actualizar datos" />
+      <br><br>
+
+
+</form>
+</div>
+
+
+
+</div>
+</div>
+</div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
+  </div>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script>
+function URLonClick() {
+    document.accountsForm.action = "/courses/modify/"+'{{code}}'+"-"+'{{session}}'+"-"+"{{year}}"+"-"+"{{semester}}"+"/"
+}
+
+</script>
+{% endblock %}

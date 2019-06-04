@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}
+Evaluaciones - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+<!-- Page content -->
+{% if user.is_superuser %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+    <!-- Portada -->
+    <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+        <h1 class="w3-xxxlarge w3-text-red"><b>Evaluaciones</b></h1>
+        <hr style="width:50px;border:5px solid red" class="w3-round">
+        <p><h3>Seleccione una evaluación</h3></p></hr>
+    </div>
+
+    <!-- Cajas de evaluaciones -->
+    {% for data in evaluations %}
+    <div class="w3-row-padding w3-center w3-margin-top">
+        <div class="w3-quarter w3-margin-top">
+            <button onclick="goToDetails('{{data.0.id}}')"><!-- La evaluación se identifica por el nombre -->
+                <h3>{{data.0.name}}</h3>
+                <h5>{{data.1.course.title}}</h5>
+                <br>
+                <i class="fas fa-book" style="font-size:100px"></i>
+                <p>Desde: {{data.0.init_date}}</p>
+                <p>Hasta: {{data.0.fin_date}}</p>
+                {% if data.0.state %}
+                <p>Estado: abierta</p>
+                {% else %}
+                <p>Estado: cerrada</p>
+                {% endif %}
+            </button>
+
+            <br>
+
+            <button class="w3-btn w3-red" onclick="goToDetailsModify('{{data.0.id}}')">Modificar</button><!-- Aquí debe ir goToDetailsModify() -->
+            <button onclick="document.getElementById('delete_evaluation_{{forloop.counter}}').style.display='block'" class="w3-btn w3-red">Eliminar</button><!-- Lógica de eliminación de un curso, invoca a delete_evaluation -->
+            <div class="w3-modal" id="delete_evaluation_{{forloop.counter}}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center">
+                        <h4 class="modal-title">Eliminar Evaluación</h4>
+                        <span onclick="document.getElementById('delete_evaluation_{{forloop.counter}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <div class="w3-section">
+                            <div>¿Está seguro que quiere eliminar la evaluación {{data.0.name}}?</div>
+                            <form id="delete_evaluation_form_{{forloop.counter}}" method="post" action="/evaluation/delete/">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="hidden" name="eval_name" value="{{data.0.name}}">
+                                <input type="hidden" name="code_course" value="{{data.1.course.code}}">
+                                <input type="hidden" name="section_course" value="{{data.1.course.section}}">
+                                <input type="hidden" name="semester_course" value="{{data.1.course.semester}}">
+                                <input type="hidden" name="year_course" value="{{data.1.course.year}}">
+                            </div>
+                            <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!--Caja de agregar-->
+    <div class="w3-row-padding w3-center w3-margin-top">
+        <div class="w3-quarter w3-margin-top">
+            <button onclick="document.getElementById('agregar').style.display='block'" class="w3-card w3-container w3-light-gray w3-hover-shadow" style="min-height: 317px">
+                <h3>Agregar nueva evaluación</h3>
+                <br>
+                <i class="fas fa-plus" style="font-size:100px;text-align: center; padding:50px"></i>
+            </button>
+
+            <div id="agregar" class="w3-modal">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center">
+                        <br>
+                        <span onclick="document.getElementById('agregar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+
+                        <div class="w3-section">
+                            <form name="coursesForm" class="site-form" action="/evaluation/" method="post" >
+                                {% csrf_token %}
+                                <label for="title">Titulo de Evaluación</label>
+                                <input type="text" id="title" name="title" placeholder="Titulo">
+                                <br><br>
+                                <label for="init_date">Fecha de inicio</label>
+                                <input type="date" id="init_date" name="init_date">
+                                <br><br>
+                                <label for="fin_date">Fecha de Fin</label>
+                                <input type="date" id="fin_date" name="fin_date">
+                                <br><br>
+                                <label for="rubric">Seleccione la rúbrica</label>
+                                <select id="rubric" name="rubric">
+                                    {% for rubric in rubrics %}
+                                        <option value="{{rubric.name}}">{{rubric.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br><br>
+                                <label for="course">Seleccione el curso</label>
+                                <select id="course" name="course">
+                                    {% for course in courses %}
+                                        <option value="{{course.code}}-{{course.section}}-{{course.semester}}-{{course.year}}">{{course.code}}-{{course.section}} {{course.semester}} {{course.year}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br><br>
+                                <input type="submit" value="Registrar" />
+                                <br><br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- fin del modal -->
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+    <!-- Portada -->
+    <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+        <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;">
+            <b>Solo los administradores pueden acceder a esta página</b>
+        </h1>
+    </div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script>
+function goToDetails(evaluation_id) {
+    location.href= evaluation_id;
+}
+function goToDetailsModify(evaluation_id) {
+    location.href= "modify/" + evaluation_id;
+}
+</script>
+{% endblock %}

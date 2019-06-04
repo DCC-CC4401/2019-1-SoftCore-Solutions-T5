@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}
+Detalles del curso - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+<!-- !PAGE CONTENT! -->
+{% if user.is_superuser %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Cursos</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+<div class="course-detail">
+    <div class="course">
+        <h2>Detalles del curso {{course.code}}-{{course.section}}</h2>
+        <div class="w3-container">
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Código</th>
+                            <th>Sección</th>
+                            <th>Semestre</th>
+                            <th>Año</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{course.title}}</td>
+                            <td>{{course.code}}</td>
+                            <td>{{course.section}}</td>
+                            <td>{{course.semester}}</td>
+                            <td>{{course.year}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <!-- Equipos en este curso -->
+        {% if lenTeams > 0 %}
+        <h3>Equipos en este curso</h3>
+        <div class="w3-container">
+            <div class="row">
+                <table class="table">
+                    <tbody>
+                      {% for team in teams %}
+
+                    <div class="w3-quarter w3-margin-top">
+                        <button onclick="document.getElementById('gestionar').style.display='block'" class="w3-card w3-container w3-hover-shadow" style="max-height:380px;min-height: 317px; max-width: 300px">
+                      <h3>{{team.0.name}}</h3><br>
+                      {% for student in team.1 %}
+                        <p>
+                          {{student.first_name}} {{student.family_name}}
+                        </p>
+
+                      {% endfor %}
+
+                      <p></p>
+                      </button>
+                    </div>
+                        <div id="gestionar" class="w3-modal">
+                        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="width:300px">
+                            <div class="w3-center"><br>
+                                <span onclick="document.getElementById('gestionar').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                            <div class="w3-margin">
+                              <button class="w3-button w3-red w3-section w3-padding:10px" type="submit">Modificar</button><br>
+                                <button class="w3-button w3-red w3-section w3-padding:10px" type="submit">
+                                  Eliminar</button>
+
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
+  </div>
+</div>
+
+{% endif %}
+
+{% endblock %}

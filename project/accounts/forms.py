@@ -1,9 +1,8 @@
+# -*- coding: utf-8 -*-
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser
 
-class Account(models.Model):
-   user = models.OneToOneField(User, unique=True)
-   #other field in that profile
-   #other field in that profile
-   #other field in that profile
+class AccountForm(forms.Form):
+    nombre = forms.CharField(max_length=100)
+    appellido=forms.CharField(max_length=100)
+    correo = forms.EmailField(max_length=90)
+    clave=forms.CharField(max_length=30)

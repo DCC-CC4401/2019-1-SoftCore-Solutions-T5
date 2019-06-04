@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}
+Modificar evaluador - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+<!-- !PAGE CONTENT! -->
+
+{% if user.is_superuser %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Evaluador {{account.nombre}} {{account.apellido}}</b></h1><br />
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+<div class="account-detail">
+    <div class="account">
+        <h2>Detalles del evaluador:  {{account.nombre}} {{account.appellido}}</h2>
+        <div class="w3-container">
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Correo</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{account.nombre}}</td>
+                            <td>{{account.appellido}}</td>
+                            <td>{{account.correo}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+
+
+    </div>
+</div>
+
+<div class="modificar">
+  <h2>Modificar los detalles del evaluador</h2><br />
+
+  <form name="accountsForm" class="site-form"  onSubmit="return validateAccountData();" method="post">
+    <input type="hidden" name="length" value=8>
+    {% csrf_token %}
+      <label>Nombre
+        <input type="text" id="nombre" name="nombre"  value="{{account.nombre}}">
+      </label>
+      <br>
+      <p id="p-error-nombre" class="p-error">Asegúrese que el nombre sea válido.</p>
+      <br>
+      <label>Apellido
+        <input type="text" id="appellido" name="appellido"  value="{{account.appellido}}">
+      </label>
+      <br>
+      <p id="p-error-apellido" class="p-error">Asegúrese que el apellido sea válido.</p>
+      <br>
+      <label>Email
+        <input type="email" id="correo" name="correo" value="{{account.correo}}">
+      </label>
+      <br>
+      <p id="p-error-correo-existe" class="p-error">El correo ya existe.</p>
+      <p id="p-error-correo" class="p-error">Asegúrese que el correo sea válido.</p>
+      <br>
+      <p>Entra una nueva contraseña comunicada por el evaluador, o pulsa el botón para generar una nueva</p>
+      <label>Password
+        <input type="text" id="clave" name="clave" value="{{account.clave}}">
+      </label>
+
+      <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
+
+      <br>
+      <p style="color:red">
+        Por favor, no olvide anotar esta contraseña y enviarla de nuevo al evaluador
+      </p>
+      <br>
+      <p id="p-error-clave" class="p-error">Asegúrese que la clave sea válida.</p>
+      <br>
+    <input type="submit" value="Actualizar datos" />
+      <br><br>
+
+
+</form>
+</div>
+
+
+
+</div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
+  </div>
+</div>
+
+{% endif %}
+
+<script>
+function URLonClick(nombre,apellido) {
+    document.accountsForm.action = "/accounts/signup/"+'{{nombre}}'+"-"+'{{appellido}}'+"/"
+}
+
+function randomPassword(length) {
+    var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP1234567890";
+    var pass = "";
+    for (var x = 0; x < length; x++) {
+        var i = Math.floor(Math.random() * chars.length);
+        pass += chars.charAt(i);
+    }
+    return pass;
+}
+
+function generate() {
+    accountsForm.clave.value = randomPassword(accountsForm.length.value);
+}
+
+// Función para no generar cuentas si los datos no son válidos
+function validateAccountData() {
+  let nombre, apellido, correo, clave, valid;
+  let perrornombre, perrorapellido, perrorcorreo, perrorcorreoexiste, perrorclave;
+  nombre = document.getElementById("nombre");
+  apellido = document.getElementById("appellido");
+  correo = document.getElementById("correo");
+  clave = document.getElementById("clave");
+  perrornombre = document.getElementById("p-error-nombre");
+  perrorapellido = document.getElementById("p-error-apellido");
+  perrorcorreo = document.getElementById("p-error-correo");
+  perrorcorreoexiste = document.getElementById("p-error-correo-existe");
+  perrorclave = document.getElementById("p-error-clave");
+
+  // Por ahora, válido será no vacío
+  valid= true;
+  if (isBlank(nombre.value)) {
+    perrornombre.style.display= "block";
+    valid= false;
+  }
+  else perrornombre.style.display= "none";
+  if (isBlank(apellido.value)) {
+    perrorapellido.style.display= "block";
+    valid= false;
+  }
+  else perrorapellido.style.display= "none";
+  if (isBlank(correo.value)) {
+    perrorcorreo.style.display= "block";
+    valid= false;
+  }
+  else perrorcorreo.style.display= "none";
+  if (isBlank(clave.value)) {
+    perrorclave.style.display= "block";
+    valid= false;
+  }
+  else perrorclave.style.display= "none";
+  let exists = false;
+  {% for mail in mails %}
+    if (correo.value == '{{mail}}')
+      exists = true;
+  {% endfor %}
+  if (exists) {
+    perrorcorreoexiste.style.display= "block";
+    valid= false;
+  }
+  else perrorcorreoexiste.style.display= "none";
+  return valid;
+}
+
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}
+Detalles del evaluador - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+<!-- !PAGE CONTENT! -->
+
+
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Evaluador {{account.nombre}} {{account.apellido}}</b></h1><br />
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+<div class="account-detail">
+    <div class="account">
+        <h2>Detalles del evaluador:  {{account.nombre}} {{account.appellido}}</h2>
+        <div class="w3-container">
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Correo</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{account.nombre}}</td>
+                            <td>{{account.appellido}}</td>
+                            <td>{{account.correo}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+
+
+    </div>
+</div>
+
+<div class="modificar">
+  <h2>Modificar los detalles del evaluador</h2><br />
+
+  <form name="accountsForm" class="site-form"  action="/accounts/details/" method="post">
+    <input type="hidden" name="length" value=8>
+    {% csrf_token %}
+    <label>Nombre
+      <input type="text" name="nombre"  value="{{account.nombre}}">
+    </label>
+      <br><br>
+    <label>Apellido
+      <input type="text" name="appellido"  value="{{account.appellido}}">
+    </label>
+      <br><br>
+    <label>Email
+      <input type="email" name="correo" value="{{account.correo}}">
+    </label>
+      <br><br>
+      <p>Modifica sur contraseña con una que prefiere o pulsa el botón para generar otra</p>
+    <label>Password
+      <input type="text" name="clave" value="{{account.clave}}">
+    </label>
+      <input type="button" class="button" value="Generar" onClick="generate();" tabindex="2">
+      <br />
+      <p style="color:red">
+        Por favor, no olvide anotar esta contraseña
+      </p>
+      <br><br>
+    <input type="submit" value="Actualizar datos" />
+      <br><br>
+
+
+</form>
+</div>
+
+
+
+</div>
+
+{% endblock %}

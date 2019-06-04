@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}
+Modificar la evaluación - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_superuser %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+<!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Evaluación</b></h1>
+      <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+  <div class="evaluation-detail">
+    <div class="evaluation">
+      <h2>Detalles de la evaluación “{{evaluation.name}}”</h2>
+      <div class="row">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Curso(s) asociado(s)</th>
+            <th>Fecha de inicio</th>
+            <th>Fecha de término</th>
+            <th>Rúbrica</th>
+            <th>Estado</th>
+            <th>Duración mínima esperada</th>
+            <th>Duración máxima esperada</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>{{evaluation.name}}</td>
+            <td><a href="../../../courses/{{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}">
+              {{course.title}}</a></td>
+            <td>{{evaluation.init_date}}</td>
+            <td>{{evaluation.fin_date}}</td>
+            {% if evaluation.rubric == Null %}
+            <td>&#x2015;</td><!-- símbolo: ―, porque no hay -->
+            {% else %}
+            <td><a href="../../rubrics/details/{{evaluation.rubric}}">{{evaluation.rubric}}</a></td>
+            {% endif %}
+            {% if evaluation.state %}
+            <td style="color:green">Abierta</td>
+            {% else %}
+            <td style="color:red">Cerrada</td>
+            {% endif %}
+            <td>{{rubric.duration_min}}</td>
+            <td>{{rubric.duration_max}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modificar" onload="setDates('{{evaluation.init_date}}', '{{evaluation.fin_date}}')">
+    <h2>Modificar los detalles del curso</h2>
+    <br>
+
+    <form name="EvaluationsForm" class="site-form" onSubmit="formAction(this)" method="post">
+      <input type="hidden" name="length" value=8>
+      {% csrf_token %}
+
+      <label>Nombre
+        <input type="text" name="name" value="{{evaluation.name}}">
+      </label>
+        <br><br>
+
+      <label>Curso
+        <select name="courses" value="{{course.title}}">
+          {% for course in courses %}
+          <option value="{{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}"
+                  title="{{course.title}}">
+            {{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <br><br>
+
+    <p style="color:red">
+       Si no ingresa una nueva fecha de inicio, se quedará igual a la fecha actual de inicio
+    </p>
+      <label>Fecha de inicio
+        <input type="date" id="init_date" name="init_date" value="{{evaluation.init_date}}">
+      </label>
+        <br><br>
+        <p style="color:red">
+           Si no ingresa una nueva fecha de término, se quedará igual a la fecha actual de término
+        </p>
+
+      <label>Fecha de término
+        <input type="date" id="fin_date" name="fin_date" value="{{evaluation.fin_date}}">
+      </label>
+        <br><br>
+
+      <label>Rúbrica
+          <select name="rubric" value="{{rubric.name}}">
+            {% for rubric in rubrics %}
+            <option value="{{rubric.name}}"
+                    title="{{rubric.title}}">
+              {{rubric.name}}
+            </option>
+            {% endfor %}
+          </select>
+        </label>
+        <br><br>
+
+
+        <label>Estado
+          <select name="state"  value="{{status}}">
+            <option value="1">Abierta</option>
+            <option value="0">Cerrada</option>
+          </select>
+        </label>
+      <br><br>
+
+      <input type="submit" value="Actualizar datos" />
+        <br><br>
+    </form>
+  </div>
+
+</div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+function URLonClick(nombre,apellido) {
+    document.accountsForm.action = "/evaluation/modify/"+'{{id}}'+"/"
+}
+
+
+</script>
+{% endblock %}

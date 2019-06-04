@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}
+Rúbricas - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+<!-- !PAGE CONTENT! -->
+
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+  <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Ficha de rúbrica</b></h1>
+
+  <!DOCTYPE html>
+  <div class="w3-row w3-container">
+    <div class="w3-col">
+      <head>
+        <style>
+          .button2 {
+            background-color: #c6bdbb; /* Green */
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0.2px 2px;
+            cursor: pointer;
+          }
+
+          .button2 {width: 50%; border-radius: 12px;}
+          .button2.button2:hover {background-color: #FFA07A;}
+
+
+        </style>
+      </head>
+      <body>
+
+        <h2>Detalles de la rúbrica {{rubric.name}}</h2>
+      </body>
+    </div>
+
+    <div class = "w3-col" align="right">
+      <head>
+
+        <style>
+          body {font-family: Arial, Helvetica, sans-serif;}
+
+          .form-inline label {
+            margin: 5px 0 5px 0;
+          }
+
+          .form-inline input {
+            vertical-align: middle;
+            margin: 5px 10px ;
+            padding: 5px;
+            width: 10%;
+            background-color: #fff;
+            border: 1px solid #ddd;
+          }
+
+          .form-inline button {
+            padding: 5px 10px;
+            background-color: #c6bdbb;
+            border: none;
+            color: black;
+            cursor: pointer;
+            border-radius: 8px;
+          }
+
+          .form-inline button:hover {
+            background-color: #FFA07A;
+          }
+
+
+        </style>
+      </head>
+      <body>
+          <br>
+          <label>Duración mínima: {{rubric.duration_min}}, Duración máxima: {{rubric.duration_max}}</label>
+
+      </body>
+    </div>
+  </div>
+
+
+  <head>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        cursor: pointer;
+        margin: 10px 0.5% 0.5%;
+        table-layout: fixed
+      }
+
+      td, th {
+        border: 1px solid #665f5f;
+        text-align: center;
+        padding: 2.3%;
+      }
+
+      tr:nth-child(even) {
+        background-color: #FFA07A;
+      }
+    </style>
+  </head>
+  <body>
+
+  <table id="rubric">
+    <tr>
+      {% for level in levels %}
+      <th>{{level}}</th>
+      {% endfor %}
+
+    </tr>
+    {% for row in rows %}
+    <tr>
+      {% for field in row %}
+      <td>{{field}}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+
+  </table>
+
+  {% if user.is_superuser %}
+  <button onclick="location.href='/rubrics'"> Volver</button>
+  {% endif %}
+  </body>
+</div>
+
+<script>
+  function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+  }
+
+  function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+  }
+
+  // Modal Image Gallery
+  function onClick(element) {
+    document.getElementById("img01").src = element.src;
+    document.getElementById("modal01").style.display = "block";
+    var captionText = document.getElementById("caption");
+    captionText.innerHTML = element.alt;
+  }
+</script>
+
+</body>
+</html>
+{% endblock %}

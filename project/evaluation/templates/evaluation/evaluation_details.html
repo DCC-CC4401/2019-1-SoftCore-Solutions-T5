@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}
+Detalles de la evaluación - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+<style>
+  li{
+
+  cursor:pointer;
+}
+.opcion:hover{
+  opacity:0.5;
+  color: rgb(0, 110, 255);
+}
+.selected{
+  background-color:rgba(10, 202, 10, 0.534);
+
+}
+.presentado{
+  color:rgb(0, 180, 0);
+}
+tr:nth-child(even) {
+        background-color: #FFA07A;
+}
+</style>
+<body>
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+<!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>{{evaluation.name}}</b></h1>
+      <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+  <div class="evaluation-detail">
+    <div class="evaluation">
+      <h2>Detalles de la evaluación “{{evaluation.name}}”</h2>
+      <div class="row">
+        <table class="table">
+          <thead>
+          <tr style="background-color: darkgray">
+            <th>Nombre</th>
+            <th>Curso asociado</th>
+            <th>Fecha de inicio</th>
+            <th>Fecha de término</th>
+            <th>Rúbrica</th>
+            <th>Estado</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr style="background-color: lightgray">
+            <td>{{evaluation.name}}</td>
+            {% if user.is_superuser %}
+            <td><a href="../../courses/{{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}">
+              {{course.title}}</a></td>
+            {% else %}
+            <td>{{course.title}}</td>
+            {% endif %}
+            <td>{{evaluation.init_date}}</td>
+            <td>{{evaluation.fin_date}}</td>
+            {% if evaluation.rubric == Null %}
+            <td>&#x2015;</td><!-- símbolo: ―, porque no hay -->
+            {% else %}
+            <td><a href="../../rubrics/details/{{evaluation.rubric}}">{{evaluation.rubric}}</a></td>
+            {% endif %}
+            {% if evaluation.state %}
+            <td>Abierta</td>
+            {% else %}
+            <td color="red">Cerrada</td>
+            {% endif %}
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="w3-row-padding" style="margin-top:30px">
+        <div class="w3-half w3-margin-bottom ">
+          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32"> Equipos <i class="fas fa-user-friends"></i></li>
+            {% for team in ready_teams %}
+            <li class="presentado w3-padding-16">{{team.name}} <i class="far fa-check-circle"></i> <i class="w3-small">ya presentó</i></li>
+            {% endfor %}
+          </ul>
+            <ul id="equipos" class="w3-ul w3-light-grey w3-center w3-card-4">
+            {% for team in not_ready_teams %}
+            <li onclick="show_members('{{forloop.counter}}', {{team_members}}, this)" class="w3-padding-16">{{team.name}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      {% if user.is_superuser %}
+        <div class="w3-half w3-margin-bottom ">
+          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32">Evaluadores <i class="fas fa-chalkboard-teacher"></i></li>
+            {% for evaluator in evaluators %}
+            <li class="w3-padding-16">{{evaluator.nombre}} {{evaluator.appellido}}<i style="margin-left: 10px" class="w3-large fas fa-times" onclick="document.getElementById('delete_evaluator_{{evaluator.id}}').style.display='block'"></i></li>
+              <div class="w3-modal" id="delete_evaluator_{{evaluator.id}}">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+                    <div class="w3-center">
+                        <h4 class="modal-title">Eliminar Evaluador</h4>
+                        <span onclick="document.getElementById('delete_evaluator_{{evaluator.id}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+                        <div class="w3-section">
+                            <div>¿Está seguro que quiere eliminar al evaluador/a {{evaluator.nombre}} {{evaluator.appellido}}?</div>
+                            <form id="delete_evaluator_form_{{evaluator.id}}" method="post" action="/evaluation/{{evaluation.id}}/deleteEvaluator/">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="hidden" name="evaluator_id" value="{{evaluator.id}}">
+                            </div>
+                            <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <li class=" opcion w3-padding-16" id="mas" onclick="document.getElementById('add_evaluator').style.display='block'"> Agregar evaluador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+
+          </ul>
+        </div>
+      {% endif %}
+  </div>
+
+  <div class="w3-row-padding" style="margin-top:30px">
+        <div class="w3-half w3-margin-bottom ">
+          <ul id="team_members" class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32"> Miembros del Equipo <i class="fas fa-user-friends"></i></li>
+
+          </ul>
+        </div>
+
+        <div class="w3-half w3-margin-bottom ">
+          <ul id="presentan" class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32">Miembros que presentan <i class="fas fa-chalkboard-teacher"></i></li>
+
+          </ul>
+        </div>
+  </div>
+
+
+<div class="w3-modal" id="team_alert">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Debe elegir la(s) persona(s) que presentará(n)</h4>
+            <span onclick="document.getElementById('team_alert').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('team_alert').style.display='none'"> Ok </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w3-modal" id="submit">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Evaluar</h4>
+            <span onclick="document.getElementById('submit').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <form action="evaluate/" method="post" id="evaluar_form">
+                {% csrf_token %}
+                <div class="form-group" id="inputs">
+
+                </div>
+                    <button type="submit" class="w3-button w3-block w3-green w3-padding" >Continuar</button>
+                </form>
+                <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('submit').style.display='none'">Cancelar</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w3-modal" id="add_evaluator">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Agregar Evaluador</h4>
+            <span onclick="document.getElementById('add_evaluator').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <form id="add_evaluator_form" method="post" action="/evaluation/{{evaluation.id}}/addEvaluator/">
+                {% csrf_token %}
+                <div class="form-group">
+                    <ul style="list-style-type: none">
+                        {% for account in accounts %}
+                            {% if account not in evaluators %}
+                                <li><input type="checkbox" name="id_eval_{{forloop.counter0}}" value="{{account.id}}">{{account.nombre}} {{account.appellido}}</li>
+                            {% endif%}
+                        {% endfor %}
+                    </ul>
+                    <input type="hidden" name="number_accounts" value="{{accounts|length}}">
+                </div>
+                <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Agregar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <div>
+        <table id="rubric" style="font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        cursor: pointer;
+        margin: 10px 0.5% 0.5%;
+        table-layout: fixed">
+    <tr>
+      {% for level in levels %}
+      <th style="border: 1px solid #665f5f;
+        text-align: center;
+        padding: 2.3%;">{{level}}</th>
+      {% endfor %}
+
+    </tr>
+    {% for row in rows %}
+    <tr>
+      {% for field in row %}
+      <td style="border: 1px solid #665f5f;
+        text-align: center;
+        padding: 2.3%;">{{field}}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+
+  </table>
+    </div>
+
+    <div class="w3-container" id="designers" style="margin-top:50px">
+    <div class="w3-panel w3-center w3-half">
+            <button type="button" class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="verify()"> <i class="fas fa-arrow-right"></i> Evaluar</button>
+    </div>
+</div>
+</body>
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+function verify(){
+    var presentan = document.getElementById('presentan');
+    var lis = presentan.getElementsByTagName('li');
+    if(lis.length > 1){
+        evaluar();
+    }else{
+        document.getElementById('team_alert').style.display='block';
+    }
+}
+function evaluar(){
+    var f = document.getElementById('evaluar_form');
+    var presentan = document.getElementById('presentan');
+    var lis = presentan.getElementsByTagName('li');
+    var n = 0;
+    for(var i=1; i<lis.length; i++){
+        n+=1;
+        var inp = document.createElement('input')
+        inp.setAttribute("type", 'hidden');
+        inp.setAttribute("name", 'campo' + i);
+        inp.setAttribute("value", lis[i].innerHTML);
+        f.appendChild(inp);
+    }
+    var inp = document.createElement('input')
+    inp.setAttribute("type", 'hidden');
+    inp.setAttribute("name", 'cantidad');
+    inp.setAttribute("value", n);
+    f.appendChild(inp);
+    document.getElementById('submit').style.display='block';
+}
+
+/*function start_evaluation(id){
+    var presentan = document.getElementById('presentan');
+    var lis = presentan.getElementsByTagName('li');
+    students = ''
+    for(var i=1; i<lis.length; i++){
+        students += lis[i].innerHTML + ',';
+    }
+
+    var data = new FormData();
+    data.append('csrfmiddlewaretoken', '{{csrf_token}}');
+    data.append('estudiantes', students)
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", '/evaluation/'+id+'/evaluate/', true);
+    xhttp.send(data);
+}*/
+function show_members(index, members, element){
+    var ul = document.getElementById("team_members");
+    ul.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'> Miembros del Equipo <i class='fas fa-user-friends'></i></li>";
+    team = members[index-1]
+    for(var i=0; i<team.length; i++){
+        var li1 = document.createElement('li');
+        li1.setAttribute("name", '0');
+        if(team[i][1]){
+            li1.className = "w3-padding-16 presentado";
+            li1.innerHTML = team[i][0] + " <i class='far fa-check-circle'></i> <i class='w3-small'>ya presentó</i>";
+        }
+        else{
+            li1.setAttribute("onclick", 'select_student(this)');
+            li1.className = "w3-padding-16";
+            li1.innerHTML = team[i][0];
+        }
+        ul.appendChild(li1);
+    }
+
+    var equipos = document.getElementById('equipos');
+    var lis = equipos.getElementsByTagName('li');
+    for(var i=0; i<lis.length; i++){
+        lis[i].className="w3-padding-16";
+    }
+    element.className = "w3-padding-16 selected";
+}
+
+function select_student(element){
+    var name = element.getAttribute("name");
+    if(name=='0'){
+        element.setAttribute("name", '1');
+        element.className = "w3-padding-16 selected";
+    }
+    if(name=='1'){
+        element.setAttribute("name", '0');
+        element.className = "w3-padding-16";
+    }
+    load_members();
+}
+
+function load_members(){
+    var presentan = document.getElementById("presentan");
+    presentan.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'>Miembros que presentan <i class='fas fa-chalkboard-teacher'></i></li>";
+    var members = document.getElementById("team_members");
+    var li_members = members.getElementsByTagName("li");
+    for(var i=0; i< li_members.length; i++){
+        var name = li_members[i].getAttribute("name");
+        if(name=='1'){
+            var li = document.createElement("li");
+            li.innerHTML = li_members[i].innerHTML;
+            li.className = "w3-padding-16";
+            presentan.appendChild(li);
+        }
+    }
+
+}
+</script>
+{% endblock %}

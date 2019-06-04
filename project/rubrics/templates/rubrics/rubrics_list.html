@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+Rúbricas - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+<!-- !PAGE CONTENT! -->
+{% if user.is_superuser %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Rúbricas</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+      <p><h3>Seleccione una rúbrica</h3></p>
+  </div>
+
+<!--Cajas cursos-->
+  {% for rubric in rubrics %}
+
+  <div class="w3-quarter w3-center w3-margin-top">
+    <button onclick="goToDetails('{{rubric.name}}')">
+      <h3>{{rubric.name}}</h3><br>
+      <i class="fas fa-book" style="font-size:100px"></i>
+    </button><br>
+
+    <button class="w3-button w3-red w3-section w3-padding:10px" onclick="goToModify('{{rubric.name}}')">Modificar</button>
+    <button class="w3-button w3-red w3-section w3-padding:10px" onclick="document.getElementById('delete_rubric_{{rubric.name}}').style.display='block'">Eliminar</button>
+    <div class="w3-modal" id="delete_rubric_{{rubric.name}}">
+      <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+          <h4 class="modal-title">Eliminar Rúbrica</h4>
+          <span onclick="document.getElementById('delete_rubric_{{rubric.name}}').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+          <div class="w3-section">
+            <div>¿Está seguro que quiere eliminar la rúbrica {{rubric.name}}?</div>
+            <form id="delete_rubric_form_{{rubric.name}}" method="post" action="/rubrics/delete/">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="hidden" name="name_rubric" value="{{rubric.name}}">
+              </div>
+              <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Confirmar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w3-modal" id="delete_course_{{course.id}}">
+      <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+          <h4 class="modal-title">Eliminar Rubrica</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+
+    <!--Caja de agregar-->
+  <div class="w3-row-padding w3-center w3-margin-top">
+    <div class="w3-quarter w3-margin-top">
+      <button onclick="document.location.href='create/'" class="w3-card w3-container w3-light-gray w3-hover-shadow" style="min-height: 317px">
+        <h3>Agregar rúbrica nueva</h3><br>
+        <i class="fas fa-plus" style="font-size:100px;text-align: center; padding:50px"></i>
+      </button>
+    </div>
+<!--cierre de contenido-->
+  </div>
+</div>
+
+{% else %}
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+  <!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red" style="margin: 2%;"><b>Solo los administradores pueden acceder a esta página</b></h1>
+  </div>
+</div>
+
+{% endif %}
+
+<script>
+  // Script to open and close sidebar
+  function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+  }
+  function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+  }
+  // Modal Image Gallery
+  function onClick(element) {
+    document.getElementById("img01").src = element.src;
+    document.getElementById("modal01").style.display = "block";
+    var captionText = document.getElementById("caption");
+    captionText.innerHTML = element.alt;
+  }
+
+  function goToDetails(name) {
+    location.href= 'details/' + name;
+  }
+
+  function goToModify(name) {
+    location.href= 'modify/' + name;
+  }
+</script>
+{% endblock %}

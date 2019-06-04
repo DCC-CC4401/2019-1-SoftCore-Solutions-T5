@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from .models import Account
+from .models import *
 
 from django.contrib import admin
 
-admin.site.register(Account)
+# Register your models here.
+
+admin.site.register(Rubric)

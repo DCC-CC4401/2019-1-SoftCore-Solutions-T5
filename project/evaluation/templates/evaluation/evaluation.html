@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}
+Detalles de la evaluación - Plataforma de evaluación
+{% endblock %}
+
+{% block content %}
+
+<style>
+  li{
+
+  cursor:pointer;
+}
+.opcion:hover{
+  opacity:0.5;
+  color: rgb(0, 110, 255);
+}
+.selected{
+  background-color:rgba(10, 202, 10, 0.534);
+
+}
+.presentado{
+  color:rgb(0, 180, 0);
+}
+</style>
+<body onload="load({{rubric}}); calculate_grade()">
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+<!-- Portada -->
+  <div class="w3-container" id="portada" style="margin-top:80px; margin-bottom:10px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>{{evaluation.name}}</b></h1>
+      <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+
+  <div class="evaluation-detail">
+    <div class="evaluation">
+      <h2>Detalles de la evaluación “{{evaluation.name}}”</h2>
+      <div class="row">
+        <table class="table">
+          <thead>
+          <tr style="background-color: darkgray">
+            <th>Nombre</th>
+            <th>Curso asociado</th>
+            <th>Fecha de inicio</th>
+            <th>Fecha de término</th>
+            <th>Rúbrica</th>
+            <th>Estado</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr style="background-color: lightgray">
+            <td>{{evaluation.name}}</td>
+            <td><a href="../../courses/{{course.code}}-{{course.section}}-{{course.year}}-{{course.semester}}">
+              {{course.title}}</a></td>
+            <td>{{evaluation.init_date}}</td>
+            <td>{{evaluation.fin_date}}</td>
+            {% if evaluation.rubric == Null %}
+            <td>&#x2015;</td><!-- símbolo: ―, porque no hay -->
+            {% else %}
+            <td><a href="../../rubrics/details/{{evaluation.rubric}}">{{evaluation.rubric}}</a></td>
+            {% endif %}
+            {% if evaluation.state %}
+            <td>Abierta</td>
+            {% else %}
+            <td color="red">Cerrada</td>
+            {% endif %}
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="w3-row-padding" style="margin-top:30px">
+        <div class="w3-half w3-margin-bottom ">
+          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32"> Equipos <i class="fas fa-user-friends"></i></li>
+            {% for student in students %}
+            <li class="w3-padding-16">{{student.first_name}} {{student.family_name}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="w3-half w3-margin-bottom ">
+          <ul class="w3-ul w3-light-grey w3-center w3-card-4">
+            <li class="w3-dark-grey w3-xlarge w3-padding-32">Evaluadores <i class="fas fa-chalkboard-teacher"></i></li>
+            {% for evaluator in evaluators %}
+            <li class="w3-padding-16">{{evaluator.nombre}} {{evaluator.appellido}}<i style="margin-left: 10px" class="w3-large fas fa-times"></i></li>
+            {% endfor %}
+            <li class=" opcion w3-padding-16" id="mas" onclick="document.getElementById('add_evaluator').style.display='block'"> Agregar evaluador <i style="margin-left: 10px"  class="fas fa-user-plus"></i></li>
+
+          </ul>
+        </div>
+      </div>
+<div class="w3-container" id="designers" style="margin-top:50px">
+    <div id="evaluate" class="w3-container w3-center">
+        <p>Seleccione el nivel de logro alcanzado por el grupo en cada ámbito</p> </div>
+
+    </div>
+    <div>
+        <label>Nota Actual: </label> <label id="nota"></label>
+    </div>
+    <div class="w3-panel w3-right w3-half">
+        <form id="evaluation_done_form" method="post" action="/evaluation/{{evaluation.id}}/evaluate/sendEval/">
+        {% csrf_token %}
+            <div class="form-group">
+                <input type="hidden" name="nota_evaluation" id="nota_evaluation">
+                <input type="hidden" name="evaluator_mail" value="{{request.user.email}}">
+                {% for student in students %}
+                <input type="hidden" name="campo{{forloop.counter}}" value="{{student.id}}"</input>
+                {% endfor %}
+                <input type="hidden" name="cantidad" value="{{students|length}}">
+            </div>
+            <button type="button" onclick="verify()" class="w3-button w3-block w3-red w3-section w3-padding">Entregar evaluación</button>
+        </form>
+    </div>
+</div>
+
+<div class="w3-modal" id="evaluation_alert">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Falta seleccionar campos</h4>
+            <span onclick="document.getElementById('evaluation_alert').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('evaluation_alert').style.display='none'"> Ok </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Agregar evaluador es una característica solo para superusuarios #}
+{% if user.is_superuser %}
+<div class="w3-modal" id="add_evaluator">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+        <div class="w3-center">
+            <h4 class="modal-title">Agregar Evaluador</h4>
+            <span onclick="document.getElementById('add_evaluator').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+            <div class="w3-section">
+                <form id="add_evaluator_form" method="post" action="/evaluation/{{evaluation.id}}/addEvaluator/">
+                {% csrf_token %}
+                <div class="form-group">
+                    <ul style="list-style-type: none">
+                        {% for account in accounts %}
+                            {% if account not in evaluators %}
+                                <li><input type="checkbox" name="id_eval_{{forloop.counter0}}" value="{{account.id}}">{{account.nombre}} {{account.appellido}}</li>
+                            {% endif%}
+                        {% endfor %}
+                    </ul>
+                    <input type="hidden" name="number_accounts" value="{{accounts|length}}">
+                </div>
+                <button type="submit" class="w3-button w3-block w3-red w3-section w3-padding">Agregar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script>
+    var li_class = "opcion w3-padding-16";
+    var li_warn_class = "w3-orange w3-xlarge w3-padding-32";
+    var li_select_class = "w3-red w3-xlarge w3-padding-32";
+    var li_warn_html = "<i class='fas fa-exclamation-circle'></i><i class='w3-medium'> falta seleccionar</i>";
+    var li_select_html = "<i class='far fa-check-circle'></i>";
+    function load(rubric){
+        eval = document.getElementById('evaluate');
+        var levels = rubric[0];
+        for(var i=1; i<rubric.length; i++){
+            var row = rubric[i];
+            var div = document.createElement('div');
+            div.className = "w3-panel  w3-margin-bottom";
+            div.setAttribute("id", i);
+            div.setAttribute("name", "0");
+            var ul = document.createElement('ul');
+            ul.className = "w3-ul w3-light-grey w3-center w3-card-4";
+            var li = document.createElement('li');
+            li.className = "w3-orange w3-xlarge w3-padding-32";
+            li.setAttribute("name", row[0]);
+            li.innerHTML = row[0] + '<i class="fas fa-exclamation-circle"></i><i class="w3-medium"> falta seleccionar</i>';
+            ul.appendChild(li);
+            for(var j=1; j<row.length; j++){
+                if(row[j] != ''){
+                    var li = document.createElement('li');
+                    li.setAttribute("name", levels[j]);
+                    li.setAttribute("onclick", 'select(this.parentNode, ' + i + ', ' + levels[j] + ')');
+                    li.className = li_class;
+                    li.innerHTML = row[j];
+                    ul.appendChild(li);
+                }
+            }
+            div.appendChild(ul);
+            eval.appendChild(div);
+        }
+    }
+
+    function select(ul, id, name){
+        var lis = ul.getElementsByTagName('li');
+        lis[0].className = li_select_class;
+        lis[0].innerHTML = lis[0].getAttribute("name") + ' ' + li_select_html;
+
+        for(var i=1; i<lis.length; i++){
+            li_name = lis[i].getAttribute("name");
+            if(li_name == name){
+                lis[i].className = "opcion w3-padding-16 selected";
+            }else{
+                lis[i].className = "opcion w3-padding-16";
+            }
+        }
+
+        var div = document.getElementById(id);
+        div.setAttribute("name", name);
+        calculate_grade()
+    }
+
+    function calculate_grade(){
+        var evaluation = document.getElementById("evaluate");
+        var divs = evaluation.getElementsByTagName('div');
+        var res = 1;
+        for(var i=0; i<divs.length; i++){
+            res = res + parseFloat(divs[i].getAttribute("name"));
+        }
+        res = res.toFixed(1);
+        document.getElementById("nota").innerHTML = res;
+
+        var nota_input = document.getElementById("nota_evaluation");
+        nota_input.value = res;
+    }
+
+    function verify() {
+        var evaluation = document.getElementById("evaluate");
+        var divs = evaluation.getElementsByTagName('div');
+        var respondido = 0;
+        for(var i=0; i<divs.length; i++){
+            if(divs[i].getAttribute('name') != '0'){
+                respondido++;
+            }
+        }
+        if(respondido == divs.length){
+            form = document.getElementById('evaluation_done_form');
+            form.submit();
+        }
+        else{
+            document.getElementById('evaluation_alert').style.display='block';
+        }
+    }
+</script>
+{% endblock %}
