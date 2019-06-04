@@ -11,4 +11,5 @@ urlpatterns=[
     url(r'^(?P<evaluation_id>[\w ]+)/evaluate/$', views.evaluate),
     url(r'^(?P<evaluation_id>[\w ]+)/addEvaluator/$', views.add_evaluator),
     url(r'^(?P<evaluation_id>[\w ]+)/deleteEvaluator/$', views.delete_evaluator),
+    url(r'^(?P<evaluation_id>[\w ]+)/evaluate/sendEval/$', views.send_eval),
 ]

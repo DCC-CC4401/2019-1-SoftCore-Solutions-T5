@@ -143,8 +143,15 @@ tr:nth-child(even) {
             <h4 class="modal-title">Evaluar</h4>
             <span onclick="document.getElementById('submit').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
             <div class="w3-section">
+                <form action="evaluate/" method="post" id="evaluar_form">
+                {% csrf_token %}
+                <div class="form-group" id="inputs">
+
+                </div>
+                    <button type="submit" class="w3-button w3-block w3-green w3-padding" >Continuar</button>
+                </form>
                 <button class="w3-button w3-block w3-red w3-padding" onclick="document.getElementById('submit').style.display='none'">Cancelar</button>
-                <button class="w3-button w3-block w3-green w3-padding" onclick="start_evaluation('{{evaluation.id}}')">Continuar</button>
+
             </div>
         </div>
     </div>
@@ -203,7 +210,7 @@ tr:nth-child(even) {
 
     <div class="w3-container" id="designers" style="margin-top:50px">
     <div class="w3-panel w3-center w3-half">
-        <button class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="document.getElementById('submit').style.display='block'"> <i class="fas fa-arrow-right"></i> Evaluar</button>
+            <button type="button" class="w3-button w3-xlarge w3-red" style="margin-left: 80%" onclick="evaluar(); document.getElementById('submit').style.display='block';"> <i class="fas fa-arrow-right"></i> Evaluar</button>
     </div>
 </div>
 </body>
@@ -212,19 +219,44 @@ tr:nth-child(even) {
 
 {% block script %}
 <script>
-function start_evaluation(id){
-    var data = new FormData();
-    var students = 0;
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-       document.location='{% url 'rubrics:rubrics' %}';
-      }
-    };
-    xhttp.open("POST", "{% url 'rubrics:rubrics' %}", true);
-    xhttp.send(data);
-    document.location.href='/evaluation/'+id+'/evaluate/';
+
+
+function evaluar(){
+    var f = document.getElementById('evaluar_form');
+    var presentan = document.getElementById('presentan');
+    var lis = presentan.getElementsByTagName('li');
+    var n = 0;
+    for(var i=1; i<lis.length; i++){
+        n+=1;
+        var inp = document.createElement('input')
+        inp.setAttribute("type", 'hidden');
+        inp.setAttribute("name", 'campo' + i);
+        inp.setAttribute("value", lis[i].innerHTML);
+        f.appendChild(inp);
+    }
+    var inp = document.createElement('input')
+    inp.setAttribute("type", 'hidden');
+    inp.setAttribute("name", 'cantidad');
+    inp.setAttribute("value", n);
+    f.appendChild(inp);
 }
+
+/*function start_evaluation(id){
+    var presentan = document.getElementById('presentan');
+    var lis = presentan.getElementsByTagName('li');
+    students = ''
+    for(var i=1; i<lis.length; i++){
+        students += lis[i].innerHTML + ',';
+    }
+
+    var data = new FormData();
+    data.append('csrfmiddlewaretoken', '{{csrf_token}}');
+    data.append('estudiantes', students)
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", '/evaluation/'+id+'/evaluate/', true);
+    xhttp.send(data);
+}*/
 function show_members(index, members, element){
     var ul = document.getElementById("team_members");
     ul.innerHTML = "<li class='w3-dark-grey w3-xlarge w3-padding-32'> Miembros del Equipo <i class='fas fa-user-friends'></i></li>";
