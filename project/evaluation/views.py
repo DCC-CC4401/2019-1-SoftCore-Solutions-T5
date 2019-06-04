@@ -152,7 +152,7 @@ def evaluation_details(request, evaluation_id):
     teams = Team.objects.filter(course=course)
     rubric = evaluation.rubric.get_rubric()
 
-    ready = Evaluation_Student.objects.filter(grade__gt=0)
+    ready = Evaluation_Student.objects.filter(grade__gt=0, evaluation_id=evaluation)
     ready_teams = []
     not_ready_teams = []
     for st in ready:
