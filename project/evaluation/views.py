@@ -50,8 +50,11 @@ def evaluation_list(request):
 
     ### Seleccionar las evaluaciones, junto con la info del curso correspondiente
     for evaluation in evaluations:
-        eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
-        eval.append((evaluation, eval_course))
+        try:
+            eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
+            eval.append((evaluation, eval_course))
+        except Evaluation_Course.DoesNotExist:
+            continue
 
     return render(request,'evaluation/evaluation_list.html', {'evaluations': eval,
                                                               'courses': courses,
@@ -60,14 +63,14 @@ def evaluation_list(request):
 
 def delete_evaluation(request):
     if request.method == 'POST':
-        eval_name = request.POST['eval_name']
+        eval_id = request.POST['eval_id']
         code_course = request.POST['code_course']
         section_course = request.POST['section_course']
         semester_course = request.POST['semester_course']
         year_course = request.POST['year_course']
 
         course = Course.objects.get(code=code_course, section=section_course, semester=semester_course, year=year_course)
-        del_evaluation = Evaluation.objects.get(name=eval_name)
+        del_evaluation = Evaluation.objects.get(id=eval_id)
 
         eval_course = Evaluation_Course.objects.get(evaluation_name=del_evaluation, course=course)
         eval_course.delete()
@@ -83,9 +86,7 @@ def delete_evaluation(request):
         eval_course = Evaluation_Course.objects.get(evaluation_name=evaluation)
         eval.append((evaluation, eval_course))
 
-    return render(request, 'evaluation/evaluation_list.html', {'evaluations': eval,
-                                                               'courses': courses,
-                                                               'rubrics': rubrics})
+    return redirect('/evaluation')
 
 
 def evaluate(request, evaluation_id):
@@ -136,7 +137,7 @@ def evaluation_details(request, evaluation_id):
     eval_course= Evaluation_Course.objects.get(evaluation_name=evaluation)
     course= eval_course.course
 
-    evaluations_done = Evaluation_Student_Presented.objects.filter(evaluation_id=evaluation)
+    evaluations_done = Evaluation_Student_Presented.objects.all()
     students_evaluated = []
     for e in evaluations_done:
         students_evaluated.append(e.student)
@@ -149,7 +150,7 @@ def evaluation_details(request, evaluation_id):
     teams = Team.objects.filter(course=course)
     rubric = evaluation.rubric.get_rubric()
 
-    ready = Evaluation_Student.objects.filter(grade__gt=0)
+    ready = Evaluation_Student.objects.filter(grade__gt=0, evaluation_id=evaluation)
     ready_teams = []
     not_ready_teams = []
     for st in ready:
@@ -275,6 +276,7 @@ def send_eval(request, evaluation_id):
         evaluation = Evaluation.objects.get(id=evaluation_id)
 
         cantidad = int(request.POST['cantidad'])
+        print(request.POST)
         for i in range(cantidad):
             name = 'campo' + str(i+1)
             student_id = request.POST[name]
@@ -288,7 +290,8 @@ def send_eval(request, evaluation_id):
         members = Student.objects.filter(team=team)
 
         for m in members:
-            eval_student = Evaluation_Student.objects.create(evaluation_id=evaluation, student=m, grade=nota)
+            eval_student = Evaluation_Student.objects.get(evaluation_id=evaluation, student=m, grade=0.0)
+            eval_student.grade = nota
             eval_student.save()
 
     return redirect('/evaluation/' + evaluation_id + '/')
