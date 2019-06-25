@@ -266,6 +266,8 @@ Rúbricas - Plataforma de evaluación
     var min = document.getElementById("intervalo_min").value;
     var max = document.getElementById("intervalo_max").value;
     var name = title.replace(/ /g, "_");
+    var b = true;
+    var falta = [];
 
     var matrix = '';
     var table = document.getElementById("rubric");
@@ -274,16 +276,25 @@ Rúbricas - Plataforma de evaluación
     for(var i=0; i<rows.length; i++){
       var cells = rows[i].cells;
       matrix += cells[0].innerText;
+      isEmpty = true
       for(var j=1; j<cells.length; j++){
         matrix += '%,%'
         matrix += cells[j].innerText;
+        //El siguiente if va revisando que no se cree un criterio nulo
+        if (cells[j].innerText != "") {
+          isEmpty = false;
+        }
+      }
+      //Si hay criterio nulo se pide llenar o borrarlo
+      if (isEmpty) {
+        falta.push("-Hay un criterio sin puntajes asignados\n");
+        b = false;
       }
       if(i != rows.length-1)
         matrix += '%n%';
     }
 
-    var b = true;
-    var falta = [];
+
     sessionStorage.setItem('rubric', matrix);
     sessionStorage.setItem('title', title);
     sessionStorage.setItem('min', min);
@@ -298,6 +309,12 @@ Rúbricas - Plataforma de evaluación
     }
     if(max===''){
       falta.push("-Duración máxima\n");
+      b = false;
+    }
+
+    //La siguiente validacion es bugfix
+    if (parseFloat(min) >= parseFloat(max)) {
+      falta.push("-Duración mínima es mayor que la máxima")
       b = false;
     }
 
