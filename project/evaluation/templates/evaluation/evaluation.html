@@ -231,22 +231,25 @@ Detalles de la evaluación - Plataforma de evaluación
     }
 
     function verify() {
-        var evaluation = document.getElementById("evaluate");
-        var divs = evaluation.getElementsByTagName('div');
-        var respondido = 0;
-        for(var i=0; i<divs.length; i++){
-            if(divs[i].getAttribute('name') != '0'){
-                respondido++;
+        confirmation = confirm("Enviar con los puntajes ingresados?")
+        if(confirmation){
+            var evaluation = document.getElementById("evaluate");
+            var divs = evaluation.getElementsByTagName('div');
+            var respondido = 0;
+            for (var i = 0; i < divs.length; i++) {
+                if (divs[i].getAttribute('name') != '0') {
+                    respondido++;
+                }
             }
-        }
-        console.log(divs.length);
-        console.log(respondido);
-        if(respondido == divs.length){
-            form = document.getElementById('evaluation_done_form');
-            form.submit();
-        }
-        else{
-            document.getElementById('evaluation_alert').style.display='block';
+            console.log(divs.length);
+            console.log(respondido);
+            if (respondido == divs.length) {
+                form = document.getElementById('evaluation_done_form');
+                form.submit();
+            }
+            else {
+                document.getElementById('evaluation_alert').style.display = 'block';
+            }
         }
     }
 </script>
